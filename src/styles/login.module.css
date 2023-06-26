@@ -12,6 +12,7 @@
 .signInUpColor{
     color:#e8661b !important
 }
+
 .registerPage{
     font-family: "Roboto","Helvetica","Arial",sans-serif !important;
 }
@@ -52,8 +53,26 @@
     border-color: #e8661b !important;
 }
 
+/* Breadcrumbs */
 
+.breadcrumbsTextFirstandSecond{
+    color: #7D86A5 !important;
+    text-decoration: none !important;
+    font-family: "Roboto","Helvetica","Arial",sans-serif !important;
+}
 
+.breadcrumbsTextLast{
+    color: #E8661B !important;
+    text-decoration: none !important;
+    font-family: "Roboto","Helvetica","Arial",sans-serif !important;
+}
+.breadcrumbsMainBoldText{
+    font-weight: bold;
+    color: #333333;
+    font-family: "Roboto","Helvetica","Arial",sans-serif !important;
+}
+
+/* Breadcrumbs */
 
 @media (max-width: 899px) {
     .loginSideImage {

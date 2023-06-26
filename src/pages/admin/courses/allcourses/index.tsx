@@ -74,13 +74,16 @@ const AllCourses = () => {
   const [search, setSearch] = React.useState('');
   const [deleteRow, setDeleteRow] = React.useState<any>([])
   const [open, setOpen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [getFilter, setFilter] = React.useState<number>(0);
   const [filterObject, setFilterObject] = React.useState<any>('');
   const router = useRouter()
   //pagination
-  const [row_per_page, set_row_per_page] = React.useState(10);
+  const [row_per_page, set_row_per_page] = React.useState(3);
   let [page, setPage] = React.useState<any>(1);
   function handlerowchange(e: any) {
+    setPage(1);
+    DATA.jump(1);
     set_row_per_page(e.target.value);
   }
   const PER_PAGE = row_per_page;
@@ -98,6 +101,7 @@ const AllCourses = () => {
   } = useForm();
 
   React.useEffect(() => {
+    setLoading(true)
     getAllCourseData('', filterObject);
   }, [])
 
@@ -134,8 +138,15 @@ const AllCourses = () => {
     setRows(sortData)
     setToggle(!toggle)
   }
+
+  console.log(page,"page",count)
   const handleSearch = (e: any, identifier: any) => {
     setPage(1);
+   
+    if(page !== 1){
+
+      DATA.jump(1);
+    }
     if (identifier === 'reset') {
       getAllCourseData('', { is_chargeable: 0, status: 0 })
       setSearch(e)
@@ -147,8 +158,12 @@ const AllCourses = () => {
   }
 
   const getAllCourseData = (search: any, filterObject: any) => {
+   
     HandleCourseGet(search, filterObject).then((courses) => {
+      setLoading(false)
       setRows(courses.data)
+    }).catch((err) => {
+      setLoading(false)
     })
   }
 
@@ -329,8 +344,8 @@ const AllCourses = () => {
                             style={{ top: 0, minWidth: column.minWidth }}
                             onClick={() => {
                               column.label === 'ID' ?
-                                handleSort(rows) :
-                                ''
+                              handleSort(rows) :
+                              ''
                             }}
                             className={courseStyle.tableHeadingForId}
                           >
@@ -339,21 +354,22 @@ const AllCourses = () => {
                                 {column.label}
                                 {toggle ? (
                                   <ArrowDownwardOutlinedIcon fontSize="small" />
-                                ) : (
+                                  ) : (
                                   <ArrowUpwardOutlinedIcon fontSize="small" />
-                                )}
+                                  )}
                               </>
                             ) : (
                               column.label
-                            )}
+                              )}
                           </TableCell>
                         ))}
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows && rows.length > 0 ? DATA.currentData() &&
+                      {!loading ? 
+                      rows && rows.length > 0 ? DATA.currentData() &&
                         DATA.currentData()
-                          .map((row: any) => {
+                        .map((row: any) => {
                             const statusColor = (row.course.status === "active" ? courseStyle.activeClassColor : row.course.status === "inactive" ? courseStyle.inactiveClassColor : courseStyle.draftClassColor)
                             return (
                               <TableRow
@@ -373,8 +389,9 @@ const AllCourses = () => {
                                 </TableCell>
                               </TableRow>
                             );
-                          }) : <TableRow><TableCell colSpan={7} className={courseStyle.tableLastCell}> <SpinnerProgress /> </TableCell></TableRow>}
-                    </TableBody>
+                          }) : <TableRow><TableCell colSpan={7} className={courseStyle.tableLastCell}> Record not found </TableCell></TableRow>
+                          :<TableRow><TableCell colSpan={7} className={courseStyle.tableLastCell}><SpinnerProgress/> </TableCell></TableRow>}
+                          </TableBody>
                   </Table>
                   <Stack
                     className={courseStyle.stackStyle}

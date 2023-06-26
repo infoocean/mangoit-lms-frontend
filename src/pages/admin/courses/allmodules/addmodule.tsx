@@ -198,15 +198,16 @@ export default function AddSession() {
 
                                  <Grid item xs={12} sm={12} md={12} lg={12} mb={2} >
                                     <InputLabel className={ModuleCss.InputLabelFont}>Description</InputLabel>
-                                    <Box className={ModuleCss.quillDescription}>
+                                  
                                     <RichEditor
                                        {...register("description")}
                                        value={despcriptionContent}
                                        onChange={(e) =>
                                           handleContentChange(e, "description")
                                        }
+                                       className={ModuleCss.quillDescription}
                                     />
-                                    </Box>
+                                   
                                     {errors && errors.description ? ErrorShowing(errors?.description?.message) : ""}
                                  </Grid>
 

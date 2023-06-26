@@ -156,6 +156,7 @@ const AddCourse = () => {
           course_learning_topics: JSON.stringify(rowsForCourseTopic),
           Course_learning_material: JSON.stringify(rowsForCourseMaterial)
         }
+
         const formData = new FormData()
         for (var key in reqData) {
           formData.append(key, reqData[key]);
@@ -214,8 +215,13 @@ const AddCourse = () => {
     setrowsForCourseTopic([...rowsForCourseTopic, item]);
   };
   const ResetTopicRow = () => {
-    setrowsForCourseTopic([{}]);
+    setrowsForCourseTopic([]);
+    function myFunction() {
+      setrowsForCourseTopic([{}]);
+    }
+    setTimeout(myFunction, 100);
   }
+
   //update course topic 
   const updateCourseState = (e: any) => {
     const tempRows = [...rowsForCourseTopic];
@@ -260,8 +266,13 @@ const AddCourse = () => {
     setrowsForCourseMaterial([...rowsForCourseMaterial, item]);
   };
   const ResetMaterialRow = () => {
-    setrowsForCourseMaterial([{}]);
+    setrowsForCourseMaterial([]);
+    function myFunction() {
+      setrowsForCourseMaterial([{}]);
+    }
+    setTimeout(myFunction, 100);
   }
+
   const updateMaterialState = (e: any) => {
     const tempRows = [...rowsForCourseMaterial];
     const tempObj = rowsForCourseMaterial[e.target.attributes.id.value];
@@ -463,7 +474,7 @@ const AddCourse = () => {
                       <Grid item mb={1} lg={12}>
                         <InputLabel className={styles.InputLabelFont}>Image</InputLabel>
                         <Box className={styles.courseAttachmentBox}>
-                          
+
                           <InputLabel className={styles.subbox} >
                             <input
                               type="file"
@@ -560,7 +571,7 @@ const AddCourse = () => {
               <Button variant="outlined" size="small" onClick={ResetTopicRow} startIcon={<RestartAltOutlinedIcon />}>Reset</Button>
               <Button variant="outlined" size="small" onClick={handleAddTopicRow} startIcon={<AddIcon />}>Add New</Button>
             </Stack>
-            <Table>
+            <Table sx={{ minHeight: "100px" }}>
               <TableHead>
                 <TableRow>
                   <Stack direction="row" >
@@ -630,7 +641,7 @@ const AddCourse = () => {
               <Button variant="outlined" size="small" onClick={ResetMaterialRow} startIcon={<RestartAltOutlinedIcon />}>Reset</Button>
               <Button variant="outlined" size="small" onClick={handleAddCourseMaterialRow} startIcon={<AddIcon />}>Add New </Button>
             </Stack>
-            <Table>
+            <Table sx={{ minHeight: "100px" }}>
               <TableHead>
                 <TableRow>
                   <Stack direction="row" >

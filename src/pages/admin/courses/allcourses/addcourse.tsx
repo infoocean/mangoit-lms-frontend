@@ -122,6 +122,7 @@ const AddCourse = () => {
       setShortDespcriptionContent(value);
     }
   };
+
   function ErrorShowing(errorMessage: any, identifier: string = '') {
     if (identifier === "long_description") {
       return (
@@ -150,8 +151,8 @@ const AddCourse = () => {
           status: value?.status,
           duration: value?.courseduration,
           level: value?.courselevel,
-          image: value?.imageattachment,
-          video: value?.videoattachment,
+          image: value?.imageattachments,
+          video: value?.videoattachments,
           course_learning_topics: JSON.stringify(rowsForCourseTopic),
           Course_learning_material: JSON.stringify(rowsForCourseMaterial)
         }
@@ -175,26 +176,24 @@ const AddCourse = () => {
       toast.error("Please add course learning topics !")
     }
   }
-  const handleImageChange = (e: any) => {
+
+  const handleChange = (e: any) => {
     const file = e.target.files[0];
     if (e.target.name === "imageattachment") {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         setImageFile(file);
-        setValue("imageattachment", file);
+        setValue("imageattachments", file);
       }
       if (file) {
         reader.readAsDataURL(file);
       }
-    }
-  }
-  const handleVideoChange = (e: any) => {
-    const file = e.target.files[0];
-    if (e.target.name === "videoattachment") {
+
+    } else if (e.target.name === "videoattachment") {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         setVideoFile(file);
-        setValue("videoattachment", file);
+        setValue("videoattachments", file);
       }
       if (file) {
         reader.readAsDataURL(file);
@@ -232,14 +231,21 @@ const AddCourse = () => {
       tempRows.splice(idx, 1);
       setrowsForCourseTopic(tempRows);
     } else {
-      toast.error("Please add course topics !")
+      //toast.error("Please add course topics !")
     }
   };
   const courseTopic = () => {
-    if (rowsForCourseTopic.length > 0) {
-      handleCloseCourseTopicBox();
+    if (rowsForCourseTopic.length <= 1 && rowsForCourseTopic[0][0] === '' || rowsForCourseTopic[0][0] === undefined) {
+      return toast.error("Please add course topics!")
+    } else if (rowsForCourseTopic.length <= 4) {
+      return toast.error("Please add atleast 5 topics!")
     } else {
-      toast.error("Please add course topics !")
+      // for (var i = 0; i <= rowsForCourseTopic.length - 1; i++) {
+      //   if (rowsForCourseTopic[i][i] === '' || rowsForCourseTopic[0][0] === undefined) {
+      //     return toast.error("Input feild can't be blank!")
+      //   }
+      // }
+      handleCloseCourseTopicBox();
     }
   };
   //study material boxes
@@ -273,10 +279,17 @@ const AddCourse = () => {
     }
   }
   const courseMaterial = () => {
-    if (rowsForCourseMaterial.length > 0) {
-      handleCloseStudyMaterialBox();
+    if (rowsForCourseMaterial.length <= 1 && rowsForCourseMaterial[0][0] === '' || rowsForCourseMaterial[0][0] === undefined) {
+      return toast.error("Please add course material !")
+    } else if (rowsForCourseMaterial.length <= 4) {
+      return toast.error("Please add atleast 5 materials!")
     } else {
-      toast.error("Please add course material !")
+      // for (var i = 0; i <= rowsForCourseMaterial.length - 1; i++) {
+      //   if (rowsForCourseMaterial[i][i] === '' || rowsForCourseMaterial[0][0] === undefined) {
+      //     return toast.error("Input feild can't be blank!")
+      //   }
+      // }
+      handleCloseStudyMaterialBox();
     }
   };
 
@@ -296,8 +309,8 @@ const AddCourse = () => {
           />
           {/* main content */}
           <Card>
-            <CardContent>        
-             <Box
+            <CardContent>
+              <Box
                 component="form"
                 method="POST"
                 noValidate
@@ -450,11 +463,12 @@ const AddCourse = () => {
                       <Grid item mb={1} lg={12}>
                         <InputLabel className={styles.InputLabelFont}>Image</InputLabel>
                         <Box className={styles.courseAttachmentBox}>
+                          
                           <InputLabel className={styles.subbox} >
                             <input
                               type="file"
                               {...register('imageattachment')}
-                              onChange={handleImageChange}
+                              onChange={handleChange}
                               hidden
                             />
                             <Typography className={styles.courseAttachments}>
@@ -462,7 +476,7 @@ const AddCourse = () => {
                             </Typography>
                           </InputLabel>
                         </Box>
-                        {imagefile ? '' : errors && errors.imagefile ? ErrorShowing(errors?.imagefile?.message) : ""}
+                        {imagefile ? '' : errors && errors.imageattachments ? ErrorShowing(errors?.imageattachments?.message) : ""}
                       </Grid>
                       <Grid item mb={1} lg={12}>
                         <InputLabel className={styles.InputLabelFont}>Introduction Video</InputLabel>
@@ -471,7 +485,7 @@ const AddCourse = () => {
                             <input
                               type="file"
                               {...register('videoattachment')}
-                              onChange={handleVideoChange}
+                              onChange={handleChange}
                               hidden
                             />
                             <Typography className={styles.courseAttachments}>
@@ -479,11 +493,11 @@ const AddCourse = () => {
                             </Typography>
                           </InputLabel>
                         </Box>
-                        {videofile ? '' : errors && errors.videofile ? ErrorShowing(errors?.videofile?.message) : ""}
+                        {videofile ? '' : errors && errors.videoattachments ? ErrorShowing(errors?.videoattachments?.message) : ""}
                       </Grid>
                     </Grid>
                     <Box className={styles.wrapShortAndLongDescription}>
-                      <Grid item mb={2} mt={2}>
+                      <Grid item mb={1} mt={2}>
                         <InputLabel className={styles.InputLabelFont}>
                           Short Description
                         </InputLabel>
@@ -523,7 +537,7 @@ const AddCourse = () => {
                     </Grid>
                   </Grid>
                 </Grid>
-              </Box>            
+              </Box>
             </CardContent>
           </Card>
         </Box>

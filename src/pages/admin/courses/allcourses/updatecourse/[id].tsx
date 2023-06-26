@@ -30,6 +30,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
+import Preview from '@/common/PreviewAttachments/previewAttachment';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -108,7 +109,9 @@ export default function UpdateCourse() {
     }
 
   };
+
   const onSubmit = async (event: any) => {
+    console.log(event)
     const id = router.query.id
     if (errors.description?.message === '' || (typeof errors === 'object' && errors !== null)) {
       setLoading(true);
@@ -121,8 +124,8 @@ export default function UpdateCourse() {
         status: event?.status,
         duration: event?.duration,
         level: event?.level,
-        image: event?.image,
-        video: event?.video,
+        image: event?.imageattachments,
+        video: event?.videoattachments,
         course_learning_topics: JSON.stringify(rowsForCourseTopic),
         Course_learning_material: JSON.stringify(rowsForCourseMaterial)
       }
@@ -158,6 +161,10 @@ export default function UpdateCourse() {
         setCourse(course.data)
         setrowsForCourseTopic(JSON.parse(JSON.parse(course.data?.course_learning_topics)))
         setrowsForCourseMaterial(JSON.parse(JSON.parse(course.data?.Course_learning_material)))
+        setValue('imageattachments', course.data?.image)
+        setValue('videoattachments', course.data?.video)
+        setImageFile(course.data?.image)
+        setVideoFile(course.data?.video)
         const fields = [
           "title",
           "is_chargeable",
@@ -166,8 +173,6 @@ export default function UpdateCourse() {
           "long_description",
           "level",
           "duration",
-          "image",
-          "video"
         ];
         fields.forEach((field) => setValue(field, course.data[field]));
       })
@@ -183,6 +188,7 @@ export default function UpdateCourse() {
       return <Typography >Loading...</Typography >;
     }
   }
+
   useEffect(() => {
     let localData: any;
     if (typeof window !== "undefined") {
@@ -201,13 +207,23 @@ export default function UpdateCourse() {
     );
   }
 
-  const handleImageChange = (e: any) => {
+  const handleChange = (e: any) => {
     const file = e.target.files[0];
-    if (e.target.name === "image") {
+    if (e.target.name === "imageattachment") {
       const reader = new FileReader();
       reader.onload = (e: any) => {
         setImageFile(file);
-        //setValue("imageattachment", file);
+        setValue("imageattachments", file);
+      }
+      if (file) {
+        reader.readAsDataURL(file);
+      }
+
+    } else if (e.target.name === "videoattachment") {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        setVideoFile(file);
+        setValue("videoattachments", file);
       }
       if (file) {
         reader.readAsDataURL(file);
@@ -215,19 +231,7 @@ export default function UpdateCourse() {
     }
   }
 
-  const handleVideoChange = (e: any) => {
-    const file = e.target.files[0];
-    if (e.target.name === "video") {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        setVideoFile(file);
-        // setValue("videoattachment", file);
-      }
-      if (file) {
-        reader.readAsDataURL(file);
-      }
-    }
-  }
+
   // //course cover topic edit boxes
   const handleClickOpenCourseTopicBox = () => {
     setopenCourseTopicBox(true);
@@ -466,36 +470,42 @@ export default function UpdateCourse() {
                         <Grid item mb={1} lg={12}>
                           <InputLabel className={courseStyle.InputLabelFont}>Image</InputLabel>
                           <Box className={courseStyle.courseAttachmentBox}>
+                            <Box component='span'>
+                              {imagefile !== undefined && <Preview name={imagefile} />}
+                            </Box>
                             <InputLabel className={courseStyle.subbox} >
                               <input
                                 type="file"
-                                {...register('image')}
-                                onChange={handleImageChange}
+                                {...register('imageattachment')}
+                                onChange={handleChange}
                                 hidden
                               />
                               <Typography className={courseStyle.courseAttachments}>
-                                {!imagefile.name ? "Upload" : imagefile.name}
+                                Upload
                               </Typography>
                             </InputLabel>
                           </Box>
-                          {imagefile ? '' : errors && errors.imagefile ? ErrorShowing(errors?.imagefile?.message) : ""}
+                          {imagefile ? '' : errors && errors.imageattachments ? ErrorShowing(errors?.imageattachments?.message) : ""}
                         </Grid>
                         <Grid item mb={1} lg={12}>
                           <InputLabel className={courseStyle.InputLabelFont}>Introduction Video</InputLabel>
                           <Box className={courseStyle.courseAttachmentBox}>
+                            <Box component='span'>
+                              {videofile !== undefined && <Preview name={videofile} />}
+                            </Box>
                             <InputLabel className={courseStyle.subbox} >
                               <input
                                 type="file"
-                                {...register('video')}
-                                onChange={handleVideoChange}
+                                {...register('videoattachment')}
+                                onChange={handleChange}
                                 hidden
                               />
                               <Typography className={courseStyle.courseAttachments}>
-                                {!videofile.name ? "Upload" : videofile.name}
+                                Upload
                               </Typography>
                             </InputLabel>
                           </Box>
-                          {videofile ? '' : errors && errors.videofile ? ErrorShowing(errors?.videofile?.message) : ""}
+                          {videofile ? '' : errors && errors.videoattachments ? ErrorShowing(errors?.videoattachments?.message) : ""}
                         </Grid>
                       </Grid>
                       <Grid item xs={12} sm={12} md={12} lg={12} mb={2}>

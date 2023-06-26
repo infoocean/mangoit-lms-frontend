@@ -38,6 +38,10 @@ export default function Courses() {
   };
   const setcustStatus = (e: any) => {
     setLoadar(true);
+    if (page !== 1) {
+      setPage(1);
+      DATA.jump(1);
+    }
     const is_chargeable = e === 2 ? "free" : e === 3 ? "paid" : 0;
     setcourseStatus(e);
     HandleCourseGet("", {
@@ -63,6 +67,8 @@ export default function Courses() {
   const [row_per_page, set_row_per_page] = React.useState(12);
   let [page, setPage] = React.useState<any>(1);
   function handlerowchange(e: any) {
+    setPage(1);
+    DATA.jump(1);
     set_row_per_page(e.target.value);
   }
   const PER_PAGE = row_per_page;

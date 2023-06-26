@@ -162,10 +162,7 @@ export default function Profile() {
         firstName={getUserData?.first_name}
         lastName={getUserData?.last_name}
       />
-      <Box
-        className={styles.combineContentAndSidebar}
-        data-testid="step-1"
-      >
+      <Box className={styles.combineContentAndSidebar}>
         <SideBar />
 
         <Box className={styles.siteBodyContainer}>
@@ -242,6 +239,7 @@ export default function Profile() {
                             <Box className={profiles.userData}>
                               <Typography
                                 variant="subtitle1"
+                                data-testid="step1"
                                 className={profiles.useNameFront}
                               >
                                 {getUserData

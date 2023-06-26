@@ -12,16 +12,21 @@ import OndemandVideoIcon from "@mui/icons-material/OndemandVideo";
 import ImageOutlinedIcon from '@mui/icons-material/ImageOutlined';
 import PictureAsPdfOutlinedIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import ArticleOutlinedIcon from '@mui/icons-material/ArticleOutlined';
+import { string } from "yup";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 interface previewAttach {
-  name: string;
+  name: any;
   identifier?: string;
 }
-
 const Preview = ({ name, identifier }: previewAttach) => {
-  const extension = name?.split(".").pop();
+  let extension;
+  if (name && typeof name === "string") {
+    extension = name?.split(".").pop();
+  } else {
+    extension = name?.name?.split(".").pop();
+  }
   if (
     extension === "jpg" ||
     extension === "gif" ||

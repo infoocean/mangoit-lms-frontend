@@ -56,7 +56,6 @@ export const HandleCourseGetByID = async (courseId: any) => {
 };
 
 export const HandleCourseCreate = async (reqData: any) => {
-  console.log(reqData);
   return await axios({
     method: "POST",
     url: `${API.createCourse}`,
@@ -117,7 +116,7 @@ export const HandleCourseByCourseId = async (subId: any) => {
     });
 };
 
-export const HandleCourseDelete = async (rowID: any, title:any) => {
+export const HandleCourseDelete = async (rowID: any, title: any) => {
   return await axios({
     method: "DELETE",
     url: `${API.deleteCourse}/${rowID}`,

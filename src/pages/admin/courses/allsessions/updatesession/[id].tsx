@@ -325,16 +325,15 @@ export default function UpdateSession() {
                         {errors && errors.module_id ? ErrorShowing(errors?.module_id?.message) : ""}
                       </Grid>
                       <Grid item xs={12} sm={12} md={12} lg={12} mb={2}>
-                        <InputLabel className={Sessions.InputLabelFont}>Description</InputLabel>
-                        <Box className={Sessions.quillDescription}>
+                        <InputLabel className={Sessions.InputLabelFont}>Description</InputLabel>                    
                         <RichEditor
                           {...register("description")}
                           value={despcriptionContent ? despcriptionContent : getSession?.description}
                           onChange={(e) =>
                             handleContentChange(e, "description")
                           }
+                          className={Sessions.quillDescription2}
                         />
-                        </Box>
                         {errors && errors.description ? ErrorShowing(errors?.description?.message) : ""}
                         {/* {despcriptionContent ? '' : errors && errors.description ? ErrorShowing(errors?.description?.message) : ""} */}
                       </Grid>

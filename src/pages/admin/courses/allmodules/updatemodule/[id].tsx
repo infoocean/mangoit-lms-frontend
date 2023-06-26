@@ -79,12 +79,10 @@ export default function UpdateModule() {
     const id = router.query.id
     const reqData = { ...event, course_id: value?.id }
     if (errors.description?.message === '' || (typeof errors === 'object' && errors !== null)) {
-      setLoading(true);
       setLoadingButton(true)
       try {
         const res = await HandleModuleUpdate(id, reqData)
         getModuleData()
-        setLoading(false);
         setTimeout(() => {
           router.push('/admin/courses/allmodules/')
         }, 1000)
@@ -107,6 +105,7 @@ export default function UpdateModule() {
   const getModuleData = async () => {
     const id = router.query.id
     if (id) {
+      setLoading(true);
       HandleModuleGetByID(id).then((module) => {
         setModule(module.data)
         const fields = [
@@ -120,7 +119,7 @@ export default function UpdateModule() {
           HandleCourseGet('', '').then((courses) => {
             if (courses?.data.length > 0) {
               setCourses(courses.data)
-
+              setLoading(false);
               const findCourse = courses.data?.filter((item: any) => {
                 return item?.course?.id === module?.data?.course_id;
               });
@@ -262,14 +261,15 @@ export default function UpdateModule() {
                       </Grid>
                       <Grid item xs={12} sm={12} md={12} lg={12} mb={2}>
                         <InputLabel className={ModuleCss.InputLabelFont}>Description</InputLabel>
-                        <Box className={ModuleCss.quillDescription}>
-                        <RichEditor
-                          {...register("description")}
-                          value={getDespcriptionContent ? getDespcriptionContent : getModule?.description}
-                          onChange={(value) =>
-                            handleContentChange(value, "description")
-                          }
-                        />
+                        <Box>
+                          <RichEditor
+                            {...register("description")}
+                            value={getDespcriptionContent ? getDespcriptionContent : getModule?.description}
+                            onChange={(value) =>
+                              handleContentChange(value, "description")
+                            }
+                            className={ModuleCss.quillDescription2}
+                          />
                         </Box>
                         {errors && errors.description ? ErrorShowing(errors?.description?.message) : ""}
                       </Grid>

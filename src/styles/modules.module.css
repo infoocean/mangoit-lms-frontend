@@ -1,10 +1,6 @@
 .InputLabelFont{
     font-weight:700 !important;
 }
-.quillDescription > div > div {
-    height: 80px !important;
-    margin-bottom: 80px !important;
-  }
 .upperFilterBox{
     float: right !important;
     display: flex !important;
@@ -35,9 +31,17 @@
 }
 
 .quillDescription{
-width: 629px !important;
+width: 555px !important;
 }
-
+.quillDescription > div > div {
+    height: 80px !important;
+  }
+.quillDescription2{
+    width: 564px !important;
+    }
+.quillDescription2 > div > div {
+        height: 80px !important;
+}
 .inputFieldWidth{
     width:95% !important;
 }

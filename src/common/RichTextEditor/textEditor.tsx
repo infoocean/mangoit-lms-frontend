@@ -56,14 +56,15 @@ const formats = [
   // "video",
   "align",
   "clean",
-];
+];  
 
 interface RichEditor {
   value: string;
   onChange: (value: string) => void;
+  className?: any
 }
 
-const RichEditor: React.FC<RichEditor> = ({ value, onChange }) => {
+const RichEditor: React.FC<RichEditor> = ({ value, onChange,className }) => {
   return (
     <div>
       <QuillNoSSRWrapper
@@ -72,6 +73,7 @@ const RichEditor: React.FC<RichEditor> = ({ value, onChange }) => {
         modules={modules}
         formats={formats}
         theme="snow"
+        className={className}
       />
     </div>
   );

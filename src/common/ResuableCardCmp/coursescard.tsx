@@ -274,13 +274,13 @@ export function EnrolledCourseCard(props: any) {
     props?.coursedata?.course?.id ||
     props?.paidcourses?.course?.id ||
     props?.freecourses?.course?.id ||
-    props?.enrolledCourses.id;
+    props?.enrolledCourses?.id;
 
   let title =
     (props && props?.coursedata?.course?.title?.substring(0, 15)) ||
     props?.paidcourses?.course?.title?.substring(0, 15) ||
     props?.freecourses?.course?.title?.substring(0, 15) ||
-    props?.enrolledCourses.title?.substring(0, 15);
+    props?.enrolledCourses?.title?.substring(0, 15);
 
   return (
     <Link href={`/user/course/detail/${c_id}`}>
@@ -311,7 +311,7 @@ export function EnrolledCourseCard(props: any) {
                   capitalizeFirstLetter(
                     props?.coursedata?.course?.is_chargeable
                   ) ||
-                  capitalizeFirstLetter(props?.enrolledCourses.is_chargeable)}
+                  capitalizeFirstLetter(props?.enrolledCourses?.is_chargeable)}
               </Typography>
             </Box>
           </Box>

@@ -45,7 +45,7 @@ export default function Navbar({
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [orgLogo, setOrgLogo] = React.useState<string>("");
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-  React.useState<null | HTMLElement>(null);
+    React.useState<null | HTMLElement>(null);
   const [userData, setUserData] = React.useState<any>("");
   const { collapseSidebar, toggleSidebar, toggled } = useProSidebar();
   const isMenuOpen = Boolean(anchorEl);
@@ -53,33 +53,31 @@ export default function Navbar({
   const router = useRouter();
 
   React.useEffect(() => {
-    let localData: any,parseLocalData :any;
+    let localData: any, parseLocalData: any;
     if (typeof window !== "undefined") {
       localData = window.localStorage.getItem("userData");
     }
     if (localData) {
-      parseLocalData = JSON.parse(localData)
+      parseLocalData = JSON.parse(localData);
       setUserData(JSON.parse(localData));
     }
 
     handleGetSiteOptionsDataById(parseLocalData.id);
   }, []);
 
+  const handleGetSiteOptionsDataById = async (userId: any) => {
+    await HandleSiteGetByID(userId)
+      .then((res) => {
+        const hasOLOrOFOrT = res.data.filter(
+          (item: any) => item.key === "org_logo"
+        );
 
-  const handleGetSiteOptionsDataById = async (userId:any) => {
-    await HandleSiteGetByID(userId).then((res) => {
-
-      const hasOLOrOFOrT = res.data.filter(
-        (item: any) =>
-          item.key === "org_logo"
-      );
-  
-      setOrgLogo(hasOLOrOFOrT && hasOLOrOFOrT[0]?.value)
-    }).catch((err) => {
-      console.log(err)
-    });
-  
-    }
+        setOrgLogo(hasOLOrOFOrT && hasOLOrOFOrT[0]?.value);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
   const toggle = () => {
     toggleSidebar();
@@ -126,21 +124,39 @@ export default function Navbar({
       onClose={handleMenuClose}
     >
       {userData && userData?.role_id === 1 ? (
-        <MenuItem
-          onClick={() => {
-            router.push("/profile"), handleMenuClose();
-          }}
-        >
-          <Typography>Profile</Typography>
-        </MenuItem>
+        <React.Fragment>
+          <MenuItem
+            onClick={() => {
+              router.push("/profile"), handleMenuClose();
+            }}
+          >
+            <Typography>Profile</Typography>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              router.push("/"), handleMenuClose();
+            }}
+          >
+            <Typography>View Site</Typography>
+          </MenuItem>
+        </React.Fragment>
       ) : (
-        <MenuItem
-          onClick={() => {
-            router.push("/user/profile"), handleMenuClose();
-          }}
-        >
-          <Typography>Profile</Typography>
-        </MenuItem>
+        <React.Fragment>
+          <MenuItem
+            onClick={() => {
+              router.push("/user/profile"), handleMenuClose();
+            }}
+          >
+            <Typography>Profile</Typography>
+          </MenuItem>
+          <MenuItem
+            onClick={() => {
+              router.push("/"), handleMenuClose();
+            }}
+          >
+            <Typography>View Site</Typography>
+          </MenuItem>
+        </React.Fragment>
       )}
       <MenuItem onClick={HandleLogout}>
         <Typography>Logout</Typography>
@@ -175,6 +191,7 @@ export default function Navbar({
       </MenuItem>
 
       <MenuItem onClick={() => router.push("/profile")}>Profile</MenuItem>
+      <MenuItem onClick={() => router.push("/")}>View Site</MenuItem>
       <MenuItem onClick={HandleLogout}>
         <Typography>Logout</Typography>
       </MenuItem>
@@ -190,7 +207,9 @@ export default function Navbar({
               src={
                 portalData
                   ? BASE_URL + "/" + portalData?.org_logo
-                  : orgLogo ? BASE_URL + "/" + orgLogo : "/Images/pages_icon/company_logo.png"
+                  : orgLogo
+                  ? BASE_URL + "/" + orgLogo
+                  : "/Images/pages_icon/company_logo.png"
               }
               width={"180px"}
               height={"50px"}

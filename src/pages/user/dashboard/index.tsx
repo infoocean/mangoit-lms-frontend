@@ -131,7 +131,7 @@ export default function Dashboard() {
           </Box>
           {/* main content */}
           {!isLoading ? (
-            !subsData ? (
+            !subsData || subsData?.status !== "active" ? (
               <Fragment>
                 <Card>
                   <CardContent>

@@ -52,6 +52,7 @@ import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 // API Service
 import { HandleUserDelete, HandleUserGet } from "@/services/user";
 import { HandleModuleDelete, HandleModuleGet } from "@/services/module";
+import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 
 interface Column {
 	id: "id" | "first_name" | "last_name" | "email" | "role_id" | "status" | "action";
@@ -73,6 +74,7 @@ const columns: Column[] = [
 
 const AllUsers = () => {
 	const [rows, setRows] = React.useState<any>([]);
+	const [isLoading, setLoading] = React.useState<boolean>(false);
 	const [search, setSearch] = React.useState('');
 	const [toggle, setToggle] = React.useState<boolean>(false);
 	const [deleteRow, setDeleteRow] = React.useState<any>([])
@@ -103,9 +105,10 @@ const AllUsers = () => {
 	}, []);
 
 	const getUsereData = () => {
+		setLoading(true);
 		HandleUserGet('', '').then((users) => {
-			;
 			setRows(users.data);
+			setLoading(false);
 		})
 	}
 
@@ -177,7 +180,7 @@ const AllUsers = () => {
 								id="standard-search"
 								value={search}
 								variant="outlined"
-								placeholder="Search by 'User Name'"
+								placeholder="Search by 'Username'"
 								onChange={(e) => handleSearch(e, '')}
 								InputProps={{
 									endAdornment: (
@@ -270,7 +273,7 @@ const AllUsers = () => {
 																									Active
 																								</MenuItem>
 																								<MenuItem value={'inactive'}>
-																									In-active
+																									Inactive
 																								</MenuItem>
 																							</Select>
 																						</FormControl>
@@ -354,6 +357,7 @@ const AllUsers = () => {
 												))}
 											</TableRow>
 										</TableHead>
+
 										<TableBody>
 											{rows && rows.length > 0 ? DATA.currentData() &&
 												DATA.currentData()
@@ -378,7 +382,7 @@ const AllUsers = () => {
 																</TableCell>
 															</TableRow>
 														);
-													}) : <TableRow><TableCell colSpan={6} className={UserCss.tableLastCell}> <Typography>Record not Found</Typography> </TableCell></TableRow>}
+													}) : <TableRow><TableCell colSpan={7} className={UserCss.tableLastCell}> <SpinnerProgress /> </TableCell></TableRow>}
 										</TableBody>
 									</Table>
 									<Stack

@@ -11,13 +11,12 @@ import Navbar from "../../../../../common/LayoutNavigations/navbar";
 import RichEditor from "@/common/RichTextEditor/textEditor";
 import Preview from '@/common/PreviewAttachments/previewAttachment';
 // Helper Import
-import { Controller, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { sessionUpdateValidation } from '@/validation_schema/sessionValidation';
 import { LoadingButton } from "@mui/lab";
 import CircularProgressBar from '@/common/CircularProcess/circularProgressBar';
 import SpinnerProgress from '@/common/CircularProgressComponent/spinnerComponent';
-import { capitalizeFirstLetter } from '@/common/CapitalFirstLetter/capitalizeFirstLetter';
 // Types Import
 import { sessionType } from '@/types/sessionType';
 import { courseType } from '@/types/courseType';
@@ -52,7 +51,7 @@ export default function UpdateSession() {
     register,
     handleSubmit,
     reset,
-    setValue, getValues,
+    setValue,
     control,
     formState: { errors }, setError
   } = useForm<sessionType | any>({
@@ -68,11 +67,13 @@ export default function UpdateSession() {
     if (localData) {
       getSessionData(id);
     }
-  }, [router.query]);
+  }, []);
 
   const getSessionData = async (id: any) => {
     if (id) {
+      setLoading(true)
       HandleSessionGetByID(id).then((session) => {
+        setLoading(false)
         setSession(session.data)
         const fields = [
           "title",
@@ -81,7 +82,9 @@ export default function UpdateSession() {
           "description",
           "attachment"
         ];
+
         fields.forEach((field) => setValue(field, session.data[field]));
+
         if (session.data?.id > 0) {
           HandleCourseGet('', '').then((courses) => {
             setCourses(courses.data)
@@ -93,20 +96,12 @@ export default function UpdateSession() {
                 id: findCourse && findCourse[0]?.course?.id,
                 title: findCourse && findCourse[0]?.course?.title
               })
-              HandleModuleGet('', '').then((modules) => {
-                setModules(modules.data)
-                const findModule = modules.data?.filter((item: any) => {
-                  return item?.module?.id === session?.data?.module?.id;
-                });
-                setmdvalue({
-                  id: findModule && findModule[0]?.module?.id,
-                  title: findModule && findModule[0]?.module?.title
-                })
-              })
+              handleGetModules(session?.data?.course?.id)
 
             }
           })
         }
+
       }).catch((error) => {
           setErrors(error.message);
         });
@@ -116,7 +111,23 @@ export default function UpdateSession() {
     }
 
   }
-  // console.log('getvalue', getValues())
+
+  const handleGetModules = (courseId:any) => {
+ 
+    HandleModuleGet('', '').then((modules) => {
+                 
+      const findModule = modules.data?.filter((item: any) => {
+        return item?.module?.course_id === (typeof courseId === 'object' ? courseId.id : courseId);
+      });
+      setModules(findModule)
+      setmdvalue({
+        id: findModule && findModule[0]?.module?.id,
+        title: findModule && findModule[0]?.module?.title
+      })
+   
+    })
+  }
+
   const handleContentChange = (value: string, identifier: string) => {
     if (value === '<p><br></p>') {
       setError(identifier, { message: 'Description is a required field' });
@@ -144,19 +155,18 @@ export default function UpdateSession() {
       for (var key in reqData) {
         formData.append(key, reqData[key]);
       }
-
-      setLoading(true);
-      setLoadingButton(false)
+    
+      setLoadingButton(true)
       try {
         const res = await HandleSessionUpdate(id, formData)
         getSessionData(id)
-        setLoading(false);
+        setLoadingButton(false)
         setTimeout(() => {
           router.push('/admin/courses/allsessions/')
         }, 1000)
       } catch (e) {
         console.log(e)
-        setLoadingButton(true)
+        setLoadingButton(false)
       }
     } else {
       setError('description', { message: 'Description is a required field' });
@@ -226,7 +236,7 @@ export default function UpdateSession() {
           {/* main content */}
           <Card>
             <CardContent>
-              {!isLoading ?
+              {!isLoading && getModules && getSession && getCourses?
                 <Box
                   component="form"
                   method="POST"
@@ -236,7 +246,7 @@ export default function UpdateSession() {
                   onReset={reset}
                 >
                   <Grid container spacing={2}>
-                    <Grid item xs={12} sm={12} md={12} lg={6} >
+                    <Grid item xs={12} sm={12} md={12} lg={6} mt={14}>
                       <Box component="img" src="/Images/sideImages/update_section.svg" width={'100%'} />
                     </Grid>
 
@@ -252,6 +262,8 @@ export default function UpdateSession() {
                             {...register("title")}
                             value={updateSession.title}
                             onChange={handleUpdate}
+                            className={Sessions.inputFieldWidth}
+
                           />
                           {errors && errors.title
                             ? ErrorShowing(errors?.title?.message)
@@ -265,6 +277,7 @@ export default function UpdateSession() {
                             inputValue={inputValue}
                             onChange={(event, newValue) => {
                               setNewValue(newValue);
+                              handleGetModules(newValue);
                             }}
                             onInputChange={(event, newInputValue) => {
                               setInputValue(newInputValue);

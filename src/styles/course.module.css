@@ -24,8 +24,23 @@
   height: 80px !important;
   margin-bottom: 80px !important;
 }
+
+.quillShortDescription{
+  width: 624px !important
+}
+
+.quillDescription{
+  width: 624px !important
+}
+
+.quillDescription1 {
+  width: 633px !important
+}
+
 .quillDescription > div > div {
   height: 80px !important;
+  /* width: 633px !important */
+
 }
 .quillDescription1 > div > div {
   height: 80px !important;

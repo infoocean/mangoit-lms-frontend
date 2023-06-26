@@ -4,6 +4,7 @@ import axios from "axios"
 import { toast } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css";
 import { HandleLogout } from "./auth"
+import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 
   export const HandleModuleGet = async(searchData:any,filterData:any) =>{
     const API_URL = searchData ? `${API.getAllModules}/${searchData}` : `${API.getAllModules}`
@@ -85,14 +86,14 @@ import { HandleLogout } from "./auth"
 
 
 
-  export const HandleModuleDelete = async (rowID: any) => {
+  export const HandleModuleDelete = async (rowID: any, title:any) => {
     return await axios({
       method: "DELETE",
       url: `${API.deleteModule}/${rowID}`,
       headers: LoginHeader(),
     })
       .then((request) => {
-        toast.success("Module Deleted Successfully");
+        toast.success(capitalizeFirstLetter(`${title} deleted Successfully`));
         return request;
       })
       .catch((error) => {

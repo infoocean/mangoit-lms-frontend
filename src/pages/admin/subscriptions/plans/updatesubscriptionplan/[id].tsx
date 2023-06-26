@@ -140,10 +140,11 @@ const {id} = router.query;
                         component="img"
                         src="/Images/sideImages/update_section.svg"
                         width={"85%"}
+                    
                         />
                     </Grid>
 
-                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <Grid item xs={12} sm={12} md={6} lg={6} mt={5}>
                       <Typography
                         className={Subscription.InputLabelFont}
                         mb={3}
@@ -151,15 +152,17 @@ const {id} = router.query;
                       >
                         UPDATE SUBSCRIPTION PLAN
                       </Typography>
+                      <Grid item xs={12} sm={12} md={12} lg={12} className={Subscription.subsplanNameGride} mt={5}>
 
-                        <Grid item xs={12} sm={12} md={12} lg={12} mb={2}>
+                        <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
                           <InputLabel className={Subscription.InputLabelFont}>
                             Subscription Title
                           </InputLabel>
                           <TextField
                             placeholder="Subscription Title"
                             {...register("title")}
-                            fullWidth
+                            className={Subscription.inputFieldWidth}
+
                           />
                           {errors && errors.title
                             ? ErrorShowing(errors?.title?.message)
@@ -167,7 +170,7 @@ const {id} = router.query;
                         </Grid>
 
                         
-                        <Grid item xs={12} sm={12} md={12} lg={12} mb={2}>
+                        <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
                           <InputLabel className={Subscription.InputLabelFont}>
                             Duration Term
                           </InputLabel>
@@ -177,7 +180,8 @@ const {id} = router.query;
                             defaultValue="month"
                             
                             render={({ field }) => (
-                              <FormControl fullWidth>
+                              <FormControl                           className={Subscription.inputFieldWidth}
+                              >
                                 <Select {...field} value={durationTerm} onChange={e => handleDurationTerm(e)}displayEmpty>
                                   <MenuItem value={"week"}>Week</MenuItem>
                                   <MenuItem value={"month"}>Month</MenuItem>
@@ -190,8 +194,10 @@ const {id} = router.query;
                             ? ErrorShowing(errors?.duration_term?.message)
                             : ""}
                         </Grid>
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12} className={Subscription.subsplanNameGride} >
 
-                        <Grid item xs={12} sm={12} md={12} lg={12} mb={2}>
+                        <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
                           <InputLabel className={Subscription.InputLabelFont}>
                             Duration Value
                           </InputLabel>
@@ -199,13 +205,14 @@ const {id} = router.query;
                           type="number"
                             placeholder="Duration Value"
                             {...register("duration_value")}
-                            fullWidth
+                            className={Subscription.inputFieldWidth}
+
                           />
                           {errors && errors.duration_value
                             ? ErrorShowing(errors?.duration_value?.message)
                             : ""}
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} mb={2}>
+                        <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
                           <InputLabel className={Subscription.InputLabelFont}>
                             Price
                           </InputLabel>
@@ -216,11 +223,13 @@ const {id} = router.query;
                                 startAdornment: <InputAdornment position="start">$</InputAdornment>,
                               }}
                             {...register("amount")}
-                            fullWidth
+                            className={Subscription.inputFieldWidth}
+
                           />
                           {errors && errors.amount
                             ? ErrorShowing(errors?.amount?.message)
                             : ""}
+                        </Grid>
                         </Grid>
                       
                       <Grid

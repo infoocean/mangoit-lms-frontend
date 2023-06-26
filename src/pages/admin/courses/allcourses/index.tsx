@@ -48,6 +48,7 @@ import { AlertDialog } from "@/common/DeleteListRow/deleteRow";
 import { Controller, useForm } from "react-hook-form";
 import { handleSortData } from "@/common/Sorting/sorting";
 import { ToastContainer } from "react-toastify";
+import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 
 interface Column {
   id: "id" | "title" | "module" | "session" | "is_chargeable" | "status" | "action";
@@ -60,8 +61,8 @@ interface Column {
 const columns: Column[] = [
   { id: "id", label: "ID", },
   { id: "title", label: "COURSE NAME", minWidth: 170 },
-  { id: "module", label: "NO. MODULE", minWidth: 100 },
-  { id: "session", label: "NO. SESSION", minWidth: 100 },
+  { id: "module", label: "NO. OF MODULE", minWidth: 100 },
+  { id: "session", label: "NO. OF SESSION", minWidth: 100 },
   { id: "is_chargeable", label: "TYPE", minWidth: 100 },
   { id: "status", label: "STATUS", minWidth: 100 },
   { id: "action", label: "ACTION", minWidth: 100 },
@@ -115,7 +116,7 @@ const AllCourses = () => {
   }
   // to delete a row
   const handleDeletesRow = () => {
-    HandleCourseDelete(deleteRow.id).then((deletedRow) => {
+    HandleCourseDelete(deleteRow?.id, deleteRow?.title).then((deletedRow) => {
       HandleCourseGet('', filterObject).then((newRows) => {
         setRows(newRows.data)
       })
@@ -265,7 +266,7 @@ const AllCourses = () => {
                                                   Active
                                                 </MenuItem>
                                                 <MenuItem value={'inactive'}>
-                                                  In-active
+                                                  Inactive
                                                 </MenuItem>
                                               </Select>
                                             </FormControl>
@@ -286,7 +287,7 @@ const AllCourses = () => {
                                           variant="contained"
                                           color="primary"
                                           type="button"
-                                          onClick={resetFilterValue}
+                                          onClick={() => { resetFilterValue(); popupState.close() }}
                                         >
                                           Reset
                                         </Button>
@@ -372,7 +373,7 @@ const AllCourses = () => {
                                 </TableCell>
                               </TableRow>
                             );
-                          }) : <TableRow><TableCell colSpan={7} className={courseStyle.tableLastCell}><Typography> Record not Found </Typography> </TableCell></TableRow>}
+                          }) : <TableRow><TableCell colSpan={7} className={courseStyle.tableLastCell}> <SpinnerProgress /> </TableCell></TableRow>}
                     </TableBody>
                   </Table>
                   <Stack

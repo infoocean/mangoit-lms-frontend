@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { HandleLogout } from "./auth";
+import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 
 export const HandleSessionCreate = async (reqData: any) => {
   return await axios({
@@ -90,14 +91,14 @@ export const HandleSessionUpdate = async (sessionId: any, updateData: any) => {
     });
 };
 
-export const HandleSessionDelete = async (rowID: any) => {
+export const HandleSessionDelete = async (rowID: any, title?:any) => {
   return await axios({
     method: "DELETE",
     url: `${API.deleteSession}/${rowID}`,
     headers: LoginHeader(),
   })
     .then((request) => {
-      toast.success("Session Deleted Successfully");
+      toast.success(capitalizeFirstLetter(`${title} deleted Successfully`));
       return request;
     })
     .catch((error) => {

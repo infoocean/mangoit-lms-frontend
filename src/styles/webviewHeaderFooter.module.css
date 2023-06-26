@@ -1,27 +1,27 @@
 .appBarCss {
-  background: #fff  !important;
-  color: #000  !important;
-  box-shadow: 0 1px 1px 0 rgba(136, 133, 133, 0.2)  !important;
-  border-bottom: 1.2px solid #0000001f  !important;
+  background: #fff !important;
+  color: #000 !important;
+  box-shadow: 0 1px 1px 0 rgba(136, 133, 133, 0.2) !important;
+  border-bottom: 1.2px solid #0000001f !important;
 }
 .appBarToolbarCss {
-  min-height: 85px  !important;
+  min-height: 85px !important;
 }
 .windowFullWidthNameAlign {
-  margin: 12px 0px 12px 60px  !important;
-  font-size: 17px  !important;
+  margin: 12px 0px 12px 60px !important;
+  font-size: 17px !important;
 }
 .windowFullWidthNameAlign:hover {
-  color: #e8661b  !important;
+  color: #e8661b !important;
   cursor: pointer !important;
   transition: 0.3s !important;
 }
 
 .appBarFooterCss {
-  background: #1976d214  !important;
-  color: #000  !important;
+  background: #1976d214 !important;
+  color: #000 !important;
   box-shadow: 0 1px 1px 0 rgba(136, 133, 133, 0.2) !important;
-  border-bottom: 1.2px solid #0000001f  !important;
+  border-bottom: 1.2px solid #0000001f !important;
 }
 .appBarFooterToolbarCss {
   justify-content: center !important;
@@ -31,12 +31,12 @@
 }
 
 .windowFullWidthNameAlignfooter {
-  margin: 12px 0px 12px 60px  !important;
+  margin: 12px 0px 12px 60px !important;
   font-size: 14px !important;
 }
 
 .windowFullWidthNameAlignfooters {
-  margin: 12px 0px 12px 60px  !important;
+  margin: 12px 0px 12px 60px !important;
   font-size: 14px !important;
 }
 
@@ -46,4 +46,8 @@
   transition: 0.3s !important;
 }
 
-
+.windowFullWidthAvatar {
+  width: 35px !important;
+  height: 35px !important;
+  margin-top: -2px !important;
+}

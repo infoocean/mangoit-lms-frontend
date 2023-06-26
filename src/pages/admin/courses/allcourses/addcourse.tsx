@@ -40,6 +40,8 @@ import { HandleCourseCreate } from "@/services/course";
 import { useRouter } from "next/router";
 import CircularProgressBar from "@/common/CircularProcess/circularProgressBar";
 import { LoadingButton } from "@mui/lab";
+import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
+
 import LocalLibraryIcon from '@mui/icons-material/LocalLibrary';
 import PlaylistAddIcon from '@mui/icons-material/PlaylistAdd';
 import CloseIcon from '@mui/icons-material/Close';
@@ -80,6 +82,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
 const AddCourse = () => {
   const [shortDespcriptionContent, setShortDespcriptionContent] = useState("");
   const [despcriptionContent, setdespcriptionContent] = useState("");
+  const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
   const router: any = useRouter();
   const [imagefile, setImageFile] = useState<string | any>('')
   const [videofile, setVideoFile] = useState<string | any>('')
@@ -293,8 +296,8 @@ const AddCourse = () => {
           />
           {/* main content */}
           <Card>
-            <CardContent>
-              <Box
+            <CardContent>        
+             <Box
                 component="form"
                 method="POST"
                 noValidate
@@ -303,7 +306,7 @@ const AddCourse = () => {
                 onReset={reset}
               >
                 <Grid container spacing={5}>
-                  <Grid item xs={12} sm={12} md={12} lg={6}>
+                  <Grid item xs={12} sm={12} md={12} lg={6} mt={6}>
                     <Box
                       component="img"
                       src="/Images/sideImages/add_section.svg"
@@ -520,7 +523,7 @@ const AddCourse = () => {
                     </Grid>
                   </Grid>
                 </Grid>
-              </Box>
+              </Box>            
             </CardContent>
           </Card>
         </Box>

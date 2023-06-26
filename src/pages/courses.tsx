@@ -16,7 +16,6 @@ import Typography from "@mui/material/Typography";
 import WebViewNavbar from "@/common/LayoutNavigations/webviewnavbar";
 import WebViewFooter from "@/common/LayoutNavigations/webviewfooter";
 import styles from "../styles/webview.module.css";
-import style from "../styles/webview.module.css";
 import GridViewIcon from "@mui/icons-material/GridView";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
 import { HandleCourseGet } from "@/services/course";
@@ -88,27 +87,15 @@ export default function Courses() {
       {/*header*/}
       <WebViewNavbar />
       {/*Landing page carousel*/}
-      {/* <Paper
-        sx={{
-          // position: "relative",
-          backgroundColor: "grey.800",
-          color: "#fff",
-          // backgroundSize: "cover",
-          backgroundRepeat: "no-repeat",
-          // backgroundPosition: "center",
-          backgroundImage: `url(${landingpagecontent.image})`,
-        }}
-        className={styles.coursebanner}
-      ></Paper> */}
       <Box>
-        <Container maxWidth={false}>
+        <Container maxWidth={false} className={styles.imgwidthcss}>
           <Grid>
             <Image
-              src="/Images/sideImages/banner7.jpg"
+              src="/Images/sideImages/courseBanner1.jpg"
               alt="image"
               width={100}
-              height={200}
-              className={style.imagecssbanner}
+              height={300}
+              className={styles.imagecssbanner}
             />
           </Grid>
         </Container>
@@ -141,30 +128,22 @@ export default function Courses() {
                 </Stack>
               </Grid>
               <Grid item xs={12} md={6} lg={3} className={styles.gridbtn}>
-                <Stack spacing={1} className={style.gridicon}>
-                  <IconButton className={style.actionview1} onClick={gridView}>
+                <Stack spacing={1} className={styles.gridicon}>
+                  <IconButton className={styles.actionview1} onClick={gridView}>
                     <GridViewIcon
                       className={
-                        dynamicCss === 1 ? style.gridColor : style.iconColor
+                        dynamicCss === 1 ? styles.gridColor : styles.iconColor
                       }
                     />
                   </IconButton>
-                  <IconButton className={style.actionview2} onClick={listView}>
+                  <IconButton className={styles.actionview2} onClick={listView}>
                     <FormatListBulletedIcon
                       className={
-                        dynamicCss === 2 ? style.gridColor : style.iconColor
+                        dynamicCss === 2 ? styles.gridColor : styles.iconColor
                       }
                     />
                   </IconButton>
                 </Stack>
-                {/* <Stack spacing={1} className={styles.gridicon}>
-                  <IconButton className={styles.actionview} onClick={gridView}>
-                    <GridViewIcon />
-                  </IconButton>
-                  <IconButton className={styles.actionview} onClick={listView}>
-                    <FormatListBulletedIcon />
-                  </IconButton>
-                </Stack> */}
               </Grid>
             </Grid>
           </Grid>

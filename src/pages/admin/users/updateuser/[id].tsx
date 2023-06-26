@@ -128,10 +128,10 @@ export default function UpdateUser() {
                       <Box component="img" src="/Images/sideImages/update_section.svg" width={'100%'} />
                     </Grid>
 
-                    <Grid item xs={12} sm={12} md={12} lg={6} mt={10}>
-                      <Typography className={UserCSS.InputLabelFont} mb={1}>EDIT USER</Typography>
+                    <Grid item xs={12} sm={12} md={12} lg={6}>
+                      <Typography className={UserCSS.InputLabelFont} mb={1} mt={5}>EDIT USER</Typography>
 
-                      <Grid item xs={12} sm={12} md={12} lg={12} className={UserCSS.sessionNameGride} >
+                      <Grid item xs={12} sm={12} md={12} lg={12} className={UserCSS.sessionNameGride} mt={5}>
                         <Grid item xs={12} sm={12} md={6} lg={6}>
                           <InputLabel className={UserCSS.InputLabelFont}>
                             First Name
@@ -141,6 +141,7 @@ export default function UpdateUser() {
                             value={rows?.first_name}
                             onChange={handleUpdate}
                             placeholder="First Name"
+                            className={UserCSS.inputFieldWidth}
                           />
                           {errors && errors.first_name
                             ? ErrorShowing(errors?.first_name?.message)
@@ -156,6 +157,7 @@ export default function UpdateUser() {
                             placeholder="Last Name"
                             {...register("last_name")}
                             onChange={handleUpdate}
+                            className={UserCSS.inputFieldWidth}
                           />
                           {errors && errors.last_name
                             ? ErrorShowing(errors?.last_name?.message)
@@ -166,13 +168,14 @@ export default function UpdateUser() {
                       <Grid item xs={12} sm={12} md={12} lg={12} className={UserCSS.sessionNameGride} >
                         <Grid item xs={12} sm={12} md={6} lg={6}>
                           <InputLabel className={UserCSS.InputLabelFont}>
-                            Email Id
+                            Email
                           </InputLabel>
                           <TextField
                             value={rows?.email}
                             placeholder="Email Id"
                             {...register("email")}
                             onChange={handleUpdate}
+                            className={UserCSS.inputFieldWidth}
                           />
                           {errors && errors.email
                             ? ErrorShowing(errors?.email?.message)
@@ -187,7 +190,7 @@ export default function UpdateUser() {
                             defaultValue={rows?.role_id || ""}
                             render={({ field }) => (
                               <FormControl fullWidth>
-                                <Select {...field} displayEmpty>
+                                <Select {...field} displayEmpty   className={UserCSS.inputFieldWidth}>
                                   <MenuItem value={1}>
                                     Admin
                                   </MenuItem>

@@ -51,7 +51,7 @@ export default function Profile() {
 	const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
 	const [getUserData, setUserData] = useState<userType | null>(null);
 	const [toggle, setToggle] = useState<boolean>(false);
-	// const [userRole, setUserRole] = useState<any >([]);
+	const [adminUser, setAdminUser] = useState<string | any>('')
 
 	const {
 		register,
@@ -88,7 +88,8 @@ export default function Profile() {
 				setTimeout(() => {
 					setToggle(!toggle);
 					getProfileData(res.data.id);
-				}, 900);
+				}, 1000);
+				setLoadingButton(false)
 			})
 			.catch((err) => {
 				console.log(err);
@@ -107,11 +108,11 @@ export default function Profile() {
 				"first_name",
 				"last_name",
 				"email",
-				
+				"role_id",
 				"profile_pic",
 			];
 			fields.forEach((field) => setValue(field, user.data[field]));
-			setValue("role_id",user.data['role_id'] === "1" ? "Admin" : "Learner")
+			// setValue("role_id",user.data['role_id'] === "1" ? "Admin" : "Learner")
 			setLoading(false);
 			if (typeof window !== "undefined") {
 				localData1 = window.localStorage.getItem("userData");
@@ -161,13 +162,27 @@ export default function Profile() {
 		}
 	}
 
-	const userRoles = [1,2]
-	const filterRole = userRoles.filter(role => role !== getUserData?.role_id)
-	console.log('filterRole',filterRole && filterRole.includes(2) ? 'learner ' : 'admin')
+	// const userRoles = [1, 2]
+	// const filterRole = userRoles.filter(role => role !== getUserData?.role_id)
+	// let roleId = filterRole[0]
+
+	// const changeRole = (e: any) => {
+	// 	if (e.target.value === 1) {
+	// 		console.log("@@@@@@@@@Admin")
+	// 		setAdminUser("Admin")
+
+	// 	} else {
+	// 		console.log("@@@@@@@@@Lreearenerr")
+	// 		setAdminUser("Learner")
+	// 	}
+	// }
 
 	return (
 		<>
-			<Navbar profilePic={getUserData?.profile_pic} />
+			<Navbar profilePic={getUserData?.profile_pic}
+				firstName={getUserData?.first_name}
+				lastName={getUserData?.last_name}
+			/>
 			<Box className={styles.combineContentAndSidebar}>
 				<SideBar />
 
@@ -244,11 +259,11 @@ export default function Profile() {
 
 														<IconButton onClick={handleEdit}>
 															<EditIcon
-															 className={
-																toggle && toggle
-																	? profiles.editiconbtnn
-																	: ""
-															}
+																className={
+																	toggle && toggle
+																		? profiles.editiconbtnn
+																		: ""
+																}
 															></EditIcon>
 														</IconButton>
 													</Box>
@@ -305,17 +320,26 @@ export default function Profile() {
 											<Grid item xs={12} sm={12} md={6} lg={6}>
 												<FormControl fullWidth>
 													<InputLabel>Role </InputLabel>
-													
+
 													<Select
 														label="Role"
 														{...register("role_id")}
 														defaultValue={getUserData.role_id}
 														disabled={!toggle}
+													// onChange={changeRole}
 													>
-													{/* <MenuItem value={filterRole && filterRole[0]}>{filterRole && filterRole.includes(2) ? 'Learner ' : 'Admin'}</MenuItem> */}
-													<MenuItem value={1}>Admin</MenuItem>
-													<MenuItem value={2}>Learner</MenuItem>
-												
+														<MenuItem value={1}>Admin</MenuItem>
+														<MenuItem value={2}>Learner</MenuItem>
+														{/* <MenuItem value={1}>Admin</MenuItem> 
+                               <MenuItem value={2}>Learner</MenuItem>  */}
+														{/* <MenuItem value={roleId}>{roleName}</MenuItem> */}
+
+														{/* <MenuItem value={filterRole && filterRole[0]}>{filterRole && filterRole.includes(2) ? 'Learner ' : 'Admin'}</MenuItem> */}
+														{/* {console.log(getUserData.role_id,"first",adminUser)} */}
+														{/* {getUserData.role_id === 1 ? < MenuItem value={getUserData.role_id}></MenuItem>:< MenuItem value={2}></MenuItem>}
+														< MenuItem value={1}>Admin</MenuItem>
+														{adminUser === "Admin" ? <MenuItem value={1}>Admin</MenuItem> : <MenuItem value={2}>Learner</MenuItem>}															// adminUser === "Admin" ? <MenuItem value={2}>Learner</MenuItem> : <MenuItem value={1}>Admin</MenuItem> :""} */}
+
 													</Select>
 												</FormControl>
 											</Grid>

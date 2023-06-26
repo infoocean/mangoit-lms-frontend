@@ -10,11 +10,11 @@ export const courseValidations = Yup.object().shape({
     is_chargeable: 
         Yup.string().required('Type is a required field'),
     short_description:
-        Yup.string().required('Short description must be between 250 to 500 characters')
+        Yup.string().required('Short description is a required field')
         .min(257,"Short description must be between 250 to 500 characters")
         .max(507,"Short description must be between 250 to 500 characters"),
     long_description:
-        Yup.string().required('Long description must be between 500 to 1000 characters')
+        Yup.string().required('Long description is a required field')
         .min(507,"Long description must be between 500 to 1000 characters")
         .max(1007,"Long description must be between 500 to 1000 characters"),
 });

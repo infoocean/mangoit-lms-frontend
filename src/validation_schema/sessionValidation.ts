@@ -10,7 +10,7 @@ export const sessionValidations = Yup.object().shape({
     module_id:
         Yup.string().required('Module is required field'),
     description:
-        Yup.string().required('Description must be between 250 to 500 characters')
+        Yup.string().required('Description is required field')
             .min(257, "Description must be between 250 to 500 characters")
             .max(507, "Description must be between 250 to 500 characters"),
     file:
@@ -27,7 +27,7 @@ export const sessionUpdateValidation = Yup.object().shape({
     module_id:
         Yup.string().required('Module is required field'),
     description:
-        Yup.string().required('Description must be between 250 to 500 characters')
+        Yup.string().required('Description is required field')
             .min(257, "Description must be between 250 to 500 characters")
             .max(507, "Description must be between 250 to 500 characters"),
 })

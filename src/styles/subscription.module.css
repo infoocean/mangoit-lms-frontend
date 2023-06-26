@@ -226,3 +226,10 @@
   text-align: center;
   margin-top: 5%;
 }
+.inputFieldWidth{
+  width:95% !important;
+}
+.subsplanNameGride {
+  display: flex !important;
+  margin-bottom: 5px !important;
+}

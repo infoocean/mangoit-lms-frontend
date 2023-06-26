@@ -33,6 +33,15 @@
     margin: 20px;
     /* height: 150px; */
 }
+
+.quillDescription{
+width: 629px !important;
+}
+
+.inputFieldWidth{
+    width:95% !important;
+}
+
 .sessionAttachments{
     padding: 10px 33px !important;
     width: fit-content !important;

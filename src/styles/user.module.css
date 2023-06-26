@@ -124,6 +124,10 @@ width: 70% !important;
 .draftClassColor{
     color: orange !important;
 }
+
+.inputFieldWidth{
+    width:95% !important;
+}
 /*---------   update module css  */
 .courseNameGride{
     display: flex; 

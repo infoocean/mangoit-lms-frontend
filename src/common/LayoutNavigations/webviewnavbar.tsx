@@ -5,7 +5,7 @@ import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
-import { Container, Typography } from "@mui/material";
+import { Avatar, Container, Typography } from "@mui/material";
 import { useRouter } from "next/router";
 import styles from "../../styles/webviewHeaderFooter.module.css";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -13,6 +13,18 @@ import Link from "next/link";
 import { capitalizeFirstLetter } from "../CapitalFirstLetter/capitalizeFirstLetter";
 import { AccountCircle, Margin } from "@mui/icons-material";
 import { HandleLogout } from "@/services/auth";
+import { BASE_URL } from "@/config/config";
+
+function stringAvatar(first_name: string, last_name: string) {
+  return {
+    sx: {
+      bgcolor: "#e8661b",
+    },
+    children: `${capitalizeFirstLetter(
+      first_name?.split(" ")[0][0]
+    )}${capitalizeFirstLetter(last_name?.split(" ")[0][0])}`,
+  };
+}
 
 export default function WebViewNavbar() {
   const [userData, setUserData] = React.useState<any>("");
@@ -71,7 +83,6 @@ export default function WebViewNavbar() {
       open={isMobileMenuOpen}
       onClose={handleMobileMenuClose}
       sx={{ marginTop: "25px !important" }}
-
     >
       <MenuItem onClick={() => router.push("/")}>
         <Typography
@@ -105,7 +116,17 @@ export default function WebViewNavbar() {
               onClick={handleMenu}
               color="inherit"
             >
-              <AccountCircle />
+              {/* <AccountCircle /> */}
+              <Avatar
+                src={
+                  userData && userData?.profile_pic !== null
+                    ? `${BASE_URL}/${userData?.profile_pic}`
+                    : "/"
+                }
+                {...stringAvatar(userData?.first_name, userData?.last_name)}
+                alt={userData && userData?.first_name}
+                className={styles.windowFullWidthAvatar}
+              />
             </IconButton>
           </Typography>
         ) : (
@@ -122,6 +143,7 @@ export default function WebViewNavbar() {
       </MenuItem>
     </Menu>
   );
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" className={styles.appBarCss}>
@@ -180,7 +202,20 @@ export default function WebViewNavbar() {
                     onClick={handleMenu}
                     color="inherit"
                   >
-                    <AccountCircle />
+                    {/* <AccountCircle /> */}
+                    <Avatar
+                      src={
+                        userData && userData?.profile_pic !== null
+                          ? `${BASE_URL}/${userData?.profile_pic}`
+                          : "/"
+                      }
+                      {...stringAvatar(
+                        userData?.first_name,
+                        userData?.last_name
+                      )}
+                      alt={userData && userData?.first_name}
+                      className={styles.windowFullWidthAvatar}
+                    />
                   </IconButton>
                   <Menu
                     id="menu-appbar"

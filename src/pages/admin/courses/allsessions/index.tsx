@@ -58,6 +58,7 @@ import { HandleSessionDelete, HandleSessionGet } from "@/services/session";
 import { HandleCourseGet } from "@/services/course";
 import { HandleModuleGet } from "@/services/module";
 import { AlertDialog } from "@/common/DeleteListRow/deleteRow";
+import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 
 interface Column {
   id: "id" | "title" | "course_id" | "module_id" | "is_deleted" | "action";
@@ -172,7 +173,7 @@ const AllSession = () => {
   };
   // to delete a row
   const handleDeletesRow = () => {
-    HandleSessionDelete(deleteRow.id).then((deletedRow) => {
+    HandleSessionDelete(deleteRow.id, deleteRow.title).then((deletedRow) => {
       HandleSessionGet('', '').then((newRows) => {
         setRows(newRows.data)
       })
@@ -372,7 +373,7 @@ const AllSession = () => {
                                                   Active
                                                 </MenuItem>
                                                 <MenuItem value={'inactive'}>
-                                                  In-active
+                                                  Inactive
                                                 </MenuItem>
                                               </Select>
                                             </FormControl>
@@ -392,7 +393,7 @@ const AllSession = () => {
                                           variant="contained"
                                           color="primary"
                                           type="button"
-                                          onClick={resetFilterValue}
+                                          onClick={() => { resetFilterValue(); popupState.close() }}
                                         >
                                           Reset
                                         </Button>
@@ -479,7 +480,7 @@ const AllSession = () => {
                               </TableRow>
                             );
                           })
-                        : <TableRow><TableCell colSpan={6} className={Sessions.tableLastCell}> <Typography>Record not Found</Typography> </TableCell></TableRow>}
+                        : <TableRow><TableCell colSpan={6} className={Sessions.tableLastCell}> <SpinnerProgress /> </TableCell></TableRow>}
                     </TableBody>
                   </Table>
                   <Stack

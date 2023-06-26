@@ -25,7 +25,7 @@ const BreadcrumbsHeading: FC<breadcrumbsVariableTypes> = (props): any => {
             <Link
               key="2"
               color="inherit"
-              href={`${FRONTEND_BASE_URL}${props.Link}`}
+              href={`/${props.Link}`}
               style={{ color: "#7D86A5", textDecoration: "none" }}
             >
               {props.Middle}

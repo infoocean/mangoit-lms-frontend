@@ -123,7 +123,7 @@ export default function AddSubscription() {
                     <Grid item xs={12} sm={12} md={12} lg={6}>
                       <Box
                         component="img"
-                        src="/Images/pages/addFeature.jpg"
+                        src="/Images/sideImages/add_section.svg"
                         width={"100%"}
                       />
                     </Grid>

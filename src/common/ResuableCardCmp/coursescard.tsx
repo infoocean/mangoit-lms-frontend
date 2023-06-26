@@ -14,6 +14,7 @@ import {
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HandleCourseGet } from "@/services/course";
+import CheckIcon from "@mui/icons-material/Check";
 
 export function CourseCard(props: any) {
   const c_id =
@@ -43,7 +44,7 @@ export function CourseCard(props: any) {
               <Typography className={styles.h2}>
                 {title && title?.length < 15
                   ? capitalizeFirstLetter(title)
-                  : capitalizeFirstLetter(title)+"..."}
+                  : capitalizeFirstLetter(title) + "..."}
               </Typography>
               <Typography className={styles.h5}>
                 Type :{" "}
@@ -188,55 +189,81 @@ export function SubscribtionPanCard(props: any) {
     });
   };
   return (
-    <Grid item xs={12} md={6}>
-      <center>
-        <Box className={styles.subcarticle}>
-          <CardHeader title={`${props?.subsdata?.title}`}></CardHeader>
-          <CardContent>
-            <Box px={1}>
-              <Typography variant="h3" component="h2" gutterBottom={true}>
-                ${props?.subsdata?.amount}/
-                <Typography variant="h6" color="textSecondary" component="span">
-                  per {props?.subsdata?.duration_term}
-                </Typography>
-              </Typography>
-              <Typography
-                color="textSecondary"
-                variant="subtitle1"
-                component="p"
-              >
-                {totalcrscount} Courses
-              </Typography>
-              <Typography
-                color="textSecondary"
-                variant="subtitle1"
-                component="p"
-                mt={2}
-              >
-                {totalmodulecount} Modules
-              </Typography>
-              <Typography
-                color="textSecondary"
-                variant="subtitle1"
-                component="p"
-                mt={2}
-              >
-                {totalsessionscount} Sessions
-              </Typography>
-            </Box>
-            <Box px={1} mt={2}>
-              <Link href={`/checkout/${props?.subsdata?.id}`}>
-                <Button
-                  variant="contained"
-                  id={styles.muibuttonBackgroundColor}
+    <Grid item lg={5}>
+      <Box className={styles.subcarticle} textAlign={"center"}>
+        <CardHeader
+          className={styles.cardheadingg}
+          title={`${capitalizeFirstLetter(props?.subsdata?.title)}`}
+        ></CardHeader>
+        <CardContent>
+          <Box px={1}>
+            <Typography variant="h3" component="h2" gutterBottom={true}>
+              <sup className={styles.supcss}>$</sup>
+              {props?.subsdata?.amount}
+              <sub className={styles.subcss}>
+                /per {props?.subsdata?.duration_term}
+              </sub>
+            </Typography>
+            <Box sx={{ padding: "0 67px 0 80px" }}>
+              <Box className={styles.displayBox}>
+                <CheckIcon className={styles.righticoncss} />{" "}
+                <Typography
+                  color="textSecondary"
+                  variant="subtitle1"
+                  component="p"
+                  align="left"
+                  className={styles.divfont}
                 >
-                  Subscribe Now
-                </Button>
-              </Link>
+                  All features in {props?.subsdata?.title}
+                </Typography>
+              </Box>
+              <Box className={styles.displayBox}>
+                <CheckIcon className={styles.righticoncss} />{" "}
+                <Typography
+                  color="textSecondary"
+                  variant="subtitle1"
+                  component="p"
+                  align="left"
+                  className={styles.divfont}
+                >
+                  You can access {totalcrscount} Courses
+                </Typography>
+              </Box>{" "}
+              <Box className={styles.displayBox}>
+                <CheckIcon className={styles.righticoncss} />{" "}
+                <Typography
+                  color="textSecondary"
+                  variant="subtitle1"
+                  component="p"
+                  align="left"
+                  className={styles.divfont}
+                >
+                  You can access {totalmodulecount} Modules
+                </Typography>
+              </Box>{" "}
+              <Box className={styles.displayBox}>
+                <CheckIcon className={styles.righticoncss} />{" "}
+                <Typography
+                  color="textSecondary"
+                  variant="subtitle1"
+                  component="p"
+                  align="left"
+                  className={styles.divfont}
+                >
+                  You can access {totalsessionscount} Sessions
+                </Typography>
+              </Box>
             </Box>
-          </CardContent>
-        </Box>
-      </center>
+          </Box>
+          <Box px={1} mt={2}>
+            <Link href={`/checkout/${props?.subsdata?.id}`}>
+              <Button variant="contained" id={styles.muibuttonBackgroundColor1}>
+                Subscribe Now
+              </Button>
+            </Link>
+          </Box>
+        </CardContent>
+      </Box>
     </Grid>
   );
 }
@@ -249,7 +276,7 @@ export function EnrolledCourseCard(props: any) {
     props?.freecourses?.course?.id ||
     props?.enrolledCourses.id;
 
-    let title =
+  let title =
     (props && props?.coursedata?.course?.title?.substring(0, 15)) ||
     props?.paidcourses?.course?.title?.substring(0, 15) ||
     props?.freecourses?.course?.title?.substring(0, 15) ||
@@ -269,9 +296,9 @@ export function EnrolledCourseCard(props: any) {
             </Box>
             <Box className={styles.articlebody}>
               <Typography className={styles.h2}>
-              {title && title?.length < 15
+                {title && title?.length < 15
                   ? capitalizeFirstLetter(title)
-                  : capitalizeFirstLetter(title)+"..."}
+                  : capitalizeFirstLetter(title) + "..."}
               </Typography>
               <Typography className={styles.h5}>
                 Type :{" "}

@@ -113,3 +113,6 @@ width: 70% !important;
 .tableHeadingForId{
     font-weight: bold !important;
 }
+.inputFieldWidth{
+    width:95% !important;
+}

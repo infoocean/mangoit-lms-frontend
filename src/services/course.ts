@@ -4,6 +4,7 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { HandleLogout } from "./auth";
+import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 
 export const HandleCourseGet = async (searchData: any, filterData: any) => {
   const createFilterData =
@@ -116,14 +117,14 @@ export const HandleCourseByCourseId = async (subId: any) => {
     });
 };
 
-export const HandleCourseDelete = async (rowID: any) => {
+export const HandleCourseDelete = async (rowID: any, title:any) => {
   return await axios({
     method: "DELETE",
     url: `${API.deleteCourse}/${rowID}`,
     headers: LoginHeader(),
   })
     .then((request) => {
-      toast.success("Course Deleted Successfully");
+      toast.success(capitalizeFirstLetter(`${title} deleted Successfully`));
       return request;
     })
     .catch((error) => {

@@ -52,6 +52,7 @@ import Autocomplete from "@mui/material/Autocomplete";
 // API Service
 import { HandleCourseGet } from "@/services/course";
 import { HandleModuleDelete, HandleModuleGet } from "@/services/module";
+import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 
 interface Column {
   id: "id" | "title" | "course_id" | "module_id" | "is_deleted" | "action";
@@ -65,7 +66,7 @@ const columns: Column[] = [
   { id: "id", label: "ID", },
   { id: "title", label: "MODULE NAME", minWidth: 170 },
   { id: "course_id", label: "COURSE NAME", minWidth: 100 },
-  { id: "module_id", label: "NO. SESSION", minWidth: 100 },
+  { id: "module_id", label: "NO.OF SESSION", minWidth: 100 },
   { id: "is_deleted", label: "STATUS", minWidth: 100 },
   { id: "action", label: "ACTION", minWidth: 100 },
 ];
@@ -150,7 +151,7 @@ const AllModules = () => {
   }
 
   const handleDeletesRow = () => {
-    HandleModuleDelete(deleteRow.id).then((deletedRow) => {
+    HandleModuleDelete(deleteRow.id, deleteRow.title).then((deletedRow) => {
       HandleModuleGet('', '').then((newRows) => {
         setRows(newRows.data)
       })
@@ -308,7 +309,7 @@ const AllModules = () => {
                                                   Active
                                                 </MenuItem>
                                                 <MenuItem value={'inactive'}>
-                                                  In-active
+                                                  Inactive
                                                 </MenuItem>
                                               </Select>
                                             </FormControl>
@@ -329,7 +330,7 @@ const AllModules = () => {
                                           variant="contained"
                                           color="primary"
                                           type="button"
-                                          onClick={resetFilterValue}
+                                          onClick={() => { resetFilterValue(); popupState.close() }}
                                         >
                                           Reset
                                         </Button>
@@ -415,7 +416,7 @@ const AllModules = () => {
                                 </TableCell>
                               </TableRow>
                             );
-                          }) : <TableRow><TableCell colSpan={6} className={ModulCss.tableLastCell}> <Typography>Record not Found</Typography> </TableCell></TableRow>}
+                          }) : <TableRow><TableCell colSpan={6} className={ModulCss.tableLastCell}> <SpinnerProgress /> </TableCell></TableRow>}
                     </TableBody>
                   </Table>
                   <Stack

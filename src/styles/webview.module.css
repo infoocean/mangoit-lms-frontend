@@ -410,7 +410,7 @@
   height: 36px !important;
   margin-right: 15px !important;
   margin-top: -5px !important;
-  background-color: aliceblue !important;
+  background-color: rgb(255, 255, 255) !important;
   padding-right: 50px !important;
 }
 .listitem {
@@ -628,4 +628,61 @@
 }
 .imagecssbanner {
   width: 100% !important;
+}
+.imgwidthcss {
+  width: 100%;
+  margin-left: auto;
+  box-sizing: border-box;
+  margin-right: auto;
+  display: block;
+  padding-left: 0px !important;
+  padding-right: 0px !important;
+}
+.cardheadingg {
+  margin-left: 30% !important;
+  margin-right: 30% !important;
+  height: 52px !important;
+  margin-top: 25px !important;
+  border-bottom: 3px solid #e8661b !important;
+}
+.supcss {
+  vertical-align: super !important;
+  font-size: 18px !important;
+  color: #505050 !important;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+.subcss {
+  vertical-align: baseline !important;
+  font-size: 18px !important;
+  color: #505050 !important;
+  font-family: "Roboto", "Helvetica", "Arial", sans-serif !important;
+}
+
+#muibuttonBackgroundColor1 {
+  background-color: #e8661b !important;
+  width: 50% !important;
+  height: 45px !important;
+  border-radius: 32px !important;
+  margin-top: 10px !important;
+}
+.righticoncss {
+  position: relative !important;
+  top: 1px !important;
+  width: 21px !important;
+  color: #e8661b !important;
+  margin-right: 4px !important;
+}
+.divfont {
+  font-size: 17px !important;
+}
+
+.enrolledplan {
+  padding-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+.enrolledplan .h6 {
+  text-align: center !important;
+  font-size: 30px !important;
+  font-weight: 900 !important;
+  color: #e8661b !important;
 }

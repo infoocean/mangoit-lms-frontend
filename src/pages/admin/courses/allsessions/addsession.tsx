@@ -40,7 +40,7 @@ export default function AddSession() {
   const [getModuleId, setModuleId] = React.useState<any>(0);
   const [file, setFile] = useState<string | any>('')
   const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
-  const [isLoading, setLoading] = useState<boolean>(false);
+
 
   const {
     register,
@@ -73,23 +73,19 @@ export default function AddSession() {
         title: event.title,
         attachment: file
       }
-
       const formData = new FormData()
       for (var key in reqData) {
         formData.append(key, reqData[key]);
       }
-
-      setLoading(true);
-      setLoadingButton(false)
+      setLoadingButton(true)
       try {
         const res = await HandleSessionCreate(formData)
         setSession(res.data)
-        setLoading(false);
         setTimeout(() => {
           router.push('/admin/courses/allsessions/')
-        },900)
+        },1000) 
+        setLoadingButton(true)  
       }
-
       catch (e) {
         console.log(e)
         setLoadingButton(true)
@@ -103,11 +99,17 @@ export default function AddSession() {
     HandleCourseGet('', '').then((courses) => {
       setCourses(courses.data)
     })
+
   };
 
-  const getModuleData = () => {
+  const getModuleData = (courseId:any) => {
     HandleModuleGet('', '').then((modules) => {
-      setModules(modules.data)
+      const findModuleAccToCourse = modules.data.filter((ress:any)=>{
+        return (
+          ress.module.course_id === courseId
+        )
+      })
+      setModules(findModuleAccToCourse)
     })
   }
 
@@ -119,7 +121,6 @@ export default function AddSession() {
     if (localData) {
       const userId = JSON.parse(localData);
       getCourseData();
-      getModuleData();
     }
   }, []);
 
@@ -145,7 +146,6 @@ export default function AddSession() {
       }
    }
 
-   // console.log("oopps", errors)
    return (
       <>
          <Navbar />
@@ -163,7 +163,6 @@ export default function AddSession() {
                {/* main content */}
                <Card>
                   <CardContent>
-                     {!isLoading ?
                         <Box
                            component="form"
                            method="POST"
@@ -173,7 +172,7 @@ export default function AddSession() {
                            onReset={reset}
                         >
                            <Grid container spacing={2}>
-                              <Grid item xs={12} sm={12} md={12} lg={6} >
+                              <Grid item xs={12} sm={12} md={12} lg={6} mt={5}>
                                  <Box component="img" src="/Images/sideImages/add_section.svg" width={'100%'} />
                               </Grid>
 
@@ -188,7 +187,8 @@ export default function AddSession() {
                           <TextField
                             placeholder="Session Name"
                             {...register("title")}
-                            fullWidth
+                            className={Sessions.inputFieldWidth}
+
                        
                           />
                           {errors && errors.title
@@ -213,6 +213,7 @@ export default function AddSession() {
                             )}
                             onChange={(event, newValue) => {
                               setCourseId(newValue?.course?.id);
+                              getModuleData(newValue?.course?.id)
                             }}
                           />
                           {errors && errors.course_id
@@ -286,7 +287,6 @@ export default function AddSession() {
 
                   </Grid>
                 </Box>
-                : <SpinnerProgress />}
             </CardContent>
           </Card>
         </Box>

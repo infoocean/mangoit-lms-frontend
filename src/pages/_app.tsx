@@ -49,7 +49,7 @@ export default function App({ Component, pageProps, siteConfigData }: AppProps |
     <>
       <Head>
         <link rel="icon" href={siteConfigData ? BASE_URL + '/' + siteConfigData?.org_favicon : orgFavicon ? BASE_URL + '/' + orgFavicon : "/favicon.svg"} />
-        <title>{siteConfigData ? `${siteConfigData.title} - ${lastSegment ? capitalizeFirstLetter(lastSegment) : ''}` : orgTitle ? `${orgTitle} - ${lastSegment ? capitalizeFirstLetter(lastSegment) : ''}` : `MLMS`}</title>
+        <title>{siteConfigData ? `${siteConfigData.title} ${lastSegment ? '-' +   " " + capitalizeFirstLetter(lastSegment) : ''}` : orgTitle ? `${orgTitle} ${lastSegment ? '-' + " " + capitalizeFirstLetter(lastSegment) : ''}` : `MLMS`}</title>
       </Head>
       <GoogleOAuthProvider
         clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}

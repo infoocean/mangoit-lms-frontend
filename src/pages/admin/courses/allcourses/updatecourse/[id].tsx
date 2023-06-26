@@ -156,8 +156,8 @@ export default function UpdateCourse() {
     if (id) {
       HandleCourseGetByID(id).then((course) => {
         setCourse(course.data)
-        setrowsForCourseTopic(JSON.parse(JSON.parse(course.data?.course_learning_topics)))
-        setrowsForCourseMaterial(JSON.parse(JSON.parse(course.data?.Course_learning_material)))
+        setrowsForCourseTopic(JSON?.parse(JSON?.parse(course.data?.course_learning_topics)))
+        setrowsForCourseMaterial(JSON?.parse(JSON?.parse(course.data?.Course_learning_material)))
         const fields = [
           "title",
           "is_chargeable",
@@ -262,7 +262,7 @@ export default function UpdateCourse() {
     }
   };
   const courseTopic = () => {
-    if (rowsForCourseTopic.length > 0) {
+    if (rowsForCourseTopic?.length > 0) {
       handleCloseCourseTopicBox();
     } else {
       toast.error("Please add course topics !")
@@ -571,7 +571,7 @@ export default function UpdateCourse() {
               </TableHead>
               <TableBody>
                 <TableRow>
-                  {rowsForCourseTopic.map((item: any, idx: any) => (
+                  {rowsForCourseTopic && rowsForCourseTopic?.map((item: any, idx: any) => (
                     <Stack key={idx} direction="row" spacing={2} mb={1} mt={1}>
                       <TextField
                         id={idx}
@@ -641,7 +641,7 @@ export default function UpdateCourse() {
               </TableHead>
               <TableBody>
                 <TableRow>
-                  {rowsForCourseMaterial.map((item: any, idx: any) => (
+                  {rowsForCourseMaterial && rowsForCourseMaterial?.map((item: any, idx: any) => (
                     <Stack key={idx} direction="row" spacing={2} mb={1} mt={1}>
                       <TextField
                         id={idx}

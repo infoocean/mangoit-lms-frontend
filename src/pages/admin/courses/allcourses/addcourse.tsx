@@ -140,7 +140,7 @@ const AddCourse = () => {
   }
 
   const onSubmit = async (value: any) => {
-    if (rowsForCourseTopic.length > 1) {
+    if (rowsForCourseTopic?.length > 1) {
       if (rowsForCourseMaterial.length > 1) {
         const reqData: any = {
           title: value?.title,
@@ -558,7 +558,7 @@ const AddCourse = () => {
               </TableHead>
               <TableBody>
                 <TableRow>
-                  {rowsForCourseTopic.map((item: any, idx: any) => (
+                  {rowsForCourseTopic && rowsForCourseTopic?.map((item: any, idx: any) => (
                     <Stack key={idx} direction="row" spacing={2} mb={1} mt={1}>
                       <TextField
                         id={idx}

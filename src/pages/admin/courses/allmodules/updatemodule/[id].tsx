@@ -261,13 +261,14 @@ export default function UpdateModule() {
                       </Grid>
                       <Grid item xs={12} sm={12} md={12} lg={12} mb={2}>
                         <InputLabel className={ModuleCss.InputLabelFont}>Description</InputLabel>
-                        <Box className={ModuleCss.quillDescription}>
+                        <Box>
                           <RichEditor
                             {...register("description")}
                             value={getDespcriptionContent ? getDespcriptionContent : getModule?.description}
                             onChange={(value) =>
                               handleContentChange(value, "description")
                             }
+                            className={ModuleCss.quillDescription2}
                           />
                         </Box>
                         {errors && errors.description ? ErrorShowing(errors?.description?.message) : ""}

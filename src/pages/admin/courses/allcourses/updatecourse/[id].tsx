@@ -111,7 +111,6 @@ export default function UpdateCourse() {
   };
 
   const onSubmit = async (event: any) => {
-    console.log(event)
     const id = router.query.id
     if (errors.description?.message === '' || (typeof errors === 'object' && errors !== null)) {
       setLoading(true);
@@ -245,7 +244,12 @@ export default function UpdateCourse() {
     setrowsForCourseTopic([...rowsForCourseTopic, item]);
   };
   const ResetTopicRow = () => {
-    setrowsForCourseTopic([{}]);
+    setrowsForCourseTopic([]);
+    function myFunction() {
+      setrowsForCourseTopic([{}]);
+    }
+    setTimeout(myFunction, 100);
+
   }
   // //update course topic 
   const updateCourseState = (e: any) => {
@@ -266,10 +270,17 @@ export default function UpdateCourse() {
     }
   };
   const courseTopic = () => {
-    if (rowsForCourseTopic?.length > 0) {
-      handleCloseCourseTopicBox();
+    if (rowsForCourseTopic.length <= 1 && rowsForCourseTopic[0][0] === '' || rowsForCourseTopic[0][0] === undefined) {
+      return toast.error("Please add course topics!")
+    } else if (rowsForCourseTopic.length <= 4) {
+      return toast.error("Please add atleast 5 topics!")
     } else {
-      toast.error("Please add course topics !")
+      // for (var i = 0; i <= rowsForCourseTopic.length - 1; i++) {
+      //   if (rowsForCourseTopic[i][i] === '' || rowsForCourseTopic[0][0] === undefined) {
+      //     return toast.error("Input feild can't be blank!")
+      //   }
+      // }
+      handleCloseCourseTopicBox();
     }
   };
   // //study material boxes
@@ -284,7 +295,11 @@ export default function UpdateCourse() {
     setrowsForCourseMaterial([...rowsForCourseMaterial, item]);
   };
   const ResetMaterialRow = () => {
-    setrowsForCourseMaterial([{}]);
+    setrowsForCourseMaterial([]);
+    function myFunction() {
+      setrowsForCourseMaterial([{}]);
+    }
+    setTimeout(myFunction, 100);
   }
   const updateMaterialState = (e: any) => {
     const tempRows = [...rowsForCourseMaterial];
@@ -303,10 +318,17 @@ export default function UpdateCourse() {
     }
   }
   const courseMaterial = () => {
-    if (rowsForCourseMaterial.length > 0) {
-      handleCloseStudyMaterialBox();
+    if (rowsForCourseMaterial.length <= 1 && rowsForCourseMaterial[0][0] === '' || rowsForCourseMaterial[0][0] === undefined) {
+      return toast.error("Please add course material !")
+    } else if (rowsForCourseMaterial.length <= 4) {
+      return toast.error("Please add atleast 5 materials!")
     } else {
-      toast.error("Please add course material !")
+      // for (var i = 0; i <= rowsForCourseMaterial.length - 1; i++) {
+      //   if (rowsForCourseMaterial[i][i] === '' || rowsForCourseMaterial[0][0] === undefined) {
+      //     return toast.error("Input feild can't be blank!")
+      //   }
+      // }
+      handleCloseStudyMaterialBox();
     }
   };
 
@@ -481,7 +503,7 @@ export default function UpdateCourse() {
                                 hidden
                               />
                               <Typography className={courseStyle.courseAttachments}>
-                                Upload
+                                {typeof imagefile === "string" ? "Upload" : imagefile?.name}
                               </Typography>
                             </InputLabel>
                           </Box>
@@ -501,7 +523,7 @@ export default function UpdateCourse() {
                                 hidden
                               />
                               <Typography className={courseStyle.courseAttachments}>
-                                Upload
+                                {typeof videofile === "string" ? "Upload" : videofile?.name}
                               </Typography>
                             </InputLabel>
                           </Box>
@@ -569,7 +591,7 @@ export default function UpdateCourse() {
               <Button variant="outlined" size="small" onClick={ResetTopicRow} startIcon={<RestartAltOutlinedIcon />}>Reset</Button>
               <Button variant="outlined" size="small" onClick={handleAddTopicRow} startIcon={<AddIcon />}>Add New</Button>
             </Stack>
-            <Table>
+            <Table sx={{ minHeight: "100px" }}>
               <TableHead>
                 <TableRow>
                   <Stack direction="row" >
@@ -639,7 +661,7 @@ export default function UpdateCourse() {
               <Button variant="outlined" size="small" onClick={ResetMaterialRow} startIcon={<RestartAltOutlinedIcon />}>Reset</Button>
               <Button variant="outlined" size="small" onClick={handleAddCourseMaterialRow} startIcon={<AddIcon />}>Add New </Button>
             </Stack>
-            <Table>
+            <Table sx={{ minHeight: "100px" }}>
               <TableHead>
                 <TableRow>
                   <Stack direction="row" >

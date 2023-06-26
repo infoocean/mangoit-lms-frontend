@@ -90,6 +90,8 @@ const Invoices = () => {
   const [row_per_page, set_row_per_page] = useState(10);
   let [page, setPage] = useState<any>(1);
   function handlerowchange(e: any) {
+    setPage(1);
+    DATA.jump(1);
     set_row_per_page(e.target.value);
   }
   const PER_PAGE = row_per_page;
@@ -115,6 +117,10 @@ const Invoices = () => {
 
   const handleSearch = (e: any, identifier: any) => {
     setPage(1);
+
+    if (page !== 1) {
+      DATA.jump(1);
+    }
     if (identifier === "reset") {
       getAllInvoiceData();
       setSearch(e);
@@ -380,9 +386,10 @@ const Invoices = () => {
                           <TableCell
                             colSpan={columns?.length}
                             className={Subscription.tableLastCell}
+                            sx={{fontWeight:600}}
                           >
                             {" "}
-                            <Typography>Record not Found</Typography>{" "}
+                            <Typography>Record not found</Typography>{" "}
                           </TableCell>
                         </TableRow>
                       )}

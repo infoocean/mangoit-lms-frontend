@@ -30,12 +30,12 @@ import {
 } from "@mui/material";
 import { SearchOutlined } from "@mui/icons-material";
 import PopupState, { bindTrigger, bindPopover } from "material-ui-popup-state";
-import CloseIcon from '@mui/icons-material/Close';
+import CloseIcon from "@mui/icons-material/Close";
 import FilterAltOutlinedIcon from "@mui/icons-material/FilterAltOutlined";
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
-import ArrowDownwardOutlinedIcon from '@mui/icons-material/ArrowDownwardOutlined';
-import ArrowUpwardOutlinedIcon from '@mui/icons-material/ArrowUpwardOutlined';
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
+import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
+import ArrowDownwardOutlinedIcon from "@mui/icons-material/ArrowDownwardOutlined";
+import ArrowUpwardOutlinedIcon from "@mui/icons-material/ArrowUpwardOutlined";
 // CSS Import
 import styles from "../../../../styles/sidebar.module.css";
 import ModulCss from "../../../../styles/modules.module.css";
@@ -63,7 +63,7 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: "id", label: "ID", },
+  { id: "id", label: "ID" },
   { id: "title", label: "MODULE NAME", minWidth: 170 },
   { id: "course_id", label: "COURSE NAME", minWidth: 100 },
   { id: "module_id", label: "NO.OF SESSION", minWidth: 100 },
@@ -73,18 +73,19 @@ const columns: Column[] = [
 
 const AllModules = () => {
   const [rows, setRows] = React.useState<any>([]);
-  const [search, setSearch] = React.useState('');
+  const [search, setSearch] = React.useState("");
   const [getCourse, setCourse] = React.useState<any>([]);
   const [toggle, setToggle] = React.useState<boolean>(false);
-  const [deleteRow, setDeleteRow] = React.useState<any>([])
+  const [deleteRow, setDeleteRow] = React.useState<any>([]);
   const [open, setOpen] = React.useState(false);
   const [getFilter, setFilter] = React.useState<number>(0);
+  const [loading, setLoading] = React.useState(false);
   const [value, setNewValue] = React.useState<any>({
     id: 0,
-    title: 'All',
+    title: "All",
   });
   const [inputValue, setInputValue] = React.useState<any>([]);
-  const router = useRouter()
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -97,6 +98,8 @@ const AllModules = () => {
   const [row_per_page, set_row_per_page] = React.useState(10);
   let [page, setPage] = React.useState<any>(1);
   function handlerowchange(e: any) {
+    setPage(1);
+    DATA.jump(1);
     set_row_per_page(e.target.value);
   }
   const PER_PAGE = row_per_page;
@@ -106,82 +109,87 @@ const AllModules = () => {
     setPage(p);
     DATA.jump(p);
   };
-  //useEffect 
+  //useEffect
   React.useEffect(() => {
+    setLoading(true);
     getModuleData();
     getCourseData();
   }, []);
   // get all modules
   const getModuleData = () => {
-    HandleModuleGet('', '').then((modules) => {
+    HandleModuleGet("", "").then((modules) => {
+      setLoading(false);
       setRows(modules.data);
-    })
-  }
+    });
+  };
   //get all courses
   const getCourseData = () => {
-    HandleCourseGet('', '').then((courseSearched) => {
-      setCourse(courseSearched.data)
-    })
-  }
+    HandleCourseGet("", "").then((courseSearched) => {
+      setLoading(false);
+      setCourse(courseSearched.data);
+    });
+  };
   const handleSort = (rowsData: any) => {
-    const sortData = handleSortData(rowsData)
-    setRows(sortData)
-    setToggle(!toggle)
-  }
+    const sortData = handleSortData(rowsData);
+    setRows(sortData);
+    setToggle(!toggle);
+  };
   //search modules
   const handleSearch = (e: any, identifier: any) => {
     setPage(1);
-    if (identifier === 'reset') {
-      HandleModuleGet('', '').then((itemSeached) => {
+
+    if (page !== 1) {
+      DATA.jump(1);
+    }
+    if (identifier === "reset") {
+      HandleModuleGet("", "").then((itemSeached) => {
         setRows(itemSeached.data);
-      })
-      setSearch(e)
+      });
+      setSearch(e);
     } else {
       const search = e.target.value;
-      setSearch(e.target.value)
-      HandleModuleGet(search, '').then((itemSeached) => {
+      setSearch(e.target.value);
+      HandleModuleGet(search, "").then((itemSeached) => {
         setRows(itemSeached.data);
-      })
+      });
     }
-  }
+  };
 
   const handleClickOpen = (row: any) => {
-    setDeleteRow(row)
+    setDeleteRow(row);
     setOpen(!open);
-  }
+  };
 
   const handleDeletesRow = () => {
     HandleModuleDelete(deleteRow.id, deleteRow.title).then((deletedRow) => {
-      HandleModuleGet('', '').then((newRows) => {
-        setRows(newRows.data)
-      })
-    })
+      HandleModuleGet("", "").then((newRows) => {
+        setRows(newRows.data);
+      });
+    });
     setOpen(!open);
-  }
+  };
   //submit form for filtering
   const onSubmit = (event: any) => {
     const filterData: any = {
       course_id: value?.id,
       status: event.status,
-    }
-    HandleModuleGet('', filterData).then((itemFiltered) => {
-      setRows(itemFiltered.data)
-    })
-
-  }
+    };
+    HandleModuleGet("", filterData).then((itemFiltered) => {
+      setRows(itemFiltered.data);
+    });
+  };
 
   const resetFilterValue = () => {
-    setFilter(0)
+    setFilter(0);
     setNewValue({
       id: 0,
-      title: 'All',
-    })
+      title: "All",
+    });
     reset({ course: 0, status: 0 });
-    getModuleData()
-  }
+    getModuleData();
+  };
 
-
-  const option: { id: number; title: string; }[] = [{ id: 0, title: 'All' }];
+  const option: { id: number; title: string }[] = [{ id: 0, title: "All" }];
   getCourse &&
     getCourse.map((data: any, key: any) => {
       return option.push({
@@ -210,17 +218,22 @@ const AllModules = () => {
                 value={search}
                 variant="outlined"
                 placeholder="Search by 'Module Name'"
-                onChange={(e) => handleSearch(e, '')}
+                onChange={(e) => handleSearch(e, "")}
                 InputProps={{
-                  endAdornment: (
-                    !search ? <IconButton>
+                  endAdornment: !search ? (
+                    <IconButton>
                       <SearchOutlined />
-                    </IconButton> : <IconButton onClick={(e) => handleSearch('', 'reset')}> <CloseIcon /></IconButton>
+                    </IconButton>
+                  ) : (
+                    <IconButton onClick={(e) => handleSearch("", "reset")}>
+                      {" "}
+                      <CloseIcon />
+                    </IconButton>
                   ),
                 }}
               />
               <Box className={ModulCss.upperFilterBox}>
-                <PopupState variant="popover" popupId="demo-popup-popover" >
+                <PopupState variant="popover" popupId="demo-popup-popover">
                   {(popupState) => (
                     <Box>
                       <Button
@@ -232,7 +245,7 @@ const AllModules = () => {
                       </Button>
                       <Popover
                         {...bindPopover(popupState)}
-                        style={{ width: '35% !important' }}
+                        style={{ width: "35% !important" }}
                         anchorOrigin={{
                           vertical: "bottom",
                           horizontal: "left",
@@ -248,7 +261,10 @@ const AllModules = () => {
                             style={{ padding: "15px" }}
                           >
                             <Grid>
-                              <Typography variant="h5" className={ModulCss.filterTypography}>
+                              <Typography
+                                variant="h5"
+                                className={ModulCss.filterTypography}
+                              >
                                 Filter
                               </Typography>
                               <Box
@@ -264,9 +280,12 @@ const AllModules = () => {
                                   className="form-filter"
                                 >
                                   <Grid container spacing={2}>
-                                    <Grid item xs={12} md={6} lg={6} >
+                                    <Grid item xs={12} md={6} lg={6}>
                                       <Stack spacing={2}>
-                                        <InputLabel htmlFor="name" className={ModulCss.courseInFilter}>
+                                        <InputLabel
+                                          htmlFor="name"
+                                          className={ModulCss.courseInFilter}
+                                        >
                                           Course
                                         </InputLabel>
                                         <Autocomplete
@@ -275,11 +294,16 @@ const AllModules = () => {
                                           onChange={(event, newValue) => {
                                             setNewValue(newValue);
                                           }}
-                                          onInputChange={(event, newInputValue) => {
+                                          onInputChange={(
+                                            event,
+                                            newInputValue
+                                          ) => {
                                             setInputValue(newInputValue);
                                           }}
                                           options={option}
-                                          getOptionLabel={(option) => option?.title}
+                                          getOptionLabel={(option) =>
+                                            option?.title
+                                          }
                                           renderInput={(params) => (
                                             <TextField
                                               {...register("course_id")}
@@ -289,12 +313,14 @@ const AllModules = () => {
                                             />
                                           )}
                                         />
-
                                       </Stack>
                                     </Grid>
                                     <Grid item xs={12} md={6} lg={6}>
                                       <Stack spacing={2}>
-                                        <InputLabel htmlFor="enddate" className={ModulCss.statusBold}>
+                                        <InputLabel
+                                          htmlFor="enddate"
+                                          className={ModulCss.statusBold}
+                                        >
                                           Status
                                         </InputLabel>
                                         <Controller
@@ -304,11 +330,13 @@ const AllModules = () => {
                                           render={({ field }) => (
                                             <FormControl fullWidth>
                                               <Select {...field} displayEmpty>
-                                                <MenuItem value={0}>All</MenuItem>
-                                                <MenuItem value={'active'}>
+                                                <MenuItem value={0}>
+                                                  All
+                                                </MenuItem>
+                                                <MenuItem value={"active"}>
                                                   Active
                                                 </MenuItem>
-                                                <MenuItem value={'inactive'}>
+                                                <MenuItem value={"inactive"}>
                                                   Inactive
                                                 </MenuItem>
                                               </Select>
@@ -318,11 +346,7 @@ const AllModules = () => {
                                       </Stack>
                                     </Grid>
 
-                                    <Grid
-                                      item
-                                      xs={12}
-                                      lg={12}
-                                    >
+                                    <Grid item xs={12} lg={12}>
                                       <Box className={ModulCss.boxInFilter}>
                                         <Button
                                           id={styles.muibuttonBackgroundColor}
@@ -330,7 +354,10 @@ const AllModules = () => {
                                           variant="contained"
                                           color="primary"
                                           type="button"
-                                          onClick={() => { resetFilterValue(); popupState.close() }}
+                                          onClick={() => {
+                                            resetFilterValue();
+                                            popupState.close();
+                                          }}
                                         >
                                           Reset
                                         </Button>
@@ -340,7 +367,9 @@ const AllModules = () => {
                                           type="submit"
                                           variant="contained"
                                           color="primary"
-                                          className={ModulCss.applyButtonInFiltter}
+                                          className={
+                                            ModulCss.applyButtonInFiltter
+                                          }
                                           onClick={popupState.close}
                                         >
                                           Apply
@@ -358,10 +387,19 @@ const AllModules = () => {
                   )}
                 </PopupState>
                 &nbsp;
-                <Button variant="contained" onClick={() => router.push('/admin/courses/allmodules/addmodule')} id={styles.muibuttonBackgroundColor}> + Add Module </Button>
+                <Button
+                  variant="contained"
+                  onClick={() =>
+                    router.push("/admin/courses/allmodules/addmodule")
+                  }
+                  id={styles.muibuttonBackgroundColor}
+                >
+                  {" "}
+                  + Add Module{" "}
+                </Button>
               </Box>
-              <Paper >
-                <TableContainer >
+              <Paper>
+                <TableContainer>
                   <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                       <TableRow>
@@ -371,9 +409,7 @@ const AllModules = () => {
                             align={column.align}
                             style={{ top: 0, minWidth: column.minWidth }}
                             onClick={() => {
-                              column.label === 'ID' ?
-                                handleSort(rows) :
-                                ''
+                              column.label === "ID" ? handleSort(rows) : "";
                             }}
                             className={ModulCss.tableHeadingForId}
                           >
@@ -394,10 +430,16 @@ const AllModules = () => {
                       </TableRow>
                     </TableHead>
                     <TableBody>
-                      {rows && rows.length > 0 ? DATA.currentData() &&
-                        DATA.currentData()
-                          .map((row: any) => {
-                            const statusColor = (row.module.status === "active" ? ModulCss.activeClassColor : row.module.status === "inactive" ? ModulCss.inactiveClassColor : ModulCss.draftClassColor)
+                      {!loading ? (
+                        rows && rows.length > 0 ? (
+                          DATA.currentData() &&
+                          DATA.currentData().map((row: any) => {
+                            const statusColor =
+                              row.module.status === "active"
+                                ? ModulCss.activeClassColor
+                                : row.module.status === "inactive"
+                                ? ModulCss.inactiveClassColor
+                                : ModulCss.draftClassColor;
 
                             return (
                               <TableRow
@@ -407,16 +449,68 @@ const AllModules = () => {
                                 key={row.id}
                               >
                                 <TableCell>{row.module.id}</TableCell>
-                                <TableCell>{capitalizeFirstLetter(row.module.title)}</TableCell>
-                                <TableCell>{capitalizeFirstLetter(row.module.course && row.module.course.title)}</TableCell>
-                                <TableCell>{(row.sessionCount.sessionCount)}</TableCell>
-                                <TableCell className={statusColor}>{capitalizeFirstLetter(row.module.status)}</TableCell>
-                                <TableCell><Button onClick={() => router.push(`/admin/courses/allmodules/updatemodule/${row.module.id}`)} variant="outlined" color="success" className={ModulCss.editDeleteButton} ><ModeEditOutlineIcon /></Button>
-                                  <Button className={ModulCss.editDeleteButton} variant="outlined" color="error" onClick={() => handleClickOpen(row.module)}><DeleteOutlineIcon /></Button>
+                                <TableCell>
+                                  {capitalizeFirstLetter(row.module.title)}
+                                </TableCell>
+                                <TableCell>
+                                  {capitalizeFirstLetter(
+                                    row.module.course && row.module.course.title
+                                  )}
+                                </TableCell>
+                                <TableCell>
+                                  {row.sessionCount.sessionCount}
+                                </TableCell>
+                                <TableCell className={statusColor}>
+                                  {capitalizeFirstLetter(row.module.status)}
+                                </TableCell>
+                                <TableCell>
+                                  <Button
+                                    onClick={() =>
+                                      router.push(
+                                        `/admin/courses/allmodules/updatemodule/${row.module.id}`
+                                      )
+                                    }
+                                    variant="outlined"
+                                    color="success"
+                                    className={ModulCss.editDeleteButton}
+                                  >
+                                    <ModeEditOutlineIcon />
+                                  </Button>
+                                  <Button
+                                    className={ModulCss.editDeleteButton}
+                                    variant="outlined"
+                                    color="error"
+                                    onClick={() => handleClickOpen(row.module)}
+                                  >
+                                    <DeleteOutlineIcon />
+                                  </Button>
                                 </TableCell>
                               </TableRow>
                             );
-                          }) : <TableRow><TableCell colSpan={6} className={ModulCss.tableLastCell}> <SpinnerProgress /> </TableCell></TableRow>}
+                          })
+                        ) : (
+                          <TableRow>
+                            <TableCell
+                              colSpan={7}
+                              className={ModulCss.tableLastCell}
+                              sx={{fontWeight:600}}
+                            >
+                              {" "}
+                              Record not found{" "}
+                            </TableCell>
+                          </TableRow>
+                        )
+                      ) : (
+                        <TableRow>
+                          <TableCell
+                            colSpan={6}
+                            className={ModulCss.tableLastCell}
+                          >
+                            {" "}
+                            <SpinnerProgress />{" "}
+                          </TableCell>
+                        </TableRow>
+                      )}
                     </TableBody>
                   </Table>
                   <Stack
@@ -439,7 +533,7 @@ const AllModules = () => {
                         defaultValue={10}
                         onChange={handlerowchange}
                         size="small"
-                        style={{ height: "40px", marginRight: '11px' }}
+                        style={{ height: "40px", marginRight: "11px" }}
                       >
                         <MenuItem value={10}>10</MenuItem>
                         <MenuItem value={20}>20</MenuItem>
@@ -454,7 +548,7 @@ const AllModules = () => {
                 onClose={handleClickOpen}
                 onSubmit={handleDeletesRow}
                 title={deleteRow.title}
-                whatYouDelete='Module'
+                whatYouDelete="Module"
               />
             </CardContent>
           </Card>

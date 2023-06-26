@@ -16,8 +16,7 @@ const BreadcrumbsHeading: FC<breadcrumbsVariableTypes> = (props): any => {
               href={
                 props && props?.Link?.includes("user") ? `${FRONTEND_BASE_URL}/user/dashboard` : `${FRONTEND_BASE_URL}/admin/dashboard`
               }
-              className={styles.registerPage}
-              style={{ color: "#7D86A5", textDecoration: "none" }}
+              className={`${styles.breadcrumbsTextFirstandSecond}`}
               >
               {props.First}
             </Link>
@@ -26,7 +25,7 @@ const BreadcrumbsHeading: FC<breadcrumbsVariableTypes> = (props): any => {
               key="2"
               color="inherit"
               href={`/${props.Link}`}
-              style={{ color: "#7D86A5", textDecoration: "none" }}
+              className={`${styles.breadcrumbsTextFirstandSecond}`}
             >
               {props.Middle}
             </Link>:
@@ -36,7 +35,8 @@ const BreadcrumbsHeading: FC<breadcrumbsVariableTypes> = (props): any => {
             key="2"
             color="inherit"
             href={'#'}
-            style={{ color: "#E8661B", textDecoration: "none" }}
+            className={`${styles.breadcrumbsTextLast}`}
+            
           >
             {props.Current}
           </Link>
@@ -45,7 +45,7 @@ const BreadcrumbsHeading: FC<breadcrumbsVariableTypes> = (props): any => {
         <Typography
           variant="h5"
           gutterBottom
-          style={{ fontWeight: "bold", color: "#333333" }}
+          className={`${styles.breadcrumbsMainBoldText}`}
         >
           {props.Text}
         </Typography>

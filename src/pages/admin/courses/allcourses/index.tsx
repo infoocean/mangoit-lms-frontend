@@ -139,12 +139,10 @@ const AllCourses = () => {
     setToggle(!toggle)
   }
 
-  console.log(page,"page",count)
+  // console.log(page,"page",count)
   const handleSearch = (e: any, identifier: any) => {
     setPage(1);
-   
     if(page !== 1){
-
       DATA.jump(1);
     }
     if (identifier === 'reset') {

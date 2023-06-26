@@ -95,6 +95,8 @@ const AllCourses = () => {
   const [row_per_page, set_row_per_page] = useState(10);
   let [page, setPage] = useState<any>(1);
   function handlerowchange(e: any) {
+    setPage(1);
+    DATA.jump(1);
     set_row_per_page(e.target.value);
   }
   const PER_PAGE = row_per_page;
@@ -119,6 +121,10 @@ const AllCourses = () => {
   const handleSearch = (e: any, identifier: any) => {
     const search = e?.target?.value;
     setPage(1);
+
+    if (page !== 1) {
+      DATA.jump(1);
+    }
     if (identifier === "reset") {
       getAllCourseData();
       setSearch(e);
@@ -308,7 +314,7 @@ const AllCourses = () => {
                               sx={{ fontWeight: 600, textAlign: "center" }}
                             >
                               {" "}
-                              Record not found!{" "}
+                              Record not found{" "}
                             </TableCell>
                           </TableRow>
                         )}

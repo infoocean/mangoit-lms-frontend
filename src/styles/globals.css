@@ -81,14 +81,14 @@ a {
   max-width: 200px !important;
   color: white !important;
   font-size: 17px !important;
-  background-color: #e8661b !important;
+  background-color: #ff8a47 !important;
 }
 .css-16jkw2k > .ps-menu-button:hover {
-  border-top-right-radius: 23px !important;
-  border-bottom-right-radius: 23px !important;
-  max-width: 200px !important;
-  color: white !important;
-  background-color: #e8661b !important;
+  border-top-right-radius: 23px!important;
+  border-bottom-right-radius: 23px!important;
+  max-width: 200px!important;
+  color: #000000!important;
+  background-color: #ef590640!important;
 }
 
 .css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root.Mui-selected:hover {
@@ -149,24 +149,30 @@ a {
 }
 
 .css-1rl742m > .ps-menu-button:hover {
-  background-color: #e8661b !important;
-  color: white !important;
+  /* background-color: #e8661b !important;
+  color: white !important; */
+  color: #000000!important;
+  background-color: #ef590640!important;
   border-top-right-radius: 23px !important;
   border-bottom-right-radius: 23px !important;
 }
 
 /* submenu inner */
 .css-1a3zl6u > .ps-menu-button:hover {
-  background-color: #e8661b !important;
+  /* background-color: #e8661b !important; */
   color: white !important;
+  /* color: #000000!important; */
+  background-color: #ef590640!important;
   border-top-right-radius: 23px !important;
   border-bottom-right-radius: 23px !important;
 }
 
 /* submenu header css */
 .css-16jesut > .ps-menu-button:hover {
-  background-color: #e8661b !important;
-  color: white !important;
+  /* background-color: #e8661b !important;
+  color: white !important; */
+  color: #000000!important;
+  background-color: #ef590640!important;
   border-top-right-radius: 23px !important;
   border-bottom-right-radius: 23px !important;
 }

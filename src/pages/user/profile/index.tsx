@@ -164,7 +164,6 @@ export default function Profile() {
       />
       <Box className={styles.combineContentAndSidebar}>
         <SideBar />
-
         <Box className={styles.siteBodyContainer}>
           {/* breadcumbs */}
           <BreadcrumbsHeading
@@ -175,7 +174,7 @@ export default function Profile() {
           />
 
           {/* main content */}
-          <Card>
+          <Card data-testid="textcheck">
             <CardContent>
               {!isLoading ? (
                 <Box
@@ -236,6 +235,7 @@ export default function Profile() {
                                 </InputLabel>
                               )}
                             </Box>
+
                             <Box className={profiles.userData}>
                               <Typography
                                 variant="subtitle1"
@@ -336,6 +336,7 @@ export default function Profile() {
                             disabled={true}
                           />
                         </Grid>
+
                         {toggle && (
                           <Grid
                             item
@@ -351,6 +352,7 @@ export default function Profile() {
                                 size="large"
                                 variant="contained"
                                 id={styles.muibuttonBackgroundColor}
+                                data-testid="button"
                               >
                                 Update Profile
                               </Button>

@@ -113,11 +113,18 @@ export default function Dashboard() {
     setgridview(false);
     setDynamicCss(2);
   };
+  
+ function multiply(a:any, b:any) {
+  return a * b;
+}
 
   return (
     <>
       <Navbar />
-      <Box className={styles.combineContentAndSidebar}>
+      <Box
+        className={styles.combineContentAndSidebar}
+        data-testid="checkInDocument"
+      >
         <SideBar />
         <Box className={styles.siteBodyContainer}>
           {/* breadcumbs */}
@@ -264,6 +271,7 @@ export default function Dashboard() {
                           <Box>
                             <Typography
                               className={dashboardStyles.quickstatText}
+                              data-testid="checkText"
                             >
                               Subscription Name
                             </Typography>

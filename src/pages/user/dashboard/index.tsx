@@ -120,12 +120,12 @@ export default function Dashboard() {
 
   return (
     <>
-      {/* <Navbar /> */}
+      <Navbar />
       <Box
         className={styles.combineContentAndSidebar}
         data-testid="checkInDocument"
       >
-        {/* <SideBar /> */}
+        <SideBar />
         <Box className={styles.siteBodyContainer}>
           {/* breadcumbs */}
           <Box className={subs.maindisplay}>

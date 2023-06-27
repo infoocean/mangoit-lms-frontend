@@ -15,6 +15,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HandleCourseGet } from "@/services/course";
 import CheckIcon from "@mui/icons-material/Check";
+import { BASE_URL } from "@/config/config";
 
 export function CourseCard(props: any) {
   const c_id =
@@ -28,6 +29,7 @@ export function CourseCard(props: any) {
     props?.paidcourses?.course?.title?.substring(0, 15) ||
     props?.freecourses?.course?.title?.substring(0, 15) ||
     props?.enrolledCourses.title?.substring(0, 15);
+
   return (
     <Link href={`/coursedetails/${c_id}`}>
       <CardActionArea component="a">
@@ -36,8 +38,12 @@ export function CourseCard(props: any) {
             <Box className={styles.figure}>
               <Box
                 component="img"
-                src="https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
-                alt=""
+                src={
+                  props?.coursedata?.course?.image !== ""
+                    ? `${BASE_URL}/${props?.coursedata?.course?.image}`
+                    : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
+                }
+                alt="image"
               />
             </Box>
             <Box className={styles.articlebody}>
@@ -85,7 +91,11 @@ export function CourseCardListView(props: any) {
                 width: 250,
                 display: { xs: "none", sm: "block" },
               }}
-              image="https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
+              image={
+                props?.coursedata?.course?.image !== ""
+                  ? `${BASE_URL}/${props?.coursedata?.course?.image}`
+                  : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
+              }
               alt="Live from space album cover"
             />
             <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -267,7 +277,6 @@ export function SubscribtionPanCard(props: any) {
     </Grid>
   );
 }
-
 //user view enrolled dashboard
 export function EnrolledCourseCard(props: any) {
   const c_id =
@@ -290,8 +299,12 @@ export function EnrolledCourseCard(props: any) {
             <Box className={styles.figure}>
               <Box
                 component="img"
-                src="https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
-                alt=""
+                src={
+                  props?.coursedata?.course?.image !== ""
+                    ? `${BASE_URL}/${props?.coursedata?.course?.image}`
+                    : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
+                }
+                alt="image"
               />
             </Box>
             <Box className={styles.articlebody}>
@@ -339,7 +352,11 @@ export function EnrolledCourseCardListView(props: any) {
                 width: 250,
                 display: { xs: "none", sm: "block" },
               }}
-              image="https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
+              image={
+                props?.coursedata?.course?.image !== ""
+                  ? `${BASE_URL}/${props?.coursedata?.course?.image}`
+                  : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
+              }
               alt="Live from space album cover"
             />
             <Box sx={{ display: "flex", flexDirection: "column" }}>

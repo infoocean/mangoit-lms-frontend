@@ -318,7 +318,7 @@ export default function AddSubscription() {
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

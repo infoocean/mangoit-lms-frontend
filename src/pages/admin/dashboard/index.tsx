@@ -24,6 +24,7 @@ import { useEffect, useState } from "react";
 import { HandleAdminDashboardContent } from "@/services/dashboard";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
+import Footer from "@/common/LayoutNavigations/footer";
 
 const Dashboard = () => {
 
@@ -216,6 +217,7 @@ const Dashboard = () => {
           </Grid>: <Card><CardContent><SpinnerProgress/></CardContent></Card>}
         </Box>
       </Box>
+			<Footer />
     </>
   );
 };

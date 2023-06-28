@@ -190,7 +190,7 @@ export default function AddUser() {
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

@@ -41,7 +41,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import { SearchOutlined } from "@mui/icons-material";
 import { useRouter } from "next/router";
-import { HandleCourseDelete, HandleCourseGet } from "@/services/course";
+import { HandleCourseDelete, HandleCourseGetadmin } from "@/services/course";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { usePagination } from "@/common/Pagination/paginations";
 import { AlertDialog } from "@/common/DeleteListRow/deleteRow";
@@ -95,6 +95,8 @@ const AllCourses = () => {
   }
   const PER_PAGE = row_per_page;
   const count = Math.ceil(rows?.length / PER_PAGE);
+  const startIndex = (page - 1) * row_per_page;
+  const endIndex = Math.min(startIndex + row_per_page, rows && rows.length);
   const DATA = usePagination(rows, PER_PAGE);
   const handlePageChange = (e: any, p: any) => {
     setPage(p);
@@ -109,7 +111,7 @@ const AllCourses = () => {
   }, []);
 
   const onSubmit = (event: any) => {
-    HandleCourseGet("", event).then((itemFiltered) => {
+    HandleCourseGetadmin("", event).then((itemFiltered) => {
       setRows(itemFiltered.data);
       setFilterObject(event);
     });
@@ -122,7 +124,7 @@ const AllCourses = () => {
   // to delete a row
   const handleDeletesRow = () => {
     HandleCourseDelete(deleteRow?.id, deleteRow?.title).then((deletedRow) => {
-      HandleCourseGet("", filterObject).then((newRows) => {
+      HandleCourseGetadmin("", filterObject).then((newRows) => {
         setRows(newRows.data);
       });
     });
@@ -143,7 +145,7 @@ const AllCourses = () => {
   // console.log(page,"page",count)
   const handleSearch = (e: any, identifier: any) => {
     setPage(1);
-    if(page !== 1){
+    if (page !== 1) {
       DATA.jump(1);
     }
     if (identifier === "reset") {
@@ -157,7 +159,7 @@ const AllCourses = () => {
   };
 
   const getAllCourseData = (search: any, filterObject: any) => {
-    HandleCourseGet(search, filterObject)
+    HandleCourseGetadmin(search, filterObject)
       .then((courses) => {
         setLoading(false);
         setRows(courses.data);
@@ -463,7 +465,7 @@ const AllCourses = () => {
                             <TableCell
                               colSpan={7}
                               className={courseStyle.tableLastCell}
-                              sx={{fontWeight:600}}
+                              sx={{ fontWeight: 600 }}
                             >
                               {" "}
                               Record not found{" "}
@@ -495,20 +497,29 @@ const AllCourses = () => {
                       color="primary"
                       onChange={handlePageChange}
                     />
-                    <FormControl>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        defaultValue={10}
-                        onChange={handlerowchange}
-                        size="small"
-                        style={{ height: "40px", marginRight: "11px" }}
+                    <Box>
+                      <Typography
+                        component={"span"}
+                        mr={2}
+                        className="paginationShowinig"
                       >
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={20}>20</MenuItem>
-                        <MenuItem value={30}>30</MenuItem>
-                      </Select>
-                    </FormControl>
+                        Showing {endIndex} of {rows && rows.length} Results
+                      </Typography>
+                      <FormControl>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          defaultValue={10}
+                          onChange={handlerowchange}
+                          size="small"
+                          style={{ height: "40px", marginRight: "11px" }}
+                        >
+                          <MenuItem value={10}>10</MenuItem>
+                          <MenuItem value={20}>20</MenuItem>
+                          <MenuItem value={30}>30</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
                   </Stack>
                 </TableContainer>
               </Paper>
@@ -523,7 +534,7 @@ const AllCourses = () => {
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

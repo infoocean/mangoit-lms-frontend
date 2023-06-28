@@ -58,6 +58,7 @@ import {
   MarkAsComplete,
   UpdateMarkAsComplete,
 } from "@/services/course_enroll";
+import Footer from "@/common/LayoutNavigations/footer";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -313,8 +314,6 @@ export default function Couseview() {
     <>
       <Navbar />
       <Box className={styles.combineContentAndSidebar}>
-        {/* <SideBar /> */}
-
         <Box className={styles.siteBodyContainer}>
           {/* breadcumbs */}
           <Box className={subs.maindisplay}>
@@ -342,7 +341,7 @@ export default function Couseview() {
           </Box>
           <br />
           {/* main content */}
-          <Box>
+          <Box className={subs.corseDetaildiv}>
             <Card className={subs.mediaque}>
               <CardContent>
                 <Box sx={{ flexGrow: 1 }}>
@@ -600,7 +599,7 @@ export default function Couseview() {
                                     aria-controls="panel1a-content"
                                     id="panel1a-header"
                                   >
-                                    <Box className="vvvvvv">
+                                    <Box>
                                       <Typography
                                         className={courseStyle.typoTitle}
                                       >
@@ -629,18 +628,6 @@ export default function Couseview() {
                                     </Box>
                                   </AccordionSummary>
                                   <AccordionDetails>
-                                    {/* <Box sx={{ width: "92%" }}>
-                                      <LinearProgressWithLabel1
-                                        value={
-                                          moduleCheckIdManage &&
-                                          moduleCheckIdManage.includes(item.id)
-                                            ? (numberConversion /
-                                                item?.sessions?.length) *
-                                              100
-                                            : 0
-                                        }
-                                      />
-                                    </Box> */}
                                     {item?.sessions.map((itemData: any) => {
                                       const togglee =
                                         itemData?.id === activeToggle
@@ -710,6 +697,7 @@ export default function Couseview() {
         </Box>
       </Box>
       <ToastContainer />
+      <Footer />
     </>
   );
 }

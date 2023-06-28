@@ -41,6 +41,7 @@ import {
   HandleSiteGetByID,
 } from "@/services/site";
 import { NextPageContext } from "next";
+import Footer from "@/common/LayoutNavigations/footer";
 
 interface SiteConfigPageProps {
   siteConfigData: any; // Replace with the actual type of your site config data
@@ -634,6 +635,7 @@ const SiteConfiguration = () => {
           </Card>
         </Box>
       </Box>
+			<Footer />
     </>
   );
 };

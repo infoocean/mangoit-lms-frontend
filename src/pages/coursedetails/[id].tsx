@@ -342,7 +342,11 @@ export default function CoursesDetailsPage() {
                     width: 300,
                     display: { xs: "none", sm: "block", borderRadius: "10px" },
                   }}
-                  image={`${BASE_URL}/${coursedet?.image}`}
+                  image={
+                    coursedet?.image !== null
+                      ? `${BASE_URL}/${coursedet?.image}`
+                      : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
+                  }
                   alt={"image"}
                 />
                 <CardContent

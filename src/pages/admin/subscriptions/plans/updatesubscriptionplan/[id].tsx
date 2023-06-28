@@ -280,7 +280,7 @@ const {id} = router.query;
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

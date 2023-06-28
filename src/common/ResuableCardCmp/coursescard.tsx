@@ -22,13 +22,19 @@ export function CourseCard(props: any) {
     props?.coursedata?.course?.id ||
     props?.paidcourses?.course?.id ||
     props?.freecourses?.course?.id ||
-    props?.enrolledCourses.id;
+    props?.enrolledCourses?.id;
 
   let title =
     (props && props?.coursedata?.course?.title?.substring(0, 15)) ||
     props?.paidcourses?.course?.title?.substring(0, 15) ||
     props?.freecourses?.course?.title?.substring(0, 15) ||
-    props?.enrolledCourses.title?.substring(0, 15);
+    props?.enrolledCourses?.title?.substring(0, 15);
+
+  const courseImage =
+    (props && props?.coursedata?.course?.image) ||
+    props?.paidcourses?.course?.image ||
+    props?.freecourses?.course?.image ||
+    props?.enrolledCourses?.image;
 
   return (
     <Link href={`/coursedetails/${c_id}`}>
@@ -39,8 +45,8 @@ export function CourseCard(props: any) {
               <Box
                 component="img"
                 src={
-                  props?.coursedata?.course?.image !== ""
-                    ? `${BASE_URL}/${props?.coursedata?.course?.image}`
+                  courseImage && courseImage !== ""
+                    ? `${BASE_URL}/${courseImage}`
                     : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
                 }
                 alt="image"
@@ -77,7 +83,15 @@ export function CourseCardListView(props: any) {
   const c_id =
     props?.coursedata?.course?.id ||
     props?.paidcourses?.course?.id ||
-    props?.freecourses?.course?.id;
+    props?.freecourses?.course?.id ||
+    props?.enrolledCourses?.id;
+
+  const courseImage =
+    props?.coursedata?.course?.image ||
+    props?.paidcourses?.course?.image ||
+    props?.freecourses?.course?.image ||
+    props?.enrolledCourses?.image;
+
   return (
     <Grid item xs={12} md={6}>
       <Link href={`/coursedetails/${c_id}`}>
@@ -92,8 +106,8 @@ export function CourseCardListView(props: any) {
                 display: { xs: "none", sm: "block" },
               }}
               image={
-                props?.coursedata?.course?.image !== ""
-                  ? `${BASE_URL}/${props?.coursedata?.course?.image}`
+                courseImage && courseImage !== ""
+                  ? `${BASE_URL}/${courseImage}`
                   : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
               }
               alt="Live from space album cover"
@@ -291,6 +305,12 @@ export function EnrolledCourseCard(props: any) {
     props?.freecourses?.course?.title?.substring(0, 15) ||
     props?.enrolledCourses?.title?.substring(0, 15);
 
+  const courseImage =
+    props?.coursedata?.course?.image ||
+    props?.paidcourses?.course?.image ||
+    props?.freecourses?.course?.image ||
+    props?.enrolledCourses?.image;
+
   return (
     <Link href={`/user/course/detail/${c_id}`}>
       <CardActionArea component="a">
@@ -300,8 +320,8 @@ export function EnrolledCourseCard(props: any) {
               <Box
                 component="img"
                 src={
-                  props?.coursedata?.course?.image !== ""
-                    ? `${BASE_URL}/${props?.coursedata?.course?.image}`
+                  courseImage && courseImage !== ""
+                    ? `${BASE_URL}/${courseImage}`
                     : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
                 }
                 alt="image"
@@ -338,7 +358,15 @@ export function EnrolledCourseCardListView(props: any) {
   const c_id =
     props?.coursedata?.course?.id ||
     props?.paidcourses?.course?.id ||
-    props?.freecourses?.course?.id;
+    props?.freecourses?.course?.id ||
+    props?.enrolledCourses?.id;
+
+  const courseImage =
+    props?.coursedata?.course?.image ||
+    props?.paidcourses?.course?.image ||
+    props?.freecourses?.course?.image ||
+    props?.enrolledCourses?.image;
+
   return (
     <Grid item xs={12} md={6}>
       <Link href={`/user/course/detail/${c_id}`}>
@@ -353,8 +381,8 @@ export function EnrolledCourseCardListView(props: any) {
                 display: { xs: "none", sm: "block" },
               }}
               image={
-                props?.coursedata?.course?.image !== ""
-                  ? `${BASE_URL}/${props?.coursedata?.course?.image}`
+                courseImage && courseImage !== ""
+                  ? `${BASE_URL}/${courseImage}`
                   : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
               }
               alt="Live from space album cover"

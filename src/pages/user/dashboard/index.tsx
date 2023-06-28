@@ -45,6 +45,7 @@ import { GetEnrolledCoursesByUserId } from "@/services/course_enroll";
 import Image from "next/image";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 import Link from "next/link";
+import Footer from "@/common/LayoutNavigations/footer";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -113,10 +114,10 @@ export default function Dashboard() {
     setgridview(false);
     setDynamicCss(2);
   };
-  
- function multiply(a:any, b:any) {
-  return a * b;
-}
+
+  function multiply(a: any, b: any) {
+    return a * b;
+  }
 
   return (
     <>
@@ -449,6 +450,7 @@ export default function Dashboard() {
           )}
         </Box>
       </Box>
+      <Footer />
       <ToastContainer />
     </>
   );

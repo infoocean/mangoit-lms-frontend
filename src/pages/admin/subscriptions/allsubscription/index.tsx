@@ -101,6 +101,8 @@ const Subscriptions = () => {
   }
   const PER_PAGE = row_per_page;
   const count = Math.ceil(rows?.length / PER_PAGE);
+  const startIndex = (page - 1) * row_per_page;
+  const endIndex = Math.min(startIndex + row_per_page, rows && rows.length);
   const DATA = usePagination(rows, PER_PAGE);
   const handlePageChange = (e: any, p: any) => {
     setPage(p);
@@ -394,7 +396,7 @@ const Subscriptions = () => {
                             <TableCell
                               colSpan={columns?.length}
                               className={Subscription.tableLastCell}
-                              sx={{fontWeight:600}}
+                              sx={{ fontWeight: 600 }}
                             >
                               {" "}
                               <Typography>Record not found</Typography>{" "}
@@ -416,20 +418,29 @@ const Subscriptions = () => {
                         color="primary"
                         onChange={handlePageChange}
                       />
-                      <FormControl>
-                        <Select
-                          labelId="demo-simple-select-label"
-                          id="demo-simple-select"
-                          defaultValue={10}
-                          onChange={handlerowchange}
-                          size="small"
-                          style={{ height: "40px", marginRight: "11px" }}
+                      <Box>
+                        <Typography
+                          component={"span"}
+                          mr={2}
+                          className="paginationShowinig"
                         >
-                          <MenuItem value={10}>10</MenuItem>
-                          <MenuItem value={20}>20</MenuItem>
-                          <MenuItem value={30}>30</MenuItem>
-                        </Select>
-                      </FormControl>
+                          Showing {endIndex} of {rows && rows.length} Results
+                        </Typography>
+                        <FormControl>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            defaultValue={10}
+                            onChange={handlerowchange}
+                            size="small"
+                            style={{ height: "40px", marginRight: "11px" }}
+                          >
+                            <MenuItem value={10}>10</MenuItem>
+                            <MenuItem value={20}>20</MenuItem>
+                            <MenuItem value={30}>30</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Box>
                     </Stack>
                   </TableContainer>
                 </Paper>
@@ -448,7 +459,7 @@ const Subscriptions = () => {
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

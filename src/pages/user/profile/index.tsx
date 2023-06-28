@@ -45,6 +45,7 @@ import styles from "../../../styles/sidebar.module.css";
 import { HandleProfile } from "@/services/user";
 import { HandleUpdateProfile } from "@/services/user";
 import { BASE_URL } from "@/config/config";
+import Footer from "@/common/LayoutNavigations/footer";
 
 export default function Profile() {
   const [previewProfile, setPreviewProfile] = useState<string | any>("");
@@ -382,6 +383,7 @@ export default function Profile() {
           </Card>
         </Box>
       </Box>
+      <Footer />
       <ToastContainer />
     </>
   );

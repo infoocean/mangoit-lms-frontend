@@ -11,6 +11,39 @@ export const HandleCourseGet = async (searchData: any, filterData: any) => {
     filterData === null || filterData === ""
       ? {
           is_chargeable: 0,
+          status: "active",
+        }
+      : filterData;
+  const API_URL = searchData
+    ? `${API.getCourses}/${searchData}`
+    : `${API.getCourses}`;
+  return await axios({
+    method: "POST",
+    url: API_URL,
+    headers: authHeader(),
+    data: createFilterData,
+  })
+    .then((request) => {
+      return request;
+    })
+    .catch((error) => {
+      if (error.response.status === 401) {
+        HandleLogout();
+      } else {
+        toast.error("Something went wrong");
+      }
+      return error;
+    });
+};
+
+export const HandleCourseGetadmin = async (
+  searchData: any,
+  filterData: any
+) => {
+  const createFilterData =
+    filterData === null || filterData === ""
+      ? {
+          is_chargeable: 0,
           status: 0,
         }
       : filterData;

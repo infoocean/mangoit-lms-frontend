@@ -34,6 +34,7 @@ import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
 import ReactCodeMirror from "@uiw/react-codemirror";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
+import Footer from "@/common/LayoutNavigations/footer";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -334,6 +335,7 @@ const AddEmailContent = () => {
           </Card>
         </Box>
       </Box>
+			<Footer />
       <ToastContainer />
     </>
   );

@@ -66,6 +66,11 @@ export default function Courses() {
   //pagination
   const [row_per_page, set_row_per_page] = React.useState(12);
   let [page, setPage] = React.useState<any>(1);
+  const startIndex = (page - 1) * row_per_page;
+  const endIndex = Math.min(
+    startIndex + row_per_page,
+    courseData && courseData.length
+  );
   function handlerowchange(e: any) {
     setPage(1);
     DATA.jump(1);
@@ -97,7 +102,7 @@ export default function Courses() {
         <Container maxWidth={false} className={styles.imgwidthcss}>
           <Grid>
             <Image
-              src="/Images/sideImages/courseBanner1.jpg"
+              src="/Images/sideImages/courseBanner2.jpg"
               alt="image"
               width={100}
               height={300}
@@ -193,7 +198,12 @@ export default function Courses() {
               </Grid>
               <Grid item xs={12} md={6} lg={3} className={styles.perpagedt}>
                 <Box sx={{ display: "flex" }}>
-                  <Typography sx={{ margin: "auto" }}>Per Page</Typography>
+                  <Typography
+                    sx={{ margin: "auto" }}
+                  >
+                    Showing {endIndex} of {courseData && courseData?.length}{" "}
+                    Results
+                  </Typography>
                   <FormControl>
                     <Select
                       labelId="demo-simple-select-label"

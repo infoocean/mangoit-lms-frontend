@@ -31,7 +31,7 @@ export default function HomePage() {
         <Container maxWidth={false} className={styles.imgwidthcss}>
           <Grid>
             <Image
-              src="/Images/sideImages/plan.jpg"
+              src="/Images/sideImages/plan2.jpg"
               alt="image"
               width={100}
               height={300}

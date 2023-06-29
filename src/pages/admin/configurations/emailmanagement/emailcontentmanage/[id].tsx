@@ -31,6 +31,7 @@ import { useRouter } from "next/router";
 import { ToastContainer } from "react-toastify";
 import { HandleSiteGetByID } from "@/services/site";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
+import Footer from "@/common/LayoutNavigations/footer";
 
 interface TabPanelProps {
   children?: React.ReactNode;
@@ -348,6 +349,7 @@ const EmailContentManage = () => {
           </Card>
         </Box>
       </Box>
+			<Footer />
       <ToastContainer />
     </>
   );

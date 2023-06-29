@@ -85,10 +85,11 @@ const Invoices = () => {
   const [getFilter, setFilter] = useState<any>("all");
   const [loading, setLoading] = useState(false);
 
-
   //pagination
   const [row_per_page, set_row_per_page] = useState(10);
   let [page, setPage] = useState<any>(1);
+  const startIndex = (page - 1) * row_per_page;
+  const endIndex = Math.min(startIndex + row_per_page, rows && rows.length);
   function handlerowchange(e: any) {
     setPage(1);
     DATA.jump(1);
@@ -131,16 +132,18 @@ const Invoices = () => {
   };
 
   const getAllInvoiceData = (search: string = "", payload?: any) => {
-    HandleInvoicesGet(search, payload).then((subs: any) => {
-      setRows(subs.data);
-      setLoading(false)
-    }).catch((err: any) => {
-      setLoading(false)
-    });
+    HandleInvoicesGet(search, payload)
+      .then((subs: any) => {
+        setRows(subs.data);
+        setLoading(false);
+      })
+      .catch((err: any) => {
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
-    setLoading(true)
+    setLoading(true);
     getAllInvoiceData();
   }, []);
 
@@ -151,10 +154,10 @@ const Invoices = () => {
 
   //download invoice
   const DownloadInvoice = (orderid: any) => {
-    console.log(orderid,"orderid")
+    console.log(orderid, "orderid");
     const reqdata = {
-      orderId: orderid
-    }
+      orderId: orderid,
+    };
     HandleDownloadInvoice(reqdata).then((response: any) => {
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement("a");
@@ -164,7 +167,7 @@ const Invoices = () => {
       link.click();
       return false;
     });
-  }
+  };
 
   return (
     <>
@@ -310,126 +313,148 @@ const Invoices = () => {
                   )}
                 </PopupState>
               </Box>
-              {!loading? 
-              <Paper className={Subscription.papperForTable}>
-                <TableContainer className={Subscription.tableContainer}>
-                  <Table stickyHeader aria-label="sticky table">
-                    <TableHead>
-                      <TableRow>
-                        {columns.map((column) => (
-                          <TableCell
-                            key={column.id}
-                            align={column.align}
-                            style={{ top: 0, minWidth: column.minWidth }}
-                            onClick={() => {
-                              column.label === "ID" ? handleSort(rows) : "";
-                            }}
-                            className={Subscription.tableHeadingForId}
-                          >
-                            {column.label === "ID" ? (
-                              <>
-                                {column.label}
-                                {toggle ? (
-                                  <ArrowDownwardOutlinedIcon fontSize="small" />
-                                ) : (
-                                  <ArrowUpwardOutlinedIcon fontSize="small" />
-                                )}
-                              </>
-                            ) : (
-                              column.label
-                            )}
-                          </TableCell>
-                        ))}
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {rows && rows.length > 0 ? (
-                        DATA.currentData() &&
-                        DATA.currentData().map((row: any) => {
-                          const statusColor =
-                            row.status === "paid"
-                              ? Subscription.activeClassColor
-                              : Subscription.inactiveClassColor;
-                          return (
-                            <TableRow hover key={row.id}>
-                              <TableCell>{row.id}</TableCell>
-                              <TableCell>
-                                {row?.user?.first_name && row?.user?.last_name ? `${capitalizeFirstLetter(row?.user?.first_name)} ${capitalizeFirstLetter(row?.user?.last_name)}` : ''}
-                              </TableCell>
-                              <TableCell>
-                                {row?.subscription?.name ? capitalizeFirstLetter(row?.subscription?.name) : ''}
-                              </TableCell>
-                              <TableCell>${row?.amount}</TableCell>
-                              <TableCell className={statusColor}>
-                                {capitalizeFirstLetter(row.status)}
-                              </TableCell>
-                              <TableCell>{row?.payment_type}</TableCell>
-                              <TableCell>
-                                {row?.transaction_id?.slice(0, 20)}
-                                {row?.transaction_id ? "..." : ""}
-                              </TableCell>
-                              <TableCell>
-                                <Button
-                                  className={Subscription.editDeleteButton}
-                                  variant="outlined"
-                                  color="error"
-                                  onClick={() => DownloadInvoice(row?.id)}
-                                >
-                                  <FileDownloadOutlinedIcon />
-                                </Button>
-                              </TableCell>
-                            </TableRow>
-                          );
-                        })
-                      ) : (
+              {!loading ? (
+                <Paper className={Subscription.papperForTable}>
+                  <TableContainer className={Subscription.tableContainer}>
+                    <Table stickyHeader aria-label="sticky table">
+                      <TableHead>
                         <TableRow>
-                          <TableCell
-                            colSpan={columns?.length}
-                            className={Subscription.tableLastCell}
-                            sx={{fontWeight:600}}
-                          >
-                            {" "}
-                            <Typography>Record not found</Typography>{" "}
-                          </TableCell>
+                          {columns.map((column) => (
+                            <TableCell
+                              key={column.id}
+                              align={column.align}
+                              style={{ top: 0, minWidth: column.minWidth }}
+                              onClick={() => {
+                                column.label === "ID" ? handleSort(rows) : "";
+                              }}
+                              className={Subscription.tableHeadingForId}
+                            >
+                              {column.label === "ID" ? (
+                                <>
+                                  {column.label}
+                                  {toggle ? (
+                                    <ArrowDownwardOutlinedIcon fontSize="small" />
+                                  ) : (
+                                    <ArrowUpwardOutlinedIcon fontSize="small" />
+                                  )}
+                                </>
+                              ) : (
+                                column.label
+                              )}
+                            </TableCell>
+                          ))}
                         </TableRow>
-                      )}
-                    </TableBody>
-                  </Table>
-                  <Stack
-                    className={Subscription.stackStyle}
-                    direction="row"
-                    alignItems="right"
-                    justifyContent="space-between"
-                  >
-                    <Pagination
-                      className="pagination"
-                      count={count}
-                      page={page}
-                      color="primary"
-                      onChange={handlePageChange}
-                    />
-                    <FormControl>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        defaultValue={10}
-                        onChange={handlerowchange}
-                        size="small"
-                        style={{ height: "40px", marginRight: "11px" }}
-                      >
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={20}>20</MenuItem>
-                        <MenuItem value={30}>30</MenuItem>
-                      </Select>
-                    </FormControl>
-                  </Stack>
-                </TableContainer>
-              </Paper>:<SpinnerProgress/>}
+                      </TableHead>
+                      <TableBody>
+                        {rows && rows.length > 0 ? (
+                          DATA.currentData() &&
+                          DATA.currentData().map((row: any) => {
+                            const statusColor =
+                              row.status === "paid"
+                                ? Subscription.activeClassColor
+                                : Subscription.inactiveClassColor;
+                            return (
+                              <TableRow hover key={row.id}>
+                                <TableCell>{row.id}</TableCell>
+                                <TableCell>
+                                  {row?.user?.first_name && row?.user?.last_name
+                                    ? `${capitalizeFirstLetter(
+                                        row?.user?.first_name
+                                      )} ${capitalizeFirstLetter(
+                                        row?.user?.last_name
+                                      )}`
+                                    : ""}
+                                </TableCell>
+                                <TableCell>
+                                  {row?.subscription?.name
+                                    ? capitalizeFirstLetter(
+                                        row?.subscription?.name
+                                      )
+                                    : ""}
+                                </TableCell>
+                                <TableCell>${row?.amount}</TableCell>
+                                <TableCell className={statusColor}>
+                                  {capitalizeFirstLetter(row.status)}
+                                </TableCell>
+                                <TableCell>{row?.payment_type}</TableCell>
+                                <TableCell>
+                                  {row?.transaction_id?.slice(0, 20)}
+                                  {row?.transaction_id ? "..." : ""}
+                                </TableCell>
+                                <TableCell>
+                                  <Button
+                                    className={Subscription.editDeleteButton}
+                                    variant="outlined"
+                                    color="error"
+                                    onClick={() => DownloadInvoice(row?.id)}
+                                  >
+                                    <FileDownloadOutlinedIcon />
+                                  </Button>
+                                </TableCell>
+                              </TableRow>
+                            );
+                          })
+                        ) : (
+                          <TableRow>
+                            <TableCell
+                              colSpan={columns?.length}
+                              className={Subscription.tableLastCell}
+                              sx={{ fontWeight: 600 }}
+                            >
+                              {" "}
+                              <Typography>Record not found</Typography>{" "}
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                    <Stack
+                      className={Subscription.stackStyle}
+                      direction="row"
+                      alignItems="right"
+                      justifyContent="space-between"
+                    >
+                      <Pagination
+                        className="pagination"
+                        count={count}
+                        page={page}
+                        color="primary"
+                        onChange={handlePageChange}
+                      />
+                      <Box>
+                        <Typography
+                          component={"span"}
+                          mr={2}
+                          className="paginationShowinig"
+                        >
+                          Showing {endIndex} of {rows && rows.length} Results
+                        </Typography>
+                        <FormControl>
+                          <Select
+                            labelId="demo-simple-select-label"
+                            id="demo-simple-select"
+                            defaultValue={10}
+                            onChange={handlerowchange}
+                            size="small"
+                            style={{ height: "40px", marginRight: "11px" }}
+                          >
+                            <MenuItem value={10}>10</MenuItem>
+                            <MenuItem value={20}>20</MenuItem>
+                            <MenuItem value={30}>30</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Box>
+                    </Stack>
+                  </TableContainer>
+                </Paper>
+              ) : (
+                <SpinnerProgress />
+              )}
             </CardContent>
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

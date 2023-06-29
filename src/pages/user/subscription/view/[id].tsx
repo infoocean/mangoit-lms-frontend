@@ -79,6 +79,7 @@ import {
   HandleDownloadReceipt,
 } from "../../../../services/invoice_receipt";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
+import Footer from "@/common/LayoutNavigations/footer";
 interface Column {
   id:
     | "id"
@@ -968,7 +969,7 @@ export default function View() {
           </DialogActions>
         </Dialog>
       </Box>
-      {/* <Footer /> */}
+      <Footer />
       <ToastContainer />
     </>
   );

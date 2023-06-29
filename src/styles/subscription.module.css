@@ -186,8 +186,8 @@
   color: orange !important;
 }
 .expiredClassColor {
-    color: rgb(116, 116, 116) !important;
-  }
+  color: rgb(116, 116, 116) !important;
+}
 .stackStyle {
   margin-bottom: 10px !important;
   margin-top: 10px !important;
@@ -217,19 +217,22 @@
   width: 105px !important;
   padding: 9px 22px !important;
 }
-.cardBorder{
+.cardBorder {
   border-top: 1px solid #e3e3e3 !important;
   border-left: 1px solid #e3e3e3 !important;
   border-right: 1px solid #e3e3e3 !important;
 }
-.imageCenter{
+.imageCenter {
   text-align: center;
   margin-top: 5%;
 }
-.inputFieldWidth{
-  width:95% !important;
+.inputFieldWidth {
+  width: 95% !important;
 }
 .subsplanNameGride {
   display: flex !important;
   margin-bottom: 5px !important;
+}
+.corseDetaildiv {
+  min-height: 600px !important;
 }

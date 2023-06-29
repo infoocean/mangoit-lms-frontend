@@ -87,8 +87,8 @@ a {
   border-top-right-radius: 23px !important;
   border-bottom-right-radius: 23px !important;
   max-width: 200px !important;
-  color: white !important;
-  background-color: #e8661b !important;
+  color: #000000 !important;
+  background-color: #ef590640 !important;
 }
 
 .css-kk1bwy-MuiButtonBase-root-MuiMenuItem-root.Mui-selected:hover {
@@ -149,24 +149,31 @@ a {
 }
 
 .css-1rl742m > .ps-menu-button:hover {
-  background-color: #e8661b !important;
-  color: white !important;
+  /* background-color: #e8661b !important;
+  color: white !important; */
+  color: #000000 !important;
+  background-color: #ef590640 !important;
   border-top-right-radius: 23px !important;
   border-bottom-right-radius: 23px !important;
 }
 
 /* submenu inner */
 .css-1a3zl6u > .ps-menu-button:hover {
-  background-color: #e8661b !important;
+  /* background-color: #e8661b !important; */
   color: white !important;
+  /* color: #000000!important; */
+  font-size: 17px !important;
+  background-color: #ef590640 !important;
   border-top-right-radius: 23px !important;
   border-bottom-right-radius: 23px !important;
 }
 
 /* submenu header css */
 .css-16jesut > .ps-menu-button:hover {
-  background-color: #e8661b !important;
-  color: white !important;
+  /* background-color: #e8661b !important;
+  color: white !important; */
+  color: #000000 !important;
+  background-color: #ef590640 !important;
   border-top-right-radius: 23px !important;
   border-bottom-right-radius: 23px !important;
 }
@@ -185,7 +192,14 @@ div#panel1a-header > div {
   background-color: #ffffff !important;
 }
 /* auth pages label color */
-.css-1ald77x.Mui-focused{
-  color: #E8661B !important;
+.css-1ald77x.Mui-focused {
+  color: #e8661b !important;
   /* border: 1px solid #e8661b !important; */
+}
+
+/* //pagination showing css */
+
+.paginationShowinig {
+  position: relative !important;
+  top: 9px !important;
 }

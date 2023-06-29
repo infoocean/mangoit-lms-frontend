@@ -225,7 +225,7 @@ export default function UpdateUser() {
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

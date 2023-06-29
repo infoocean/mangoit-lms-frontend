@@ -27,6 +27,7 @@ import { emailmanagementType } from "@/types/siteType";
 import emailStyles from "../../../../styles/allConfigurations.module.css";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
+import Footer from "@/common/LayoutNavigations/footer";
 
 interface Column {
   id: "id" | "emailtype" | "emailfrom" | "emailsubject" | "action";
@@ -193,6 +194,7 @@ const EmailConfiguration = () => {
           </Card>
         </Box>
       </Box>
+			<Footer />
     </>
   );
 };

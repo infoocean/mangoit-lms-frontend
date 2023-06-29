@@ -378,7 +378,7 @@ export default function UpdateSession() {
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

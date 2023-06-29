@@ -53,6 +53,7 @@ import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 import { HandleUserDelete, HandleUserGet } from "@/services/user";
 import { HandleModuleDelete, HandleModuleGet } from "@/services/module";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
+import Footer from "@/common/LayoutNavigations/footer";
 
 interface Column {
   id:
@@ -93,6 +94,8 @@ const AllUsers = () => {
   //pagination
   const [row_per_page, set_row_per_page] = React.useState(10);
   let [page, setPage] = React.useState<any>(1);
+  const startIndex = (page - 1) * row_per_page;
+  const endIndex = Math.min(startIndex + row_per_page, rows && rows.length);
   function handlerowchange(e: any) {
     setPage(1);
     DATA.jump(1);
@@ -451,7 +454,7 @@ const AllUsers = () => {
                             <TableCell
                               colSpan={7}
                               className={UserCss.tableLastCell}
-							  sx={{fontWeight:600}}
+                              sx={{ fontWeight: 600 }}
                             >
                               {" "}
                               Record not found{" "}
@@ -484,20 +487,29 @@ const AllUsers = () => {
                       color="primary"
                       onChange={handlePageChange}
                     />
-                    <FormControl>
-                      <Select
-                        labelId="demo-simple-select-label"
-                        id="demo-simple-select"
-                        defaultValue={10}
-                        onChange={handlerowchange}
-                        size="small"
-                        style={{ height: "40px", marginRight: "11px" }}
+                    <Box>
+                      <Typography
+                        component={"span"}
+                        mr={2}
+                        className="paginationShowinig"
                       >
-                        <MenuItem value={10}>10</MenuItem>
-                        <MenuItem value={20}>20</MenuItem>
-                        <MenuItem value={30}>30</MenuItem>
-                      </Select>
-                    </FormControl>
+                        Showing {endIndex} of {rows && rows.length} Results
+                      </Typography>
+                      <FormControl>
+                        <Select
+                          labelId="demo-simple-select-label"
+                          id="demo-simple-select"
+                          defaultValue={10}
+                          onChange={handlerowchange}
+                          size="small"
+                          style={{ height: "40px", marginRight: "11px" }}
+                        >
+                          <MenuItem value={10}>10</MenuItem>
+                          <MenuItem value={20}>20</MenuItem>
+                          <MenuItem value={30}>30</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Box>
                   </Stack>
                 </TableContainer>
               </Paper>
@@ -512,7 +524,7 @@ const AllUsers = () => {
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

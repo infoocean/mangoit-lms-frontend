@@ -355,7 +355,7 @@ export default function UpdateSubscription() {
           </Card>
         </Box>
       </Box>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

@@ -31,6 +31,7 @@ import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import Preview from '@/common/PreviewAttachments/previewAttachment';
+import Footer from '@/common/LayoutNavigations/footer';
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
@@ -546,7 +547,6 @@ export default function UpdateCourse() {
                       </Grid>
                       <Grid item xs={12} sm={12} md={12} lg={12} mb={2} >
                         <InputLabel className={courseStyle.InputLabelFont}>Long Description</InputLabel>
-                        <Box className={courseStyle.quillDescription1}>
                           <RichEditor
                             {...register("long_description")}
                             value={getLongDespcriptionContent ? getLongDespcriptionContent : getCourse?.long_description}
@@ -554,7 +554,6 @@ export default function UpdateCourse() {
                               handleContentChange(value, "long_description")
                             }
                           />
-                        </Box>
                         {errors && errors.long_description ? ErrorShowing(errors?.long_description?.message) : ""}
                       </Grid>
                       <Grid item xs={12} sm={12} md={12} lg={12} textAlign={"right"} >
@@ -714,7 +713,7 @@ export default function UpdateCourse() {
           </Stack>
         </DialogActions>
       </BootstrapDialog>
-      {/* <Footer/> */}
+      <Footer/>
       <ToastContainer />
     </>
   );

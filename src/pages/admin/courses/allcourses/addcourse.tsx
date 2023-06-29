@@ -48,6 +48,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import DeleteIcon from '@mui/icons-material/Delete';
 import RestartAltOutlinedIcon from '@mui/icons-material/RestartAltOutlined';
+import Footer from "@/common/LayoutNavigations/footer";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   '& .MuiDialogContent-root': {
     padding: theme.spacing(2),
@@ -489,7 +490,7 @@ const AddCourse = () => {
                         </Box>
                         {imagefile ? '' : errors && errors.imageattachments ? ErrorShowing(errors?.imageattachments?.message) : ""}
                       </Grid>
-                      <Grid item mb={1} lg={12}>
+                      <Grid item mb={1}md lg={12}>
                         <InputLabel className={styles.InputLabelFont}>Introduction Video</InputLabel>
                         <Box className={styles.courseAttachmentBox}>
                           <InputLabel className={styles.subbox} >
@@ -508,7 +509,7 @@ const AddCourse = () => {
                       </Grid>
                     </Grid>
                     <Box className={styles.wrapShortAndLongDescription}>
-                      <Grid item mb={1} mt={2}>
+                      <Grid item mb={1} mt={2} lg={12}>
                         <InputLabel className={styles.InputLabelFont}>
                           Short Description
                         </InputLabel>
@@ -523,7 +524,7 @@ const AddCourse = () => {
                         </Box>
                         {errors && errors.short_description ? ErrorShowing(errors?.short_description?.message) : ""}
                       </Grid>
-                      <Grid item className={styles.quillDescriptionTop} >
+                      <Grid item className={styles.quillDescriptionTop} lg={12} >
                         <InputLabel className={styles.InputLabelFont}>
                           Long Description
                         </InputLabel>
@@ -694,6 +695,7 @@ const AddCourse = () => {
           </Stack>
         </DialogActions>
       </BootstrapDialog>
+      <Footer />
     </>
   );
 };

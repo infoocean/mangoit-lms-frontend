@@ -45,6 +45,7 @@ import { GetEnrolledCoursesByUserId } from "@/services/course_enroll";
 import Image from "next/image";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 import Link from "next/link";
+import Footer from "@/common/LayoutNavigations/footer";
 
 const Item = styled(Paper)(({ theme }) => ({
   backgroundColor: theme.palette.mode === "dark" ? "#1A2027" : "#fff",
@@ -102,10 +103,17 @@ export default function Dashboard() {
     setDynamicCss(2);
   };
 
+  function multiply(a: any, b: any) {
+    return a * b;
+  }
+
   return (
     <>
       <Navbar />
-      <Box className={styles.combineContentAndSidebar}>
+      <Box
+        className={styles.combineContentAndSidebar}
+        data-testid="checkInDocument"
+      >
         <SideBar />
         <Box className={styles.siteBodyContainer}>
           {/* breadcumbs */}
@@ -252,6 +260,7 @@ export default function Dashboard() {
                           <Box>
                             <Typography
                               className={dashboardStyles.quickstatText}
+                              data-testid="checkText"
                             >
                               Subscription Name
                             </Typography>
@@ -429,6 +438,7 @@ export default function Dashboard() {
           )}
         </Box>
       </Box>
+      <Footer />
       <ToastContainer />
     </>
   );

@@ -229,7 +229,7 @@ export default function AddSession() {
                </Card>
             </Box>
          </Box>
-         {/* <Footer/> */}
+         <Footer/>
          <ToastContainer />
       </>
    );

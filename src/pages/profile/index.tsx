@@ -369,7 +369,7 @@ export default function Profile() {
 					</Card>
 				</Box>
 			</Box>
-			{/* <Footer /> */}
+			<Footer />
 			<ToastContainer />
 		</>
 	);

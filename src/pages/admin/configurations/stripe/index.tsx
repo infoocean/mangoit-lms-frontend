@@ -38,6 +38,7 @@ import Navbar from "@/common/LayoutNavigations/navbar";
 import SideBar from "@/common/LayoutNavigations/sideBar";
 import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
+import Footer from "@/common/LayoutNavigations/footer";
 
 const Stripe = () => {
   const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
@@ -110,7 +111,7 @@ const Stripe = () => {
       .catch((err) => {
         console.log(err);
       });
-      setLoading(false)
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -119,7 +120,7 @@ const Stripe = () => {
       localData = window.localStorage.getItem("userData");
     }
     const user_id = JSON.parse(localData);
-    setLoading(true)
+    setLoading(true);
     handleGetDataById(user_id?.id);
   }, []);
 
@@ -147,200 +148,255 @@ const Stripe = () => {
   };
 
   return (
-    <>      <Navbar />
-    <ToastContainer />
-    <Box className={styles.combineContentAndSidebar}>
-      <SideBar />
+    <>
+      {" "}
+      <Navbar />
+      <ToastContainer />
+      <Box className={styles.combineContentAndSidebar}>
+        <SideBar />
 
-      <Box className={styles.siteBodyContainer}>
-        {/* breadcumbs */}
-        <BreadcrumbsHeading
-          First="Home"
-          Current="Stripe Configuration"
-          Text="CONFIGURATION"
-          Link="/admin/configuration/"
-        />
+        <Box className={styles.siteBodyContainer}>
+          {/* breadcumbs */}
+          <BreadcrumbsHeading
+            First="Home"
+            Current="Stripe Configuration"
+            Text="CONFIGURATION"
+            Link="/admin/configuration/"
+          />
 
-        {/* main content */}
-        <Card>
-          <CardContent>
-          {!isLoading ? (
-      !isAddOrEdit ? (
-        // Save data in portal
-        <Box
-          component="form"
-          method="POST"
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit(onSubmit)}
-          onReset={reset}
-        >
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} md={12} lg={6}>
-              <Box
-                component="img"
-                src="/Images/sideImages/stripeSide.svg"
-                width={"100%"}
-              />
-            </Grid>
-            <Grid item xs={12} sm={12} md={12} lg={6} margin={"70px 0px"}>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={12}
-                lg={12}
-                margin={"10px 0px 20px 0px"}
-              >
-                <InputLabel
-                  shrink
-                  htmlFor="org_pk"
-                  className={siteStyles.inputLabels}
-                >
-                  Publishable Key
-                </InputLabel>
-                <TextField
-                  fullWidth
-                  id="org_pk"
-                  {...register("org_pk")}
-                  placeholder="Provide your publishable key"
-                />
-                {errors && errors.org_pk
-                  ? ErrorShowing(errors?.org_pk?.message)
-                  : ""}
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12} marginBottom={"20px"}>
-                <InputLabel
-                  shrink
-                  htmlFor="org_sk"
-                  className={siteStyles.inputLabels}
-                >
-                  Secret Key
-                </InputLabel>
-                <TextField
-                  fullWidth
-                  id="org_sk"
-                  {...register("org_sk")}
-                  placeholder="Provide your secret key"
-                />
-                {errors && errors.org_sk
-                  ? ErrorShowing(errors?.org_sk?.message)
-                  : ""}
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={12} lg={12} textAlign={"right"}>
-                {!isLoadingButton ? (
-                  <Button type="submit" size="large" variant="contained" id={styles.muibuttonBackgroundColor}>
-                    Submit
-                  </Button>
-                ) : (
-                  <LoadingButton
-                    loading={isLoadingButton}
-                    size="large"
-                    className={siteStyles.siteLoadingButton}
-                    variant="contained"
-                    disabled
+          {/* main content */}
+          <Card>
+            <CardContent>
+              {!isLoading ? (
+                !isAddOrEdit ? (
+                  // Save data in portal
+                  <Box
+                    component="form"
+                    method="POST"
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleSubmit(onSubmit)}
+                    onReset={reset}
                   >
-                    <CircularProgressBar />
-                  </LoadingButton>
-                )}
-              </Grid>
-            </Grid>
-          </Grid>
-        </Box>
-      ) : (
-        //  Show data from portal
-        <Box
-          component="form"
-          method="POST"
-          noValidate
-          autoComplete="off"
-          onSubmit={handleSubmit(onUpdate)}
-          onReset={reset}
-        >
-          <Grid container spacing={3}>
-            <Grid item xs={12} sm={12} md={12} lg={6}>
-              <Box
-                component="img"
-                src="/Images/sideImages/stripeSide.svg"
-                width={"100%"}
-              />
-            </Grid>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={12} md={12} lg={6}>
+                        <Box
+                          component="img"
+                          src="/Images/sideImages/stripeSide.svg"
+                          width={"100%"}
+                        />
+                      </Grid>
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={12}
+                        lg={6}
+                        margin={"70px 0px"}
+                      >
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          margin={"10px 0px 20px 0px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_pk"
+                            className={siteStyles.inputLabels}
+                          >
+                            Publishable Key
+                          </InputLabel>
+                          <TextField
+                            fullWidth
+                            id="org_pk"
+                            {...register("org_pk")}
+                            placeholder="Provide your publishable key"
+                          />
+                          {errors && errors.org_pk
+                            ? ErrorShowing(errors?.org_pk?.message)
+                            : ""}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          marginBottom={"20px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_sk"
+                            className={siteStyles.inputLabels}
+                          >
+                            Secret Key
+                          </InputLabel>
+                          <TextField
+                            fullWidth
+                            id="org_sk"
+                            {...register("org_sk")}
+                            placeholder="Provide your secret key"
+                          />
+                          {errors && errors.org_sk
+                            ? ErrorShowing(errors?.org_sk?.message)
+                            : ""}
+                        </Grid>
 
-            <Grid item xs={12} sm={12} md={12} lg={6} margin={"70px 0px"}>
-              <Grid
-                item
-                xs={12}
-                sm={12}
-                md={12}
-                lg={12}
-                margin={"10px 0px 20px 0px"}
-              >
-                <InputLabel
-                  shrink
-                  htmlFor="org_pk"
-                  className={siteStyles.inputLabels}
-                >
-                  Publishable Key
-                </InputLabel>
-                <TextField
-                  fullWidth
-                  id="org_pk"
-                  {...register("org_pk")}
-                  placeholder="Provide your publishable key"
-                />
-                {errors && errors.org_pk
-                  ? ErrorShowing(errors?.org_pk?.message)
-                  : ""}
-              </Grid>
-              <Grid item xs={12} sm={12} md={12} lg={12} marginBottom={"20px"}>
-                <InputLabel
-                  shrink
-                  htmlFor="org_sk"
-                  className={siteStyles.inputLabels}
-                >
-                  Secret Key
-                </InputLabel>
-                <TextField
-                  fullWidth
-                  id="org_sk"
-                  {...register("org_sk")}
-                  placeholder="Provide your secret key"
-                />
-                {errors && errors.org_sk
-                  ? ErrorShowing(errors?.org_sk?.message)
-                  : ""}
-              </Grid>
-
-              <Grid item xs={12} sm={12} md={12} lg={12} textAlign={"right"}>
-                {!isLoadingButton ? (
-                  <Button type="submit" size="large" variant="contained" id={styles.muibuttonBackgroundColor}>
-                    UPDATE
-                  </Button>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          textAlign={"right"}
+                        >
+                          {!isLoadingButton ? (
+                            <Button
+                              type="submit"
+                              size="large"
+                              variant="contained"
+                              id={styles.muibuttonBackgroundColor}
+                            >
+                              Submit
+                            </Button>
+                          ) : (
+                            <LoadingButton
+                              loading={isLoadingButton}
+                              size="large"
+                              className={siteStyles.siteLoadingButton}
+                              variant="contained"
+                              disabled
+                            >
+                              <CircularProgressBar />
+                            </LoadingButton>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Box>
                 ) : (
-                  <LoadingButton
-                    loading={isLoadingButton}
-                    size="large"
-                    className={siteStyles.siteLoadingButton}
-                    variant="contained"
-                    disabled
+                  //  Show data from portal
+                  <Box
+                    component="form"
+                    method="POST"
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleSubmit(onUpdate)}
+                    onReset={reset}
                   >
-                    <CircularProgressBar />
-                  </LoadingButton>
-                )}
-              </Grid>
-            </Grid>
-          </Grid>
-        </Box>
-      )): (
-        <SpinnerProgress />
-      )}
-  </CardContent>
-</Card>
-</Box>
-</Box>
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={12} md={12} lg={6}>
+                        <Box
+                          component="img"
+                          src="/Images/sideImages/stripeSide.svg"
+                          width={"100%"}
+                        />
+                      </Grid>
 
-      <ToastContainer />{" "}
+                      <Grid
+                        item
+                        xs={12}
+                        sm={12}
+                        md={12}
+                        lg={6}
+                        margin={"70px 0px"}
+                      >
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          margin={"10px 0px 20px 0px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_pk"
+                            className={siteStyles.inputLabels}
+                          >
+                            Publishable Key
+                          </InputLabel>
+                          <TextField
+                            fullWidth
+                            id="org_pk"
+                            {...register("org_pk")}
+                            placeholder="Provide your publishable key"
+                          />
+                          {errors && errors.org_pk
+                            ? ErrorShowing(errors?.org_pk?.message)
+                            : ""}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          marginBottom={"20px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_sk"
+                            className={siteStyles.inputLabels}
+                          >
+                            Secret Key
+                          </InputLabel>
+                          <TextField
+                            fullWidth
+                            id="org_sk"
+                            {...register("org_sk")}
+                            placeholder="Provide your secret key"
+                          />
+                          {errors && errors.org_sk
+                            ? ErrorShowing(errors?.org_sk?.message)
+                            : ""}
+                        </Grid>
+
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          textAlign={"right"}
+                        >
+                          {!isLoadingButton ? (
+                            <Button
+                              type="submit"
+                              size="large"
+                              variant="contained"
+                              id={styles.muibuttonBackgroundColor}
+                            >
+                              UPDATE
+                            </Button>
+                          ) : (
+                            <LoadingButton
+                              loading={isLoadingButton}
+                              size="large"
+                              className={siteStyles.siteLoadingButton}
+                              variant="contained"
+                              disabled
+                            >
+                              <CircularProgressBar />
+                            </LoadingButton>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                )
+              ) : (
+                <SpinnerProgress />
+              )}
+            </CardContent>
+          </Card>
+        </Box>
+      </Box>
+			<Footer />
+      <ToastContainer />
     </>
   );
 };

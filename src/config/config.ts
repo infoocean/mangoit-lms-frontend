@@ -51,11 +51,11 @@ export const API = {
   deleteSite: `${BASE_URL}/deletesiteconfigs`,
 
   //subscription
-  getAllSubscription: `${BASE_URL}/getsubscription`,
-  deleteSubscription: `${BASE_URL}/deletesubscription`,
-  getSubscription: `${BASE_URL}/getsubscriptionbyuserid`,
-  getSubsById: `${BASE_URL}/getsubscriptionbyid`,
-  subscriptionByUserId: `${BASE_URL}/subscriptionbyuserid`,
+  getAllSubscription: `${BASE_URL}/getsubscription`, //admin only
+  deleteSubscription: `${BASE_URL}/deletesubscription`, //admin only
+  getSubscription: `${BASE_URL}/getsubscriptionbyuserid`, // user only
+  getSubsById: `${BASE_URL}/getsubscriptionbyid`, // subs id
+ 
 
   //create user subscription
   createsubscription: `${BASE_URL}/createsubscription`,
@@ -74,7 +74,7 @@ export const API = {
   // invoices and orders
   getInvoices: `${BASE_URL}/getorders`,
   downloadPDF: `${BASE_URL}/downloadreceipt`,
-  getOrder: `${BASE_URL}/getorderbyuserid`,
+  getOrder: `${BASE_URL}/getOrderSubscriptionId`,
 
   //accept payment
   acceptpayment: `${BASE_URL}/acceptpayment`,

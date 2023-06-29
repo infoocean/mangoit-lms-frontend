@@ -103,7 +103,7 @@ export default function HomePage() {
             components built modern website with flexible from scratch.
           </Typography>
           <Box className={styles.btnwrapper}>
-            <Link href={"/"}>
+            <Link href={"/courses"}>
               <Button className={styles.viewmorebtn}>View More</Button>
             </Link>
           </Box>
@@ -133,6 +133,7 @@ export default function HomePage() {
               style: {
                 padding: "15px",
                 color: "black",
+                
               },
             }}
             indicatorContainerProps={{
@@ -169,13 +170,13 @@ export default function HomePage() {
             <Box>
               <Box className={styles.iconarticle1}>
                 {/* <Badge badgeContent={1} color="warning"> */}
-                  <Box className={styles.iconarticle2}>
-                    <Box className={styles.iconarticlewrapper}>
-                      <Box className={styles.iconfigure}>
-                        <LockIcon />
-                      </Box>
+                <Box className={styles.iconarticle2}>
+                  <Box className={styles.iconarticlewrapper}>
+                    <Box className={styles.iconfigure}>
+                      <LockIcon />
                     </Box>
                   </Box>
+                </Box>
                 {/* </Badge> */}
               </Box>
               <Typography className={styles.h2}>Sign Up</Typography>
@@ -183,13 +184,13 @@ export default function HomePage() {
             <Box>
               <Box className={styles.iconarticle1}>
                 {/* <Badge badgeContent={2} color="warning"> */}
-                  <Box className={styles.iconarticle2}>
-                    <Box className={styles.iconarticlewrapper}>
-                      <Box className={styles.iconfigure}>
-                        <SchoolIcon />
-                      </Box>
+                <Box className={styles.iconarticle2}>
+                  <Box className={styles.iconarticlewrapper}>
+                    <Box className={styles.iconfigure}>
+                      <SchoolIcon />
                     </Box>
                   </Box>
+                </Box>
                 {/* </Badge> */}
               </Box>
               <Typography className={styles.h2}>Select Courses</Typography>
@@ -197,13 +198,13 @@ export default function HomePage() {
             <Box>
               <Box className={styles.iconarticle1}>
                 {/* <Badge badgeContent={3} color="warning"> */}
-                  <Box className={styles.iconarticle2}>
-                    <Box className={styles.iconarticlewrapper}>
-                      <Box className={styles.iconfigure}>
-                        <LocalLibraryIcon />
-                      </Box>
+                <Box className={styles.iconarticle2}>
+                  <Box className={styles.iconarticlewrapper}>
+                    <Box className={styles.iconfigure}>
+                      <LocalLibraryIcon />
                     </Box>
                   </Box>
+                </Box>
                 {/* </Badge> */}
               </Box>
               <Typography className={styles.h2}>Start Learning</Typography>
@@ -221,10 +222,10 @@ export default function HomePage() {
             <Divider className={styles.divder} />
           </Box>
           <Box className={styles.articles}>
-            {EnrolledCourses && EnrolledCourses?.slice(0, 4)?.map((data, key) => {
-                console.log(data,"66666666666666")
-              return <CourseCard key={key} enrolledCourses={data} />;
-            })}
+            {EnrolledCourses &&
+              EnrolledCourses?.slice(0, 4)?.map((data, key) => {
+                return <CourseCard key={key} enrolledCourses={data} />;
+              })}
           </Box>
         </Container>
       </Box>

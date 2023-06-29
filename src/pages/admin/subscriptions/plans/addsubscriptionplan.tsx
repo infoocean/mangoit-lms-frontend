@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   CardContent,
+  Divider,
   FormControl,
   Grid,
   InputAdornment,
@@ -102,162 +103,127 @@ export default function AddSubscriptionPlans() {
                 onSubmit={handleSubmit(onSubmit)}
                 onReset={reset}
               >
-                <Grid container spacing={2}>
-                  <Grid item xs={12} sm={12} md={12} lg={6}>
-                    <Box
-                      component="img"
-                      src="/Images/sideImages/add_section.svg"
-                      width={"85%"}
-                      height={'449px'}
-                    />
-                  </Grid>
-
-                  <Grid item xs={12} sm={12} md={6} lg={6} mt={2}>
-                    <Typography
-                      className={Subscription.InputLabelFont}
-                      mb={3}
-                      mt={4}
-                    >
+                <Grid container spacing={3}>
+                  <Grid item xs={12} sm={12} md={12} lg={12} mt={1} mb={2}>
+                    <Typography className={styles.headingTitle}>
                       ADD SUBSCRIPTION PLAN
                     </Typography>
+                    <Divider />
+                  </Grid>
 
-                    <Grid
-                      item
-                      xs={12}
-                      sm={12}
-                      md={12}
-                      lg={12}
-                      className={Subscription.subsplanNameGride}
-                      
+                  <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <InputLabel className={Subscription.InputLabelFont}>
+                      Subscription Title
+                    </InputLabel>
+
+                    <TextField
+                      placeholder="Subscription Title"
+                      {...register("title")}
+                      className={Subscription.inputFieldWidth}
+                    />
+                    {errors && errors.title
+                      ? ErrorShowing(errors?.title?.message)
+                      : ""}
+                  </Grid>
+
+                  <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <InputLabel className={Subscription.InputLabelFont}>
+                      Duration Term
+                    </InputLabel>
+                    <Controller
+                      name="duration_term"
+                      control={control}
+                      defaultValue="month"
+                      render={({ field }) => (
+                        <FormControl fullWidth>
+                          <Select
+                            {...field}
+                            className={Subscription.inputFieldWidth}
+                            displayEmpty
+                          >
+                            <MenuItem value={"week"}>Week</MenuItem>
+                            <MenuItem value={"month"}>Month</MenuItem>
+                            <MenuItem value={"year"}>Year</MenuItem>
+                          </Select>
+                        </FormControl>
+                      )}
+                    />
+                    {errors && errors.duration_term
+                      ? ErrorShowing(errors?.duration_term?.message)
+                      : ""}
+                  </Grid>
+
+                  <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <InputLabel className={Subscription.InputLabelFont}>
+                      Duration Value
+                    </InputLabel>
+                    <TextField
+                      type="number"
+                      placeholder="Duration Value"
+                      {...register("duration_value")}
+                      className={Subscription.inputFieldWidth}
+                    />
+                    {errors && errors.duration_value
+                      ? ErrorShowing(errors?.duration_value?.message)
+                      : ""}
+                  </Grid>
+                  <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <InputLabel className={Subscription.InputLabelFont}>
+                      Price
+                    </InputLabel>
+                    <TextField
+                      type="number"
+                      placeholder="Subscription Price"
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">$</InputAdornment>
+                        ),
+                      }}
+                      {...register("amount")}
+                      className={Subscription.inputFieldWidth}
+                    />
+                    {errors && errors.amount
+                      ? ErrorShowing(errors?.amount?.message)
+                      : ""}
+                  </Grid>
+
+                  <Grid
+                    item
+                    xs={12}
+                    sm={12}
+                    md={12}
+                    lg={12}
+                    textAlign={"right"}
+                  >
+                    <Button
+                      className={Subscription.cancelButton}
+                      variant="contained"
+                      size="large"
+                      onClick={() => router.push("/admin/subscriptions/plans/")}
+                      id={styles.muibuttonBackgroundColor}
                     >
-                      <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
-                        <InputLabel className={Subscription.InputLabelFont}>
-                          Subscription Title
-                        </InputLabel>
-
-                        <TextField
-                          placeholder="Subscription Title"
-                          {...register("title")}
-                          className={Subscription.inputFieldWidth}
-                        />
-                        {errors && errors.title
-                          ? ErrorShowing(errors?.title?.message)
-                          : ""}
-                      </Grid>
-
-                      <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
-                        <InputLabel className={Subscription.InputLabelFont}>
-                          Duration Term
-                        </InputLabel>
-                        <Controller
-                          name="duration_term"
-                          control={control}
-                          defaultValue="month"
-                          render={({ field }) => (
-                            <FormControl fullWidth>
-                              <Select
-                                {...field}
-                                className={Subscription.inputFieldWidth}
-                                displayEmpty
-                              >
-                                <MenuItem value={"week"}>Week</MenuItem>
-                                <MenuItem value={"month"}>Month</MenuItem>
-                                <MenuItem value={"year"}>Year</MenuItem>
-                              </Select>
-                            </FormControl>
-                          )}
-                        />
-                        {errors && errors.duration_term
-                          ? ErrorShowing(errors?.duration_term?.message)
-                          : ""}
-                      </Grid>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={12}
-                      md={12}
-                      lg={12}
-                      className={Subscription.subsplanNameGride}
-                    >
-                      <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
-                        <InputLabel className={Subscription.InputLabelFont}>
-                          Duration Value
-                        </InputLabel>
-                        <TextField
-                          type="number"
-                          placeholder="Duration Value"
-                          {...register("duration_value")}
-                          className={Subscription.inputFieldWidth}
-                        />
-                        {errors && errors.duration_value
-                          ? ErrorShowing(errors?.duration_value?.message)
-                          : ""}
-                      </Grid>
-                      <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
-                        <InputLabel className={Subscription.InputLabelFont}>
-                          Price
-                        </InputLabel>
-                        <TextField
-                          type="number"
-                          placeholder="Subscription Price"
-                          InputProps={{
-                            startAdornment: (
-                              <InputAdornment position="start">
-                                $
-                              </InputAdornment>
-                            ),
-                          }}
-                          {...register("amount")}
-                          className={Subscription.inputFieldWidth}
-                        />
-                        {errors && errors.amount
-                          ? ErrorShowing(errors?.amount?.message)
-                          : ""}
-                      </Grid>
-                    </Grid>
-
-                    <Grid
-                      item
-                      xs={12}
-                      sm={12}
-                      md={12}
-                      lg={12}
-                      textAlign={"right"}
-                    >
+                      Cancel
+                    </Button>
+                    {!isLoadingButton ? (
                       <Button
-                        className={Subscription.cancelButton}
-                        variant="contained"
+                        type="submit"
                         size="large"
-                        onClick={() =>
-                          router.push("/admin/subscriptions/plans/")
-                        }
+                        variant="contained"
                         id={styles.muibuttonBackgroundColor}
                       >
-                        Cancel
+                        Submit
                       </Button>
-                      {!isLoadingButton ? (
-                        <Button
-                          type="submit"
-                          size="large"
-                          variant="contained"
-                          id={styles.muibuttonBackgroundColor}
-                        >
-                          Submit
-                        </Button>
-                      ) : (
-                        <LoadingButton
-                          loading={isLoadingButton}
-                          className={Subscription.updateLoadingButton}
-                          size="large"
-                          variant="contained"
-                          disabled
-                        >
-                          <CircularProgressBar />
-                        </LoadingButton>
-                      )}
-                    </Grid>
+                    ) : (
+                      <LoadingButton
+                        loading={isLoadingButton}
+                        className={Subscription.updateLoadingButton}
+                        size="large"
+                        variant="contained"
+                        disabled
+                      >
+                        <CircularProgressBar />
+                      </LoadingButton>
+                    )}
                   </Grid>
                 </Grid>
               </Box>
@@ -265,7 +231,7 @@ export default function AddSubscriptionPlans() {
           </Card>
         </Box>
       </Box>
-      <Footer/>
+      <Footer />
       <ToastContainer />
     </>
   );

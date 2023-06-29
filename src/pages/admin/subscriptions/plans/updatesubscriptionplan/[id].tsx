@@ -7,6 +7,7 @@ import {
   Button,
   Card,
   CardContent,
+  Divider,
   FormControl,
   Grid,
   InputAdornment,
@@ -35,16 +36,18 @@ import Subscription from "../../../../../styles/subscription.module.css";
 import { ToastContainer } from "react-toastify";
 // API services
 import { subscriptionPlanValidations } from "@/validation_schema/subscriptionValidation";
-import { GetSubsctionsPlansDet, UpdateSubscriptionPlan } from "@/services/subscription";
+import {
+  GetSubsctionsPlansDet,
+  UpdateSubscriptionPlan,
+} from "@/services/subscription";
 
 export default function UpdateSubscriptionPlans() {
   const router: any = useRouter();
   const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
-  const [durationTerm, setDurationTerm] = useState<any>('');
+  const [durationTerm, setDurationTerm] = useState<any>("");
 
-
-const {id} = router.query;
+  const { id } = router.query;
   const {
     register,
     handleSubmit,
@@ -57,14 +60,13 @@ const {id} = router.query;
   });
 
   const onSubmit = async (event: any) => {
-
     setLoadingButton(true);
     try {
-      const res = await UpdateSubscriptionPlan(id,event);
-      if(res.status === 201){
-        setTimeout(() =>{
-            router.push("/admin/subscriptions/plans/");
-        },2000)
+      const res = await UpdateSubscriptionPlan(id, event);
+      if (res.status === 201) {
+        setTimeout(() => {
+          router.push("/admin/subscriptions/plans/");
+        }, 2000);
       }
       setLoadingButton(false);
     } catch (e) {
@@ -74,31 +76,27 @@ const {id} = router.query;
   };
 
   const getSubscriptionPlanById = () => {
-    GetSubsctionsPlansDet(id).then((subscriptions: any) => {
-      const fields = [
-        "title",
-        "amount",
-        "duration_value",        
-        "duration_term",
-      ];
-      fields.forEach((field) => setValue(field, subscriptions[field]));
-      setDurationTerm(subscriptions?.duration_term)
-      setLoading(false);
-    }).catch((error) => {
-      setLoading(false)
-    });
-  }
+    GetSubsctionsPlansDet(id)
+      .then((subscriptions: any) => {
+        const fields = ["title", "amount", "duration_value", "duration_term"];
+        fields.forEach((field) => setValue(field, subscriptions[field]));
+        setDurationTerm(subscriptions?.duration_term);
+        setLoading(false);
+      })
+      .catch((error) => {
+        setLoading(false);
+      });
+  };
 
   useEffect(() => {
-    setLoading(true)
-    getSubscriptionPlanById()
-  }, [])
+    setLoading(true);
+    getSubscriptionPlanById();
+  }, []);
 
-  const handleDurationTerm = (e:any) => {
-    setValue('duration_term',e.target.value)
-    setDurationTerm(e.target.value)
-  }
-
+  const handleDurationTerm = (e: any) => {
+    setValue("duration_term", e.target.value);
+    setDurationTerm(e.target.value);
+  };
 
   function ErrorShowing(errorMessage: any) {
     return (
@@ -134,142 +132,128 @@ const {id} = router.query;
                   onSubmit={handleSubmit(onSubmit)}
                   onReset={reset}
                 >
-                  <Grid container >
-                    <Grid item xs={12} sm={12} md={6} lg={6} className={Subscription.imageCenter}>
-                      <Box
-                        component="img"
-                        src="/Images/sideImages/update_section.svg"
-                        width={"85%"}
-                    
-                        />
-                    </Grid>
-
-                    <Grid item xs={12} sm={12} md={6} lg={6} mt={5}>
-                      <Typography
-                        className={Subscription.InputLabelFont}
-                        mb={3}
-                        mt={4}
-                      >
+                  <Grid container spacing={3}>
+                    <Grid item xs={12} sm={12} md={12} lg={12} mt={1} mb={2}>
+                      <Typography className={styles.headingTitle}>
                         UPDATE SUBSCRIPTION PLAN
                       </Typography>
-                      <Grid item xs={12} sm={12} md={12} lg={12} className={Subscription.subsplanNameGride} mt={5}>
+                      <Divider />
+                    </Grid>
 
-                        <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
-                          <InputLabel className={Subscription.InputLabelFont}>
-                            Subscription Title
-                          </InputLabel>
-                          <TextField
-                            placeholder="Subscription Title"
-                            {...register("title")}
-                            className={Subscription.inputFieldWidth}
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                      <InputLabel className={Subscription.InputLabelFont}>
+                        Subscription Title
+                      </InputLabel>
+                      <TextField
+                        placeholder="Subscription Title"
+                        {...register("title")}
+                        className={Subscription.inputFieldWidth}
+                      />
+                      {errors && errors.title
+                        ? ErrorShowing(errors?.title?.message)
+                        : ""}
+                    </Grid>
 
-                          />
-                          {errors && errors.title
-                            ? ErrorShowing(errors?.title?.message)
-                            : ""}
-                        </Grid>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                      <InputLabel className={Subscription.InputLabelFont}>
+                        Duration Term
+                      </InputLabel>
+                      <Controller
+                        name="duration_term"
+                        control={control}
+                        defaultValue="month"
+                        render={({ field }) => (
+                          <FormControl className={Subscription.inputFieldWidth}>
+                            <Select
+                              {...field}
+                              value={durationTerm}
+                              onChange={(e) => handleDurationTerm(e)}
+                              displayEmpty
+                            >
+                              <MenuItem value={"week"}>Week</MenuItem>
+                              <MenuItem value={"month"}>Month</MenuItem>
+                              <MenuItem value={"year"}>Year</MenuItem>
+                            </Select>
+                          </FormControl>
+                        )}
+                      />
+                      {errors && errors.duration_term
+                        ? ErrorShowing(errors?.duration_term?.message)
+                        : ""}
+                    </Grid>
 
-                        
-                        <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
-                          <InputLabel className={Subscription.InputLabelFont}>
-                            Duration Term
-                          </InputLabel>
-                          <Controller
-                            name="duration_term"
-                            control={control}
-                            defaultValue="month"
-                            
-                            render={({ field }) => (
-                              <FormControl                           className={Subscription.inputFieldWidth}
-                              >
-                                <Select {...field} value={durationTerm} onChange={e => handleDurationTerm(e)}displayEmpty>
-                                  <MenuItem value={"week"}>Week</MenuItem>
-                                  <MenuItem value={"month"}>Month</MenuItem>
-                                  <MenuItem value={"year"}>Year</MenuItem>
-                                </Select>
-                              </FormControl>
-                            )}
-                          />
-                          {errors && errors.duration_term
-                            ? ErrorShowing(errors?.duration_term?.message)
-                            : ""}
-                        </Grid>
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} className={Subscription.subsplanNameGride} >
-
-                        <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
-                          <InputLabel className={Subscription.InputLabelFont}>
-                            Duration Value
-                          </InputLabel>
-                          <TextField
-                          type="number"
-                            placeholder="Duration Value"
-                            {...register("duration_value")}
-                            className={Subscription.inputFieldWidth}
-
-                          />
-                          {errors && errors.duration_value
-                            ? ErrorShowing(errors?.duration_value?.message)
-                            : ""}
-                        </Grid>
-                        <Grid item xs={12} sm={12} md={6} lg={6} mb={2}>
-                          <InputLabel className={Subscription.InputLabelFont}>
-                            Price
-                          </InputLabel>
-                          <TextField
-                          type="number"
-                            placeholder="Subscription Price"
-                            InputProps={{
-                                startAdornment: <InputAdornment position="start">$</InputAdornment>,
-                              }}
-                            {...register("amount")}
-                            className={Subscription.inputFieldWidth}
-
-                          />
-                          {errors && errors.amount
-                            ? ErrorShowing(errors?.amount?.message)
-                            : ""}
-                        </Grid>
-                        </Grid>
-                      
-                      <Grid
-                        item
-                        xs={12}
-                        sm={12}
-                        md={12}
-                        lg={12}
-                        textAlign={"right"}
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                      <InputLabel className={Subscription.InputLabelFont}>
+                        Duration Value
+                      </InputLabel>
+                      <TextField
+                        type="number"
+                        placeholder="Duration Value"
+                        {...register("duration_value")}
+                        className={Subscription.inputFieldWidth}
+                      />
+                      {errors && errors.duration_value
+                        ? ErrorShowing(errors?.duration_value?.message)
+                        : ""}
+                    </Grid>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                      <InputLabel className={Subscription.InputLabelFont}>
+                        Price
+                      </InputLabel>
+                      <TextField
+                        type="number"
+                        placeholder="Subscription Price"
+                        InputProps={{
+                          startAdornment: (
+                            <InputAdornment position="start">$</InputAdornment>
+                          ),
+                        }}
+                        {...register("amount")}
+                        className={Subscription.inputFieldWidth}
+                      />
+                      {errors && errors.amount
+                        ? ErrorShowing(errors?.amount?.message)
+                        : ""}
+                    </Grid>
+                    <Grid
+                      item
+                      xs={12}
+                      sm={12}
+                      md={12}
+                      lg={12}
+                      textAlign={"right"}
+                    >
+                      <Button
+                        className={Subscription.cancelButton}
+                        variant="contained"
+                        size="large"
+                        onClick={() =>
+                          router.push("/admin/subscriptions/plans/")
+                        }
+                        id={styles.muibuttonBackgroundColor}
                       >
+                        Cancel
+                      </Button>
+                      {!isLoadingButton ? (
                         <Button
-                          className={Subscription.cancelButton}
-                          variant="contained"
+                          type="submit"
                           size="large"
-                          onClick={() => router.push("/admin/subscriptions/plans/")}
+                          variant="contained"
                           id={styles.muibuttonBackgroundColor}
                         >
-                          Cancel
+                          Update
                         </Button>
-                        {!isLoadingButton ? (
-                          <Button
-                            type="submit"
-                            size="large"
-                            variant="contained"
-                            id={styles.muibuttonBackgroundColor}
-                          >
-                            Update
-                          </Button>
-                        ) : (
-                          <LoadingButton
-                            loading={isLoadingButton}
-                            className={Subscription.updateLoadingButton}
-                            size="large"
-                            variant="contained"
-                            disabled
-                          >
-                            <CircularProgressBar />
-                          </LoadingButton>
-                        )}
-                      </Grid>
+                      ) : (
+                        <LoadingButton
+                          loading={isLoadingButton}
+                          className={Subscription.updateLoadingButton}
+                          size="large"
+                          variant="contained"
+                          disabled
+                        >
+                          <CircularProgressBar />
+                        </LoadingButton>
+                      )}
                     </Grid>
                   </Grid>
                 </Box>
@@ -280,7 +264,7 @@ const {id} = router.query;
           </Card>
         </Box>
       </Box>
-      <Footer/>
+      <Footer />
       <ToastContainer />
     </>
   );

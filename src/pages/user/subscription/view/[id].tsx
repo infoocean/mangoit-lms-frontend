@@ -181,7 +181,7 @@ export default function View() {
   //get all order
   const getAllCourseData = (id: any) => {
     HandleOrderGetByUserID(id).then((subs) => {
-      setRows(subs.data.reverse());
+      setRows(subs?.data?.reverse());
       setIsLoading(false);
     });
   };

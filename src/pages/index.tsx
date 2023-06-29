@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import About from './about'
+import HomePage from './home'
 import { GenerateToken } from '@/services/auth'
 export const getHomeRoute = (role: number) => {
   if (role === 1) return '/dashboard'
@@ -11,7 +11,7 @@ export default function Home() {
   GenerateToken();
   if (typeof window !== "undefined") {
     if (router?.asPath === '/') {
-      return (<About />)
+      return (<HomePage />)
     } else {
       router.push(router.pathname);
     }

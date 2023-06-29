@@ -1,5 +1,5 @@
 import "react-toastify/dist/ReactToastify.css";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useRouter } from "next/router";
 import {
   AccordionSummaryProps,
@@ -317,6 +317,8 @@ export default function CoursesDetailsPage() {
       rotalsession += element?.sessions?.length;
     });
 
+  console.log("!!!!!!!!!!!!!!!!!",coursedet, "modulesdet", modulesdet?.length);
+
   return (
     <>
       {/*header*/}
@@ -527,67 +529,79 @@ export default function CoursesDetailsPage() {
                         )
                       : ""}
                   </Typography>
-                  <Box
-                    sx={{
-                      border: "1px solid gray",
-                      marginTop: "30px",
-                      padding: "10px",
-                    }}
-                  >
-                    <Typography
-                      gutterBottom
-                      variant="h5"
-                      component="div"
-                      sx={{ fontWeight: "bold" }}
+                  {(coursetopic && coursetopic?.length === 0) ||
+                  coursetopic === null ? (
+                    ""
+                  ) : (
+                    <Box
+                      sx={{
+                        border: "1px solid gray",
+                        marginTop: "30px",
+                        padding: "10px",
+                      }}
                     >
-                      What you&apos;ll learn
-                    </Typography>
-                    <Grid
-                      container
-                      rowSpacing={1}
-                      columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                    >
-                      {coursetopic?.map((item: any, key: any) => {
-                        return (
-                          <Grid item xs={6} key={key}>
-                            <ListItem>
-                              <ListItemIcon>
-                                <CheckOutlinedIcon />
-                              </ListItemIcon>
-                              <ListItemText primary={Object.values(item)} />
-                            </ListItem>
-                          </Grid>
-                        );
-                      })}
-                    </Grid>
-                  </Box>
-                  <Typography
-                    gutterBottom
-                    variant="h5"
-                    component="div"
-                    mt={3}
-                    sx={{ fontWeight: "bold" }}
-                  >
-                    This course includes:
-                  </Typography>
-                  <Grid
-                    container
-                    rowSpacing={1}
-                    columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                  >
-                    {coursematerial?.map((item: any, key: any) => {
-                      return (
-                        <Grid item xs={6} key={key}>
-                          <ListItem>
-                            <ListItemIcon>
-                              <CheckOutlinedIcon />
-                            </ListItemIcon>
-                            <ListItemText primary={Object.values(item)} />
-                          </ListItem>
-                        </Grid>
-                      );
-                    })}
-                  </Grid>
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        What you&apos;ll learn
+                      </Typography>
+                      <Grid
+                        container
+                        rowSpacing={1}
+                        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                      >
+                        {coursetopic?.map((item: any, key: any) => {
+                          return (
+                            <Grid item xs={6} key={key}>
+                              <ListItem>
+                                <ListItemIcon>
+                                  <CheckOutlinedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={Object.values(item)} />
+                              </ListItem>
+                            </Grid>
+                          );
+                        })}
+                      </Grid>
+                    </Box>
+                  )}
+                  {(coursematerial && coursematerial?.length === 0) ||
+                  coursematerial === null ? (
+                    ""
+                  ) : (
+                    <Fragment>
+                      <Typography
+                        gutterBottom
+                        variant="h5"
+                        component="div"
+                        mt={3}
+                        sx={{ fontWeight: "bold" }}
+                      >
+                        This course includes:
+                      </Typography>
+                      <Grid
+                        container
+                        rowSpacing={1}
+                        columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                      >
+                        {coursematerial?.map((item: any, key: any) => {
+                          return (
+                            <Grid item xs={6} key={key}>
+                              <ListItem>
+                                <ListItemIcon>
+                                  <CheckOutlinedIcon />
+                                </ListItemIcon>
+                                <ListItemText primary={Object.values(item)} />
+                              </ListItem>
+                            </Grid>
+                          );
+                        })}
+                      </Grid>
+                    </Fragment>
+                  )}
                 </CardContent>
               </Card>
             </Grid>
@@ -693,8 +707,10 @@ export default function CoursesDetailsPage() {
                 </Typography>
                 <Box mt={1}>
                   <Typography sx={{ fontSize: "15px" }} mb={1}>
-                    {coursedet?.modules?.length} Modules, {rotalsession}{" "}
-                    sessions
+                    {coursedet && coursedet?.modules === undefined
+                      ? 0
+                      : coursedet?.modules?.length}{" "}
+                    Modules, {rotalsession} sessions
                   </Typography>
                   {modulesdet?.map((value: any, key) => {
                     return (

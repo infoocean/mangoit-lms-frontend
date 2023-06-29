@@ -37,7 +37,6 @@ import { ToastContainer } from "react-toastify";
 import { subscriptionValidations } from "@/validation_schema/subscriptionValidation";
 import { HandleSubscriptionPost } from "@/services/subscription";
 
-
 export default function AddSubscription() {
   const router: any = useRouter();
   const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
@@ -60,7 +59,6 @@ export default function AddSubscription() {
       localData = JSON.parse(parsingData);
     }
 
-
     const reqData: any = {
       name: event.name,
       description: event.description,
@@ -82,7 +80,6 @@ export default function AddSubscription() {
       console.log(e);
       setLoadingButton(true);
     }
-
   };
 
   function ErrorShowing(errorMessage: any) {
@@ -263,7 +260,13 @@ export default function AddSubscription() {
                         <InputLabel className={Subscription.InputLabelFont}>
                           Description
                         </InputLabel>
-                        <TextareaAutosize minRows={4} aria-label="empty textarea" placeholder="Empty" {...register("description")} className={Subscription.textareaManuallyStyle} />
+                        <TextareaAutosize
+                          minRows={4}
+                          aria-label="empty textarea"
+                          placeholder="Empty"
+                          {...register("description")}
+                          className={Subscription.textareaManuallyStyle}
+                        />
 
                         {errors && errors.description
                           ? ErrorShowing(errors?.description?.message)
@@ -318,7 +321,7 @@ export default function AddSubscription() {
           </Card>
         </Box>
       </Box>
-      <Footer/>
+      <Footer />
       <ToastContainer />
     </>
   );

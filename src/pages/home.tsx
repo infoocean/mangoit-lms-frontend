@@ -15,7 +15,7 @@ import { TopEnrolledCourses } from "@/services/course_enroll";
 import { CourseCard } from "@/common/ResuableCardCmp/coursescard";
 import Link from "next/link";
 
-export default function About() {
+export default function HomePage() {
   const [FreeCourses, setFreeCourses] = React.useState([]);
   const [PaidCourses, setPaidCourses] = React.useState([]);
   const [EnrolledCourses, setEnrolledCoursess] = React.useState([]);
@@ -103,7 +103,7 @@ export default function About() {
             components built modern website with flexible from scratch.
           </Typography>
           <Box className={styles.btnwrapper}>
-            <Link href={"/"}>
+            <Link href={"/courses"}>
               <Button className={styles.viewmorebtn}>View More</Button>
             </Link>
           </Box>
@@ -133,6 +133,7 @@ export default function About() {
               style: {
                 padding: "15px",
                 color: "black",
+                
               },
             }}
             indicatorContainerProps={{
@@ -168,43 +169,43 @@ export default function About() {
           <Box className={styles.iconarticles}>
             <Box>
               <Box className={styles.iconarticle1}>
-                <Badge badgeContent={1} color="warning">
-                  <Box className={styles.iconarticle2}>
-                    <Box className={styles.iconarticlewrapper}>
-                      <Box className={styles.iconfigure}>
-                        <LockIcon />
-                      </Box>
+                {/* <Badge badgeContent={1} color="warning"> */}
+                <Box className={styles.iconarticle2}>
+                  <Box className={styles.iconarticlewrapper}>
+                    <Box className={styles.iconfigure}>
+                      <LockIcon />
                     </Box>
                   </Box>
-                </Badge>
+                </Box>
+                {/* </Badge> */}
               </Box>
               <Typography className={styles.h2}>Sign Up</Typography>
             </Box>
             <Box>
               <Box className={styles.iconarticle1}>
-                <Badge badgeContent={2} color="warning">
-                  <Box className={styles.iconarticle2}>
-                    <Box className={styles.iconarticlewrapper}>
-                      <Box className={styles.iconfigure}>
-                        <SchoolIcon />
-                      </Box>
+                {/* <Badge badgeContent={2} color="warning"> */}
+                <Box className={styles.iconarticle2}>
+                  <Box className={styles.iconarticlewrapper}>
+                    <Box className={styles.iconfigure}>
+                      <SchoolIcon />
                     </Box>
                   </Box>
-                </Badge>
+                </Box>
+                {/* </Badge> */}
               </Box>
               <Typography className={styles.h2}>Select Courses</Typography>
             </Box>
             <Box>
               <Box className={styles.iconarticle1}>
-                <Badge badgeContent={3} color="warning">
-                  <Box className={styles.iconarticle2}>
-                    <Box className={styles.iconarticlewrapper}>
-                      <Box className={styles.iconfigure}>
-                        <LocalLibraryIcon />
-                      </Box>
+                {/* <Badge badgeContent={3} color="warning"> */}
+                <Box className={styles.iconarticle2}>
+                  <Box className={styles.iconarticlewrapper}>
+                    <Box className={styles.iconfigure}>
+                      <LocalLibraryIcon />
                     </Box>
                   </Box>
-                </Badge>
+                </Box>
+                {/* </Badge> */}
               </Box>
               <Typography className={styles.h2}>Start Learning</Typography>
             </Box>
@@ -221,10 +222,10 @@ export default function About() {
             <Divider className={styles.divder} />
           </Box>
           <Box className={styles.articles}>
-            {EnrolledCourses && EnrolledCourses?.slice(0, 8)?.map((data, key) => {
-                console.log(data,"66666666666666")
-              return <CourseCard key={key} enrolledCourses={data} />;
-            })}
+            {EnrolledCourses &&
+              EnrolledCourses?.slice(0, 4)?.map((data, key) => {
+                return <CourseCard key={key} enrolledCourses={data} />;
+              })}
           </Box>
         </Container>
       </Box>
@@ -238,7 +239,7 @@ export default function About() {
             <Divider className={styles.divder} />
           </Box>
           <Box className={styles.articles}>
-            {FreeCourses?.slice(0, 8).map((data, key) => {
+            {FreeCourses?.slice(0, 4).map((data, key) => {
               return <CourseCard key={key} freecourses={data} />;
             })}
           </Box>
@@ -255,13 +256,12 @@ export default function About() {
             <Divider className={styles.divder} />
           </Box>
           <Box className={styles.articles}>
-            {PaidCourses?.slice(0, 8).map((data, key) => {
+            {PaidCourses?.slice(0, 4).map((data, key) => {
               return <CourseCard key={key} freecourses={data} />;
             })}
           </Box>
         </Container>
       </Box>
-      {/*footer*/}
       <WebViewFooter />
     </>
   );

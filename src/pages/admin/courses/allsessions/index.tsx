@@ -341,7 +341,7 @@ const AllSession = () => {
                                               {...params}
                                               variant="outlined"
                                               placeholder="Search Course"
-                                            />
+                                              />
                                           )}
                                         />
                                       </Stack>

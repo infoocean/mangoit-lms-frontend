@@ -90,7 +90,7 @@ export default function WebViewNavbar() {
             color: setAboutColor,
           }}
         >
-          About
+          Home
         </Typography>
       </MenuItem>
       <MenuItem onClick={() => router.push("/courses")}>
@@ -169,7 +169,7 @@ export default function WebViewNavbar() {
                     color: setAboutColor,
                   }}
                 >
-                  About
+                  Home
                 </Typography>
               </Link>
               <Link href="/courses">

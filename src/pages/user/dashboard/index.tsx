@@ -24,7 +24,7 @@ import SideBar from "@/common/LayoutNavigations/sideBar";
 import Paper from "@mui/material/Paper";
 import GridViewIcon from "@mui/icons-material/GridView";
 import FormatListBulletedIcon from "@mui/icons-material/FormatListBulleted";
-import { SubscriptionGetByUserID } from "@/services/subscription";
+
 
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import moment from "moment";
@@ -80,19 +80,7 @@ export default function Dashboard() {
     getEnrollCourse();
   }, [userId]);
 
-  // const getSubsData = async () => {
-  //   if (userId) {
-  //     SubscriptionGetByUserID(userId).then((data: any) => {
-  //       if (data && data?.response?.data === "subsId not Found!") {
-  //         setIsLoading(false);
-  //         setSubsError(data?.response?.data);
-  //       } else {
-  //         setIsLoading(false);
-  //         setSubsdata(data?.data);
-  //       }
-  //     });
-  //   }
-  // };
+
 
   const getEnrollCourse = async () => {
     if (userId) {

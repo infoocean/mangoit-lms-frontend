@@ -686,3 +686,23 @@
   font-weight: 900 !important;
   color: #e8661b !important;
 }
+
+.aboutHeading {
+  padding-top: 2rem !important;
+  margin-bottom: 2rem !important;
+}
+.aboutHeading .h6 {
+  text-align: center !important;
+  font-size: 30px !important;
+  font-weight: 900 !important;
+  margin-bottom: 1px !important;
+  color: #e8661b !important;
+}
+
+
+.divderabout {
+  background: #000 !important;
+}
+.aboutsiteBodyContainer {
+  padding: 10px !important;
+}

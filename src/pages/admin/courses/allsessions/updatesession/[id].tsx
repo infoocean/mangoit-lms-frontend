@@ -262,72 +262,56 @@ export default function UpdateSession() {
                   onReset={reset}
                 >
                   <Grid container spacing={3}>
-                    {/* <Grid item xs={12} sm={12} md={12} lg={6} mt={14}>
-                      <Box component="img" src="/Images/sideImages/update_section.svg" width={'100%'} />
-                    </Grid> */}
-
-                    {/* <Grid item xs={12} sm={12} md={12} lg={6} > */}
-                    {/* <Typography className={Sessions.InputLabelFont} mb={1}>EDIT SESSION</Typography> */}
                     <Grid item xs={12} sm={12} md={12} lg={12} mt={1} mb={2}>
                       <Typography className={styles.headingTitle}>
                         UPDATE SESSION
                       </Typography>
                       <Divider />
                     </Grid>
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                      <InputLabel className={Sessions.InputLabelFont}>
+                        Session Name
+                      </InputLabel>
+                      <TextField
+                        {...register("title")}
+                        value={updateSession.title}
+                        onChange={handleUpdate}
+                        className={Sessions.inputFieldWidth}
+                      />
+                      {errors && errors.title
+                        ? ErrorShowing(errors?.title?.message)
+                        : ""}
+                    </Grid>
 
-                    {/* <Grid
-                      item
-                      xs={12}
-                      sm={12}
-                      md={12}
-                      lg={12}
-                      className={Sessions.sessionNameGride}
-                    > */}
-                      <Grid item xs={12} sm={12} md={6} lg={6}>
-                        <InputLabel className={Sessions.InputLabelFont}>
-                          Session Name
-                        </InputLabel>
-                        <TextField
-                          {...register("title")}
-                          value={updateSession.title}
-                          onChange={handleUpdate}
-                          className={Sessions.inputFieldWidth}
-                        />
-                        {errors && errors.title
-                          ? ErrorShowing(errors?.title?.message)
-                          : ""}
-                      </Grid>
-
-                      <Grid item xs={12} sm={12} md={6} lg={6}>
-                        <InputLabel className={Sessions.InputLabelFont}>
-                          Course of session
-                        </InputLabel>
-                        <Autocomplete
-                          value={value}
-                          inputValue={inputValue}
-                          onChange={(event, newValue) => {
-                            setNewValue(newValue);
-                            handleGetModules(newValue);
-                          }}
-                          onInputChange={(event, newInputValue) => {
-                            setInputValue(newInputValue);
-                          }}
-                          options={option}
-                          getOptionLabel={(option) => option?.title}
-                          renderInput={(params) => (
-                            <TextField
-                              {...params}
-                              variant="outlined"
-                              {...register("course_id")}
-                              placeholder="Search Course"
-                            />
-                          )}
-                        />
-                        {errors && errors.course_id
-                          ? ErrorShowing(errors?.course_id?.message)
-                          : ""}
-                      </Grid>
-                    {/* </Grid> */}
+                    <Grid item xs={12} sm={12} md={6} lg={6}>
+                      <InputLabel className={Sessions.InputLabelFont}>
+                        Course of session
+                      </InputLabel>
+                      <Autocomplete
+                        value={value}
+                        inputValue={inputValue}
+                        onChange={(event, newValue) => {
+                          setNewValue(newValue);
+                          handleGetModules(newValue);
+                        }}
+                        onInputChange={(event, newInputValue) => {
+                          setInputValue(newInputValue);
+                        }}
+                        options={option}
+                        getOptionLabel={(option) => option?.title}
+                        renderInput={(params) => (
+                          <TextField
+                            {...params}
+                            variant="outlined"
+                            {...register("course_id")}
+                            placeholder="Search Course"
+                          />
+                        )}
+                      />
+                      {errors && errors.course_id
+                        ? ErrorShowing(errors?.course_id?.message)
+                        : ""}
+                    </Grid>
 
                     <Grid item xs={12} sm={12} md={6} lg={6}>
                       <InputLabel className={Sessions.InputLabelFont}>
@@ -449,7 +433,6 @@ export default function UpdateSession() {
                         </LoadingButton>
                       )}
                     </Grid>
-                    {/* </Grid> */}
                   </Grid>
                 </Box>
               ) : (

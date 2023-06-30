@@ -43,6 +43,8 @@ import { ToastContainer } from "react-toastify";
 import { HandleCourseGet } from "@/services/course";
 import { HandleModuleGet } from "@/services/module";
 import { HandleSessionCreate } from "@/services/session";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+import { HandleAIText, aiBtnCss } from "@/services/text_AI";
 
 export default function AddSession() {
   const router: any = useRouter();
@@ -54,6 +56,8 @@ export default function AddSession() {
   const [getModuleId, setModuleId] = React.useState<any>(0);
   const [file, setFile] = useState<string | any>("");
   const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
+  const [title, setTitle] = useState("");
+  const [aiLoader, setAiLoader] = useState<any>(false);
 
   const {
     register,
@@ -156,6 +160,20 @@ export default function AddSession() {
     }
   };
 
+  const generateShortDescription = async () => {
+    try {
+      setAiLoader(true);
+      await HandleAIText(title).then((data) => {
+        let shortDesc = data?.substring(0, 400);
+        setdespcriptionContent(shortDesc);
+        setAiLoader(false);
+      });
+    } catch (e) {
+      setAiLoader(false);
+      console.log(e);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -196,6 +214,7 @@ export default function AddSession() {
                     <TextField
                       placeholder="Session Name"
                       {...register("title")}
+                      onChange={(e: any) => setTitle(e.target.value)}
                       className={Sessions.inputFieldWidth}
                     />
                     {errors && errors.title
@@ -277,9 +296,27 @@ export default function AddSession() {
                       : ""}
                   </Grid>
                   <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <InputLabel className={Sessions.InputLabelFont}>
-                      Description
-                    </InputLabel>
+                    <Box className={styles.aiCss}>
+                      <InputLabel className={Sessions.InputLabelFont}>
+                        Description
+                      </InputLabel>
+                      {title && title !== null ? (
+                        <Button
+                          variant="text"
+                          className={styles.aiButton}
+                          onClick={generateShortDescription}
+                        >
+                          {aiLoader ? (
+                            <AutorenewIcon sx={aiBtnCss} />
+                          ) : (
+                            <AutorenewIcon />
+                          )}{" "}
+                          &nbsp;Auto Generate
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+                    </Box>
                     <RichEditor
                       {...register("description")}
                       value={despcriptionContent}
@@ -292,7 +329,6 @@ export default function AddSession() {
                     {/* {despcriptionContent ? '' : errors && errors.description ? ErrorShowing(errors?.description?.message) : ""} */}
                   </Grid>
 
-                  
                   <Grid
                     item
                     xs={12}

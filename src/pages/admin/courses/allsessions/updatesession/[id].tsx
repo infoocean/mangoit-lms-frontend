@@ -45,6 +45,8 @@ import { ToastContainer } from "react-toastify";
 import { HandleCourseGet } from "@/services/course";
 import { HandleModuleGet } from "@/services/module";
 import { HandleSessionUpdate, HandleSessionGetByID } from "@/services/session";
+import { HandleAIText, aiBtnCss } from "@/services/text_AI";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 
 export default function UpdateSession() {
   const router: any = useRouter();
@@ -61,6 +63,8 @@ export default function UpdateSession() {
   const [mdinputValue, setmdInputValue] = useState<any>([]);
   const [value, setNewValue] = useState<any>({});
   const [mdvalue, setmdvalue] = useState<any>({});
+  const [aiLoader, setAiLoader] = useState<any>(false);
+
   const {
     register,
     handleSubmit,
@@ -191,7 +195,7 @@ export default function UpdateSession() {
   };
 
   const handleUpdate = (e: any) => {
-    setUpdateSession(e.target.value);
+    setSession({ ...getSession, title: e.target.value });
   };
 
   function ErrorShowing(errorMessage: any) {
@@ -233,6 +237,20 @@ export default function UpdateSession() {
         title: data?.module?.title,
       });
     });
+
+  const generateShortDescription = async () => {
+    try {
+      setAiLoader(true);
+      await HandleAIText(getSession?.title).then((data) => {
+        let shortDesc = data?.substring(0, 400);
+        setdespcriptionContent(shortDesc);
+        setAiLoader(false);
+      });
+    } catch (e) {
+      setAiLoader(false);
+      console.log(e);
+    }
+  };
 
   return (
     <>
@@ -375,9 +393,27 @@ export default function UpdateSession() {
                         : ""}
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12} mb={2}>
-                      <InputLabel className={Sessions.InputLabelFont}>
-                        Description
-                      </InputLabel>
+                      <Box className={styles.aiCss}>
+                        <InputLabel className={Sessions.InputLabelFont}>
+                          Description
+                        </InputLabel>
+                        {getSession && getSession?.title !== null ? (
+                          <Button
+                            variant="text"
+                            className={styles.aiButton}
+                            onClick={generateShortDescription}
+                          >
+                            {aiLoader ? (
+                              <AutorenewIcon sx={aiBtnCss} />
+                            ) : (
+                              <AutorenewIcon />
+                            )}{" "}
+                            &nbsp;Auto Generate
+                          </Button>
+                        ) : (
+                          ""
+                        )}
+                      </Box>
                       <RichEditor
                         {...register("description")}
                         value={

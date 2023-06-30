@@ -57,6 +57,8 @@ import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Preview from "@/common/PreviewAttachments/previewAttachment";
 import Footer from "@/common/LayoutNavigations/footer";
+import { HandleAILongText, HandleAIText, aiBtnCss } from "@/services/text_AI";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -104,6 +106,9 @@ export default function UpdateCourse() {
   const [openStudyMaterialBox, setopenStudyMaterialBox] = useState(false);
   const [rowsForCourseTopic, setrowsForCourseTopic] = useState<any>([{}]);
   const [rowsForCourseMaterial, setrowsForCourseMaterial] = useState<any>([{}]);
+  const [aiLoader, setAiLoader] = useState<any>(false);
+  const [aiLoader1, setAiLoader1] = useState<any>(false);
+
   const {
     register,
     handleSubmit,
@@ -375,6 +380,35 @@ export default function UpdateCourse() {
     }
   };
 
+  //AI text
+  const generateShortDescription = async () => {
+    try {
+      setAiLoader(true);
+      await HandleAIText(getCourse?.title).then((data) => {
+        let shortDesc = data?.substring(0, 400);
+        setShortDespcriptionContent(shortDesc);
+        setAiLoader(false);
+      });
+    } catch (e) {
+      setAiLoader(false);
+      console.log(e);
+    }
+  };
+
+  const generateLongDescription = async () => {
+    try {
+      setAiLoader1(true);
+      await HandleAILongText(getCourse?.title).then((data) => {
+        let longDesc = data?.substring(0, 600);
+        setLongDespcriptionContent(longDesc);
+        setAiLoader1(false);
+      });
+    } catch (e) {
+      setAiLoader1(false);
+      console.log(e);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -603,9 +637,27 @@ export default function UpdateCourse() {
                         : ""}
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}>
-                      <InputLabel className={courseStyle.InputLabelFont}>
-                        Short Description
-                      </InputLabel>
+                      <Box className={styles.aiCss}>
+                        <InputLabel className={courseStyle.InputLabelFont}>
+                          Short Description
+                        </InputLabel>
+                        {getCourse?.title && getCourse?.title !== null ? (
+                          <Button
+                            variant="text"
+                            className={styles.aiButton}
+                            onClick={generateShortDescription}
+                          >
+                            {aiLoader ? (
+                              <AutorenewIcon sx={aiBtnCss} />
+                            ) : (
+                              <AutorenewIcon />
+                            )}{" "}
+                            &nbsp;Auto Generate
+                          </Button>
+                        ) : (
+                          ""
+                        )}
+                      </Box>
                       <Box className={courseStyle.quillDescription1}>
                         <RichEditor
                           {...register("short_description")}
@@ -625,9 +677,27 @@ export default function UpdateCourse() {
                       {/* {getShortDespcriptionContent ? '' : errors && errors.description ? ErrorShowing(errors?.description?.message) : ""} */}
                     </Grid>
                     <Grid item xs={12} sm={12} md={12} lg={12}>
-                      <InputLabel className={courseStyle.InputLabelFont}>
-                        Long Description
-                      </InputLabel>
+                      <Box className={styles.aiCss}>
+                        <InputLabel className={courseStyle.InputLabelFont}>
+                          Long Description
+                        </InputLabel>
+                        {getCourse?.title && getCourse?.title !== null ? (
+                          <Button
+                            variant="text"
+                            className={styles.aiButton}
+                            onClick={generateLongDescription}
+                          >
+                            {aiLoader1 ? (
+                              <AutorenewIcon sx={aiBtnCss} />
+                            ) : (
+                              <AutorenewIcon />
+                            )}{" "}
+                            &nbsp;Auto Generate
+                          </Button>
+                        ) : (
+                          ""
+                        )}
+                      </Box>
                       <RichEditor
                         {...register("long_description")}
                         value={

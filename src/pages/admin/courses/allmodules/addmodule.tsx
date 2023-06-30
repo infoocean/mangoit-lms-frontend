@@ -41,14 +41,18 @@ import { ToastContainer } from "react-toastify";
 // API services
 import { HandleCourseGet } from "@/services/course";
 import { HandleModuleCreate } from "@/services/module";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+import { HandleAIText, aiBtnCss } from "@/services/text_AI";
 
 export default function AddSession() {
   const router: any = useRouter();
-  const [despcriptionContent, setdespcriptionContent] = useState("");
+  const [despcriptionContent, setdespcriptionContent] = useState<any>("");
   const [getCourses, setCourses] = useState<courseType | any>();
   const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [getCourseId, setCourseId] = React.useState<any>(0);
+  const [title, setTitle] = useState("");
+  const [aiLoader, setAiLoader] = useState<any>(false);
 
   const {
     register,
@@ -107,6 +111,20 @@ export default function AddSession() {
       </Typography>
     );
   }
+  
+  const generateShortDescription = async () => {
+    try {
+      setAiLoader(true);
+      await HandleAIText(title).then((data) => {
+        let shortDesc = data?.substring(0, 400);
+        setdespcriptionContent(shortDesc);
+        setAiLoader(false);
+      });
+    } catch (e) {
+      setAiLoader(false);
+      console.log(e);
+    }
+  };
 
   return (
     <>
@@ -149,6 +167,7 @@ export default function AddSession() {
                       <TextField
                         placeholder="Module Name"
                         {...register("title")}
+                        onChange={(e: any) => setTitle(e.target.value)}
                         className={ModuleCss.inputFieldWidth}
                       />
                       {errors && errors.title
@@ -205,17 +224,33 @@ export default function AddSession() {
                         ? ErrorShowing(errors?.status?.message)
                         : ""}
                     </Grid>
-
                     <Grid item xs={12} sm={12} md={12} lg={12}>
-                      <InputLabel className={ModuleCss.InputLabelFont}>
-                        Description
-                      </InputLabel>
-
+                      <Box className={styles.aiCss}>
+                        <InputLabel className={ModuleCss.InputLabelFont}>
+                          Description
+                        </InputLabel>
+                        {title && title !== null ? (
+                          <Button
+                            variant="text"
+                            className={styles.aiButton}
+                            onClick={generateShortDescription}
+                          >
+                            {aiLoader ? (
+                              <AutorenewIcon sx={aiBtnCss} />
+                            ) : (
+                              <AutorenewIcon />
+                            )}{" "}
+                            &nbsp;Auto Generate
+                          </Button>
+                        ) : (
+                          ""
+                        )}
+                      </Box>
                       <RichEditor
                         {...register("description")}
                         value={despcriptionContent}
                         onChange={(e) => handleContentChange(e, "description")}
-                          className={ModuleCss.quillDescription}
+                        className={ModuleCss.quillDescription}
                       />
 
                       {errors && errors.description

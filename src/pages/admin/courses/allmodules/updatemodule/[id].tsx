@@ -45,6 +45,8 @@ import {
 } from "@/services/course";
 import { HandleModuleGetByID, HandleModuleUpdate } from "@/services/module";
 import { moduleValidations } from "@/validation_schema/moduleValidation";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
+import { HandleAIText, aiBtnCss } from "@/services/text_AI";
 
 export default function UpdateModule() {
   const router: any = useRouter();
@@ -56,6 +58,8 @@ export default function UpdateModule() {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [error, setErrors] = useState<string>();
   const [value, setNewValue] = useState<any>({});
+  const [aiLoader, setAiLoader] = useState<any>(false);
+
   const {
     register,
     handleSubmit,
@@ -180,6 +184,20 @@ export default function UpdateModule() {
       });
     });
 
+  const generateShortDescription = async () => {
+    try {
+      setAiLoader(true);
+      await HandleAIText(getModule?.title).then((data) => {
+        let shortDesc = data?.substring(0, 400);
+        setDespcriptionContent(shortDesc);
+        setAiLoader(false);
+      });
+    } catch (e) {
+      setAiLoader(false);
+      console.log(e);
+    }
+  };
+
   return (
     <>
       <Navbar />
@@ -253,7 +271,7 @@ export default function UpdateModule() {
                         : ""}
                     </Grid>
 
-                    <Grid item xs={12} sm={12} md={12} lg={12} >
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
                       <InputLabel className={ModuleCss.InputLabelFont}>
                         Status
                       </InputLabel>
@@ -277,9 +295,27 @@ export default function UpdateModule() {
                     </Grid>
 
                     <Grid item xs={12} sm={12} md={12} lg={12}>
-                      <InputLabel className={ModuleCss.InputLabelFont}>
-                        Description
-                      </InputLabel>
+                      <Box className={styles.aiCss}>
+                        <InputLabel className={ModuleCss.InputLabelFont}>
+                          Description
+                        </InputLabel>
+                        {getModule  && getModule?.title  !== null ? (
+                          <Button
+                            variant="text"
+                            className={styles.aiButton}
+                            onClick={generateShortDescription}
+                          >
+                            {aiLoader ? (
+                              <AutorenewIcon sx={aiBtnCss} />
+                            ) : (
+                              <AutorenewIcon />
+                            )}{" "}
+                            &nbsp;Auto Generate
+                          </Button>
+                        ) : (
+                          ""
+                        )}
+                      </Box>
                       <Box>
                         <RichEditor
                           {...register("description")}

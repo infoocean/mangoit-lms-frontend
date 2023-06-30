@@ -38,17 +38,15 @@ import { courseType } from "@/types/courseType";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { courseValidations } from "@/validation_schema/courseValidation";
 import { HandleCourseCreate } from "@/services/course";
+import { HandleAIText, HandleAILongText, aiBtnCss } from "@/services/text_AI";
 import { useRouter } from "next/router";
-import CircularProgressBar from "@/common/CircularProcess/circularProgressBar";
-import { LoadingButton } from "@mui/lab";
-import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
-
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
 import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
+import AutorenewIcon from "@mui/icons-material/Autorenew";
 import Footer from "@/common/LayoutNavigations/footer";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
@@ -83,7 +81,7 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
 
 const AddCourse = () => {
   const [shortDespcriptionContent, setShortDespcriptionContent] = useState("");
-  const [despcriptionContent, setdespcriptionContent] = useState("");
+  const [despcriptionContent, setdespcriptionContent] = useState<any>("");
   const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
   const router: any = useRouter();
   const [imagefile, setImageFile] = useState<string | any>("");
@@ -92,6 +90,9 @@ const AddCourse = () => {
   const [openStudyMaterialBox, setopenStudyMaterialBox] = useState(false);
   const [rowsForCourseTopic, setrowsForCourseTopic] = useState<any>([{}]);
   const [rowsForCourseMaterial, setrowsForCourseMaterial] = useState<any>([{}]);
+  const [title, setTitle] = useState("");
+  const [aiLoader, setAiLoader] = useState<any>(false);
+  const [aiLoader1, setAiLoader1] = useState<any>(false);
 
   const {
     register,
@@ -305,12 +306,35 @@ const AddCourse = () => {
     } else if (rowsForCourseMaterial.length <= 4) {
       return toast.error("Please add atleast 5 materials!");
     } else {
-      // for (var i = 0; i <= rowsForCourseMaterial.length - 1; i++) {
-      //   if (rowsForCourseMaterial[i][i] === '' || rowsForCourseMaterial[0][0] === undefined) {
-      //     return toast.error("Input feild can't be blank!")
-      //   }
-      // }
       handleCloseStudyMaterialBox();
+    }
+  };
+
+  //AI text
+  const generateShortDescription = async () => {
+    try {
+      setAiLoader(true);
+      await HandleAIText(title).then((data) => {
+        let shortDesc = data?.substring(0, 400);
+        setShortDespcriptionContent(shortDesc);
+        setAiLoader(false);
+      });
+    } catch (e) {
+      setAiLoader(false);
+      console.log(e);
+    }
+  };
+  const generateLongDescription = async () => {
+    try {
+      setAiLoader1(true);
+      await HandleAILongText(title).then((data) => {
+        let longDesc = data?.substring(0, 600);
+        setdespcriptionContent(longDesc);
+        setAiLoader1(false);
+      });
+    } catch (e) {
+      setAiLoader1(false);
+      console.log(e);
     }
   };
 
@@ -378,6 +402,7 @@ const AddCourse = () => {
                       placeholder="Course Name"
                       {...register("title")}
                       fullWidth
+                      onChange={(e: any) => setTitle(e.target.value)}
                     />
                     {errors && errors.title
                       ? ErrorShowing(errors?.title?.message)
@@ -523,9 +548,27 @@ const AddCourse = () => {
                       : ""}
                   </Grid>
                   <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <InputLabel className={styles.InputLabelFont}>
-                      Short Description
-                    </InputLabel>
+                    <Box className={SidebarStyles.aiCss}>
+                      <InputLabel className={styles.InputLabelFont}>
+                        Short Description
+                      </InputLabel>
+                      {title && title !== null ? (
+                        <Button
+                          variant="text"
+                          className={SidebarStyles.aiButton}
+                          onClick={generateShortDescription}
+                        >
+                          {aiLoader ? (
+                            <AutorenewIcon sx={aiBtnCss} />
+                          ) : (
+                            <AutorenewIcon />
+                          )}{" "}
+                          &nbsp;Auto Generate
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+                    </Box>
                     <Box className={styles.quillShortDescription}>
                       <RichEditor
                         {...register("short_description")}
@@ -541,9 +584,27 @@ const AddCourse = () => {
                   </Grid>
 
                   <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <InputLabel className={styles.InputLabelFont}>
-                      Long Description
-                    </InputLabel>
+                    <Box className={SidebarStyles.aiCss}>
+                      <InputLabel className={styles.InputLabelFont}>
+                        Long Description
+                      </InputLabel>
+                      {title && title !== null ? (
+                        <Button
+                          variant="text"
+                          className={SidebarStyles.aiButton}
+                          onClick={generateLongDescription}
+                        >
+                          {aiLoader1 ? (
+                            <AutorenewIcon sx={aiBtnCss} />
+                          ) : (
+                            <AutorenewIcon />
+                          )}{" "}
+                          &nbsp;Auto Generate
+                        </Button>
+                      ) : (
+                        ""
+                      )}
+                    </Box>
                     <Box className={styles.quillDescription}>
                       <RichEditor
                         value={despcriptionContent}

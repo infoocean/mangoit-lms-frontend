@@ -55,7 +55,6 @@ export const API = {
   deleteSubscription: `${BASE_URL}/deletesubscription`, //admin only
   getSubscription: `${BASE_URL}/getsubscriptionbyuserid`, // user only
   getSubsById: `${BASE_URL}/getsubscriptionbyid`, // subs id
- 
 
   //create user subscription
   createsubscription: `${BASE_URL}/createsubscription`,

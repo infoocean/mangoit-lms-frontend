@@ -46,7 +46,7 @@ export default function Courses() {
     setcourseStatus(e);
     HandleCourseGet("", {
       is_chargeable: is_chargeable,
-      status: 0,
+      status: "active",
     }).then((courses) => {
       setcourseData(courses?.data);
       setLoadar(false);

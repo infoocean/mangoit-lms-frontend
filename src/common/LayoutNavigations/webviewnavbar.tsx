@@ -48,6 +48,7 @@ export default function WebViewNavbar() {
     path.includes("subscribeplan") || path.includes("checkout")
       ? textcolor
       : "";
+  let setAboutpage = path.includes("about") ? textcolor : "";
 
   React.useEffect(() => {
     let localData: any;
@@ -104,6 +105,9 @@ export default function WebViewNavbar() {
       </MenuItem>
       <MenuItem onClick={() => router.push("/subscribeplan")}>
         <Typography sx={{ color: setsubscribeplan }}> Plans</Typography>
+      </MenuItem>
+      <MenuItem onClick={() => router.push("/about")}>
+        <Typography sx={{ color: setAboutpage }}> About</Typography>
       </MenuItem>
       <MenuItem>
         {userData ? (
@@ -190,6 +194,15 @@ export default function WebViewNavbar() {
                   sx={{ color: setsubscribeplan }}
                 >
                   Plans
+                </Typography>
+              </Link>
+              <Link href="/about">
+                <Typography
+                  variant="body2"
+                  className={styles.windowFullWidthNameAlign}
+                  sx={{ color: setAboutpage }}
+                >
+                  About
                 </Typography>
               </Link>
               {userData ? (

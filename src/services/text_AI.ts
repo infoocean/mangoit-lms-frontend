@@ -14,7 +14,7 @@ export const HandleAIText = async (text: any) => {
         headers: {
           "Content-Type": "application/json",
           Authorization:
-            "Bearer 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",
+            "Bearer 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",
         },
       }
     );
@@ -39,7 +39,7 @@ export const HandleAILongText = async (text: any) => {
         headers: {
           "Content-Type": "application/json",
           Authorization:
-            "Bearer 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",
+            "Bearer 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",
         },
       }
     );

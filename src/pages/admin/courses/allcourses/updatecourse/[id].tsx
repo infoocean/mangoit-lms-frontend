@@ -658,7 +658,9 @@ export default function UpdateCourse() {
                           ""
                         )}
                       </Box>
-                      <Box className={courseStyle.quillDescription1}>
+                      <Box 
+                      // className={courseStyle.quillDescription1}
+                      >
                         <RichEditor
                           {...register("short_description")}
                           value={

@@ -222,3 +222,22 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-text.MuiButton-textPrimary.Mu
   :hover {
   background-color: transparent !important;
 }
+.carousel .control-dots {
+  margin: 1px 0 !important;
+}
+.carousel .control-dots .dot {
+  box-shadow: none !important;
+  background: #000000 !important;
+  border-radius: 8px !important;
+  width: 22px !important;
+  opacity: 1 !important;
+  height: 2px !important;
+  margin-left: 20px !important;
+}
+
+.carousel .control-dots .dot.selected,
+.carousel .control-dots .dot:hover {
+  opacity: 1 !important;
+  background: #e8661b !important;
+  border-radius: 30px !important;
+}

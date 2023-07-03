@@ -94,6 +94,9 @@ export default function WebViewNavbar() {
           Home
         </Typography>
       </MenuItem>
+      <MenuItem onClick={() => router.push("/about")}>
+        <Typography sx={{ color: setAboutpage }}> About</Typography>
+      </MenuItem>
       <MenuItem onClick={() => router.push("/courses")}>
         <Typography
           sx={{
@@ -106,9 +109,7 @@ export default function WebViewNavbar() {
       <MenuItem onClick={() => router.push("/subscribeplan")}>
         <Typography sx={{ color: setsubscribeplan }}> Plans</Typography>
       </MenuItem>
-      <MenuItem onClick={() => router.push("/about")}>
-        <Typography sx={{ color: setAboutpage }}> About</Typography>
-      </MenuItem>
+
       <MenuItem>
         {userData ? (
           <Typography>
@@ -176,6 +177,15 @@ export default function WebViewNavbar() {
                   Home
                 </Typography>
               </Link>
+              <Link href="/about">
+                <Typography
+                  variant="body2"
+                  className={styles.windowFullWidthNameAlign}
+                  sx={{ color: setAboutpage }}
+                >
+                  About
+                </Typography>
+              </Link>
               <Link href="/courses">
                 <Typography
                   variant="body2"
@@ -196,15 +206,7 @@ export default function WebViewNavbar() {
                   Plans
                 </Typography>
               </Link>
-              <Link href="/about">
-                <Typography
-                  variant="body2"
-                  className={styles.windowFullWidthNameAlign}
-                  sx={{ color: setAboutpage }}
-                >
-                  About
-                </Typography>
-              </Link>
+
               {userData ? (
                 <Typography sx={{ marginLeft: "40px" }}>
                   <IconButton

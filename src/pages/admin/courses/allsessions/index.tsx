@@ -341,7 +341,7 @@ const AllSession = () => {
                                               {...params}
                                               variant="outlined"
                                               placeholder="Search Course"
-                                              />
+                                            />
                                           )}
                                         />
                                       </Stack>
@@ -632,7 +632,7 @@ const AllSession = () => {
           </Card>
         </Box>
       </Box>
-      <Footer/>
+      <Footer />
       <ToastContainer />
     </>
   );

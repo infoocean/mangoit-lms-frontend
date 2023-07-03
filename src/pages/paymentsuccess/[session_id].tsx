@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Fragment, useEffect, useState } from "react";
 import { Box, Button, Typography } from "@mui/material";
 import styles from "../../styles/payment.module.css";
 import { useRouter } from "next/router";
@@ -16,6 +16,7 @@ import {
   GetdateAfterOneYear,
 } from "@/common/commonfunctions/connonfun";
 import Loader from "../../common/CircularProcess/processing";
+import Head from "next/head";
 
 export default function PaymentSuccess() {
   const router = useRouter();
@@ -31,7 +32,7 @@ export default function PaymentSuccess() {
   const reqdata = {
     cs_test_key: session_id,
   };
-  
+
   console.log("session_idsession_id", session_id && session_id);
   //get payment details
   const getPaymentDetails = () => {
@@ -105,22 +106,29 @@ export default function PaymentSuccess() {
       {loader ? (
         <Loader />
       ) : (
-        <Box className={styles.content}>
-          <Box className={styles.wrapper1}>
-            <Box className={styles.wrapper2}>
-              <Typography variant="h3" className={styles.h1}>
-                Thank you !
-              </Typography>
-              <Typography className={styles.p}>Thanks for Payment. </Typography>
-              <Typography className={styles.p}>
-                you should receive a confirmation email soon{" "}
-              </Typography>
-              <Link href={"/user/subscription"}>
-                <Button className={styles.gohome}>go to orders</Button>
-              </Link>
+        <Fragment>
+          <Head>
+            <title>Payment Success - LMS</title>
+          </Head>
+          <Box className={styles.content}>
+            <Box className={styles.wrapper1}>
+              <Box className={styles.wrapper2}>
+                <Typography variant="h3" className={styles.h1}>
+                  Thank you !
+                </Typography>
+                <Typography className={styles.p}>
+                  Thanks for Payment.{" "}
+                </Typography>
+                <Typography className={styles.p}>
+                  you should receive a confirmation email soon{" "}
+                </Typography>
+                <Link href={"/user/subscription"}>
+                  <Button className={styles.gohome}>go to orders</Button>
+                </Link>
+              </Box>
             </Box>
           </Box>
-        </Box>
+        </Fragment>
       )}
     </>
   );

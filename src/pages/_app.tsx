@@ -40,13 +40,6 @@ export default function App({
         console.log(err);
       });
   };
-  useEffect(() => {
-    handleGetSiteOptionsDataById();
-    if (typeof window !== "undefined") {
-      localData = window.localStorage.getItem("titleSegment");
-      console.log("@@@@@@@@@@@@", localData);
-    }
-  }, []);
 
   useEffect(() => {
     //generate authorizationtoken and set localstorage
@@ -71,6 +64,33 @@ export default function App({
 
   return (
     <>
+      {/* <Head>
+        <link
+          rel="icon"
+          href={
+            siteConfigData
+              ? BASE_URL + "/" + siteConfigData?.org_favicon
+              : orgFavicon
+              ? BASE_URL + "/" + orgFavicon
+              : "/favicon.svg"
+          }
+        />
+        <title>
+          {siteConfigData
+            ? `${siteConfigData.title} ${
+                lastSegment
+                  ? "-" + " " + capitalizeFirstLetter(lastSegment)
+                  : ""
+              }`
+            : orgTitle
+            ? `${orgTitle} ${
+                lastSegment
+                  ? "-" + " " + capitalizeFirstLetter(lastSegment)
+                  : ""
+              }`
+            : `LMS`}
+        </title>
+      </Head> */}
       <Head>
         <link
           rel="icon"

@@ -12,8 +12,8 @@ import ManageAccountsOutlinedIcon from "@mui/icons-material/ManageAccountsOutlin
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
 import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
-import GradingOutlinedIcon from '@mui/icons-material/GradingOutlined';
-import PaidOutlinedIcon from '@mui/icons-material/PaidOutlined';
+import GradingOutlinedIcon from "@mui/icons-material/GradingOutlined";
+import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 
 export const VerticalMenuItems = () => {
   const [userData, setUserData] = React.useState<any>("");
@@ -99,57 +99,52 @@ export const VerticalMenuItems = () => {
         ],
       },
       {
-        title: 'Subscriptions',
+        title: "Subscriptions",
         icon: SubscriptionsOutlinedIcon,
         children: [
           {
-            title: 'All Subs.',
+            title: "All Subs.",
             icon: PaidOutlinedIcon,
             path: "/admin/subscriptions/allsubscription",
             disable: false,
           },
           {
-            title: 'Subs. Plans',
+            title: "Subs. Plans",
             icon: GradingOutlinedIcon,
             path: "/admin/subscriptions/plans",
             disable: false,
-
           },
           {
-            title: 'Invoices',
+            title: "Invoices",
             icon: DescriptionOutlinedIcon,
             path: "/admin/subscriptions/invoices",
             disable: false,
-
-          }
-        ]
+          },
+        ],
       },
       {
-        title: 'Configurations',
+        title: "Configurations",
         icon: QueryStatsOutlinedIcon,
         children: [
           {
-            title: 'Email Mngmt',
+            title: "Email Mngmt",
             icon: EmailOutlinedIcon,
             path: "/admin/configurations/emailmanagement",
             disable: false,
-
           },
           {
-            title: 'Site Config',
+            title: "Site Config",
             icon: LanguageOutlinedIcon,
             path: "/admin/configurations/site",
             disable: false,
-
           },
           {
-            title: 'Stripe Config',
+            title: "Stripe Config",
             icon: PaymentOutlinedIcon,
             path: "/admin/configurations/stripe",
             disable: false,
-
-          }
-        ]
+          },
+        ],
       },
       {
         title: "Logout",

@@ -47,6 +47,7 @@ import { HandleModuleGetByID, HandleModuleUpdate } from "@/services/module";
 import { moduleValidations } from "@/validation_schema/moduleValidation";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { HandleAIText, aiBtnCss } from "@/services/text_AI";
+import { HandleSiteGetByID } from "@/services/site";
 
 export default function UpdateModule() {
   const router: any = useRouter();
@@ -59,6 +60,8 @@ export default function UpdateModule() {
   const [error, setErrors] = useState<string>();
   const [value, setNewValue] = useState<any>({});
   const [aiLoader, setAiLoader] = useState<any>(false);
+  const [siteKey, setSiteKey] = useState(false);
+  const [secretKey, setSecretKey] = useState<any>("");
 
   const {
     register,
@@ -78,6 +81,8 @@ export default function UpdateModule() {
       localData = window.localStorage.getItem("userData");
     }
     if (localData) {
+      const user_id = JSON.parse(localData);
+      HandleSiteGetData(user_id?.id);
       getModuleData();
     }
   }, [router.query]);
@@ -187,15 +192,33 @@ export default function UpdateModule() {
   const generateShortDescription = async () => {
     try {
       setAiLoader(true);
-      await HandleAIText(getModule?.title).then((data) => {
-        let shortDesc = data?.substring(0, 400);
-        setDespcriptionContent(shortDesc);
+      await HandleAIText(getModule?.title, secretKey).then((data) => {
+        // let shortDesc = data?.substring(0, 400);
+        setDespcriptionContent(data);
         setAiLoader(false);
       });
     } catch (e) {
       setAiLoader(false);
       console.log(e);
     }
+  };
+
+  const HandleSiteGetData = async (userId: any) => {
+    await HandleSiteGetByID(userId)
+      .then((res) => {
+        const getSiteData = res.data.filter(
+          (item: any) => item.key === "content_sk" && item.is_deleted === true
+        );
+        if (getSiteData?.length === 0) {
+          setSiteKey(false);
+        } else {
+          setSiteKey(true);
+          setSecretKey(getSiteData[0]?.value);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -299,7 +322,9 @@ export default function UpdateModule() {
                         <InputLabel className={ModuleCss.InputLabelFont}>
                           Description
                         </InputLabel>
-                        {getModule  && getModule?.title  !== null ? (
+                        {getModule &&
+                        getModule?.title !== null &&
+                        siteKey === true ? (
                           <Button
                             variant="text"
                             className={styles.aiButton}

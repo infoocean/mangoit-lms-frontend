@@ -574,6 +574,7 @@ export default function View() {
                             onClick={() =>
                               AcceptPaymentByorder(rows[0]?.id, rows[0]?.amount)
                             }
+                            className={subs.paynowbbttnn}
                           >
                             Pay Now{" "}
                             {spinner === true ? (
@@ -784,7 +785,6 @@ export default function View() {
                                     ) : (
                                       <Button
                                         className={courseStyle.editDeleteButton}
-                                        //   href="/user/subscription/view"
                                         id={courseStyle.viewIcon}
                                         variant="outlined"
                                         color="primary"

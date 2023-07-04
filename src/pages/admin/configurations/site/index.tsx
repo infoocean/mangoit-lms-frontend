@@ -12,8 +12,11 @@ import {
   Button,
   Card,
   CardContent,
+  Divider,
+  FormControlLabel,
   Grid,
   InputLabel,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -24,7 +27,7 @@ import CircularProgressBar from "@/common/CircularProcess/circularProgressBar";
 // ** CSS Imports
 import styles from "../../../../styles/sidebar.module.css";
 import siteStyles from "../../../../styles/allConfigurations.module.css";
-import { ToastContainer } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 
 // ** React Imports
 import { useForm } from "react-hook-form";
@@ -36,6 +39,7 @@ import { siteType } from "@/types/siteType";
 // ** Service & Validation Imports
 import { siteConfigValidations } from "@/validation_schema/configurationValidation";
 import {
+  HandleSecretKeyUpdate,
   HandleSiteConfigCreate,
   HandleSiteConfigUpdate,
   HandleSiteGetByID,
@@ -56,6 +60,8 @@ const SiteConfiguration = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [isAddOrEdit, setIsAddOrEdit] = useState<boolean>(false);
   const [portalData, setPortalData] = useState<siteType | any>("");
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
+  const [idd, setIdd] = useState<any>();
 
   const {
     register,
@@ -74,6 +80,7 @@ const SiteConfiguration = () => {
       title: event.org_title,
       org_logo: event.org_logoo,
       org_favicon: event.org_favicoon,
+      content_sk: event.content_sk,
     };
 
     for (var key in reqData) {
@@ -130,7 +137,6 @@ const SiteConfiguration = () => {
   }
 
   const handleGetDataById = async (userId: any) => {
-    
     await HandleSiteGetByID(userId)
       .then((res) => {
         setLoading(false);
@@ -139,7 +145,8 @@ const SiteConfiguration = () => {
             (item: any) =>
               item.key === "org_logo" ||
               item.key === "org_favicon" ||
-              item.key === "title"
+              item.key === "title" ||
+              item.key === "content_sk"
           );
 
           if (hasOLOrOFOrT) {
@@ -159,7 +166,15 @@ const SiteConfiguration = () => {
               ? setValue("org_favicoon", item.value)
               : item.key === "title"
               ? setValue("org_title", item.value)
+              : item.key === "content_sk"
+              ? setValue("content_sk", item.value)
               : ""
+          );
+          res.data.filter((item: any) =>
+            item.key === "content_sk" ? setIdd(item?.id) : ""
+          );
+          res.data.filter((item: any) =>
+            item.key === "content_sk" ? setBtnLoading(item?.is_deleted) : ""
           );
         }
       })
@@ -184,6 +199,7 @@ const SiteConfiguration = () => {
       title: event?.org_title,
       org_logo: event?.org_logoo,
       org_favicon: event?.org_favicoon,
+      content_sk: event.content_sk,
     };
 
     const formData: any = new FormData();
@@ -207,6 +223,32 @@ const SiteConfiguration = () => {
       });
   };
 
+  const handleClick = (isChecked: any) => {
+    if (isChecked === true) {
+      onStatusUpdate(1);
+      setBtnLoading(!btnLoading);
+      toast.success("Secret key is enabled");
+    } else if (isChecked === false) {
+      onStatusUpdate(0);
+      setBtnLoading(!btnLoading);
+      toast.success("Secret key is disabled");
+    }
+  };
+
+  const onStatusUpdate = async (data: any) => {
+    const reqData: any = {
+      is_deleted: data,
+    };
+
+    await HandleSecretKeyUpdate(idd, reqData)
+      .then((res) => {
+        console.log("!");
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   return (
     <>
       <Navbar portalData={portalData} />
@@ -226,416 +268,502 @@ const SiteConfiguration = () => {
           {/* main content */}
           <Card>
             <CardContent>
-                {!isLoading ? (
-                  !isAddOrEdit ? (
-                    // Save data in portal
-                    <Box
-                      component="form"
-                      method="POST"
-                      noValidate
-                      autoComplete="off"
-                      onSubmit={handleSubmit(onSubmit)}
-                      onReset={reset}
-                    >
-                      <Grid container spacing={3}>
-                        <Grid item xs={12} sm={12} md={12} lg={6}>
-                          <Box
-                            component="img"
-                            src="/Images/sideImages/siteSide.svg"
-                            width={"100%"}
-                          />
+              {!isLoading ? (
+                !isAddOrEdit ? (
+                  // Save data in portal
+                  <Box
+                    component="form"
+                    method="POST"
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleSubmit(onSubmit)}
+                    onReset={reset}
+                  >
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={12} md={12} lg={6}>
+                        <Box
+                          component="img"
+                          src="/Images/sideImages/siteSide.svg"
+                          width={"100%"}
+                        />
+                      </Grid>
+
+                      <Grid item xs={12} sm={12} md={12} lg={6}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} mt={4} mb={3}>
+                          <Typography className={styles.headingTitle}>
+                            SITE INFORMATION
+                          </Typography>
+                          <Divider/>
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={6}>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={12}
-                            md={12}
-                            lg={12}
-                            margin={"10px 0px 20px 0px"}
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          margin={"10px 0px 20px 0px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_title"
+                            className={siteStyles.inputLabels}
                           >
-                            <InputLabel
-                              shrink
-                              htmlFor="org_title"
-                              className={siteStyles.inputLabels}
-                            >
-                              Organisation Title
+                            Organisation Title
+                          </InputLabel>
+                          <TextField
+                            fullWidth
+                            id="org_title"
+                            {...register("org_title")}
+                            placeholder="Provide your organisation title"
+                          />
+                          {errors && errors.org_title
+                            ? ErrorShowing(errors?.org_title?.message)
+                            : ""}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          marginBottom={"20px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_llogo"
+                            className={siteStyles.inputLabels}
+                          >
+                            Organisation Logo
+                          </InputLabel>
+
+                          {/* upload in db */}
+
+                          <Box className={siteStyles.siteAttachmentBox}>
+                            <InputLabel className={siteStyles.subbox}>
+                              <TextField
+                                type="file"
+                                {...register("org_logo")}
+                                onChange={handleChange}
+                                sx={{ display: "none" }}
+                              />
+                              {previewProfile?.org_logo ? (
+                                <Box className={siteStyles.cameraIconMain}>
+                                  <Box
+                                    component={"img"}
+                                    src={previewProfile?.org_logo}
+                                    className={siteStyles.previewImage}
+                                    width={"200px"}
+                                  />
+                                  <UploadIcon
+                                    className={siteStyles.cameraAltIconLogo}
+                                  />{" "}
+                                </Box>
+                              ) : (
+                                <Typography
+                                  className={siteStyles.siteAttachments}
+                                >
+                                  {" "}
+                                  <UploadIcon /> UPLOAD
+                                </Typography>
+                              )}
                             </InputLabel>
-                            <TextField
-                              fullWidth
-                              id="org_title"
-                              {...register("org_title")}
-                              placeholder="Provide your organisation title"
-                            />
-                            {errors && errors.org_title
-                              ? ErrorShowing(errors?.org_title?.message)
-                              : ""}
-                          </Grid>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={12}
-                            md={12}
-                            lg={12}
-                            marginBottom={"20px"}
+                          </Box>
+                          {previewProfile?.org_logo
+                            ? ""
+                            : errors && errors.org_logoo
+                            ? ErrorShowing(errors?.org_logoo?.message)
+                            : ""}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          marginBottom={"20px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_logo"
+                            className={siteStyles.inputLabels}
                           >
-                            <InputLabel
-                              shrink
-                              htmlFor="org_llogo"
-                              className={siteStyles.inputLabels}
-                            >
-                              Organisation Logo
+                            Organisation Favicon
+                          </InputLabel>
+                          {/* upload in db */}
+
+                          <Box className={siteStyles.siteAttachmentBox}>
+                            <InputLabel className={siteStyles.subbox}>
+                              <TextField
+                                type="file"
+                                {...register("org_favicon")}
+                                onChange={handleChange}
+                                sx={{ display: "none" }}
+                              />
+                              {previewProfile?.org_favicon ? (
+                                <Box className={siteStyles.cameraIconMain}>
+                                  <Box
+                                    component={"img"}
+                                    src={previewProfile?.org_favicon}
+                                    className={siteStyles.previewImage}
+                                    width={"50px"}
+                                  />
+                                  <UploadIcon
+                                    className={siteStyles.cameraAltIconFavicon}
+                                  />{" "}
+                                </Box>
+                              ) : (
+                                <Typography
+                                  className={siteStyles.siteAttachments}
+                                >
+                                  {" "}
+                                  <UploadIcon /> UPLOAD
+                                </Typography>
+                              )}
                             </InputLabel>
-
-                            {/* upload in db */}
-
-                            <Box className={siteStyles.siteAttachmentBox}>
-                              <InputLabel className={siteStyles.subbox}>
-                                <TextField
-                                  type="file"
-                                  {...register("org_logo")}
-                                  onChange={handleChange}
-                                  sx={{ display: "none" }}
-                                />
-                                {previewProfile?.org_logo ? (
-                                  <Box className={siteStyles.cameraIconMain}>
-                                    <Box
-                                      component={"img"}
-                                      src={previewProfile?.org_logo}
-                                      className={siteStyles.previewImage}
-                                      width={"200px"}
-                                    />
-                                    <UploadIcon
-                                      className={siteStyles.cameraAltIconLogo}
-                                    />{" "}
-                                  </Box>
-                                ) : (
-                                  <Typography
-                                    className={siteStyles.siteAttachments}
-                                  >
-                                    {" "}
-                                    <UploadIcon /> UPLOAD
-                                  </Typography>
-                                )}
-                              </InputLabel>
-                            </Box>
-                            {previewProfile?.org_logo
-                              ? ""
-                              : errors && errors.org_logoo
-                              ? ErrorShowing(errors?.org_logoo?.message)
-                              : ""}
-                          </Grid>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={12}
-                            md={12}
-                            lg={12}
-                            marginBottom={"20px"}
+                          </Box>
+                          {previewProfile?.org_favicon
+                            ? ""
+                            : errors && errors.org_favicoon
+                            ? ErrorShowing(errors?.org_favicoon?.message)
+                            : ""}
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12} mt={5} mb={3}>
+                          <Typography className={styles.headingTitle}>
+                            CONTENT GENERATOR
+                          </Typography>
+                          <Divider className="vvv"/>
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          marginBottom={"20px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="content_sk"
+                            className={siteStyles.inputLabels}
                           >
-                            <InputLabel
-                              shrink
-                              htmlFor="org_logo"
-                              className={siteStyles.inputLabels}
+                            Secret Key
+                          </InputLabel>
+                          <TextField
+                            fullWidth
+                            id="content_sk"
+                            {...register("content_sk")}
+                            placeholder="Provide your secret key"
+                          />
+                          {errors && errors.content_sk
+                            ? ErrorShowing(errors?.content_sk?.message)
+                            : ""}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          textAlign={"right"}
+                        >
+                          {!isLoadingButton ? (
+                            <Button
+                              type="submit"
+                              size="large"
+                              variant="contained"
+                              id={styles.muibuttonBackgroundColor}
                             >
-                              Organisation Favicon
-                            </InputLabel>
-                            {/* upload in db */}
-
-                            <Box className={siteStyles.siteAttachmentBox}>
-                              <InputLabel className={siteStyles.subbox}>
-                                <TextField
-                                  type="file"
-                                  {...register("org_favicon")}
-                                  onChange={handleChange}
-                                  sx={{ display: "none" }}
-                                />
-                                {previewProfile?.org_favicon ? (
-                                  <Box className={siteStyles.cameraIconMain}>
-                                    <Box
-                                      component={"img"}
-                                      src={previewProfile?.org_favicon}
-                                      className={siteStyles.previewImage}
-                                      width={"50px"}
-                                    />
-                                    <UploadIcon
-                                      className={
-                                        siteStyles.cameraAltIconFavicon
-                                      }
-                                    />{" "}
-                                  </Box>
-                                ) : (
-                                  <Typography
-                                    className={siteStyles.siteAttachments}
-                                  >
-                                    {" "}
-                                    <UploadIcon /> UPLOAD
-                                  </Typography>
-                                )}
-                              </InputLabel>
-                            </Box>
-                            {previewProfile?.org_favicon
-                              ? ""
-                              : errors && errors.org_favicoon
-                              ? ErrorShowing(errors?.org_favicoon?.message)
-                              : ""}
-                          </Grid>
-
-                          <Grid
-                            item
-                            xs={12}
-                            sm={12}
-                            md={12}
-                            lg={12}
-                            textAlign={"right"}
-                          >
-                            {!isLoadingButton ? (
-                              <Button
-                                type="submit"
-                                size="large"
-                                variant="contained"
-                                id={styles.muibuttonBackgroundColor}
-                              >
-                                Submit
-                              </Button>
-                            ) : (
-                              <LoadingButton
-                                loading={isLoadingButton}
-                                size="large"
-                                className={siteStyles.siteLoadingButton}
-                                variant="contained"
-                                disabled
-                              >
-                                <CircularProgressBar />
-                              </LoadingButton>
-                            )}
-                          </Grid>
+                              Submit
+                            </Button>
+                          ) : (
+                            <LoadingButton
+                              loading={isLoadingButton}
+                              size="large"
+                              className={siteStyles.siteLoadingButton}
+                              variant="contained"
+                              disabled
+                            >
+                              <CircularProgressBar />
+                            </LoadingButton>
+                          )}
                         </Grid>
                       </Grid>
-                    </Box>
-                  ) : (
-                    //  Show data from portal
-                    <Box
-                      component="form"
-                      method="POST"
-                      noValidate
-                      autoComplete="off"
-                      onSubmit={handleSubmit(onUpdate)}
-                      onReset={reset}
-                    >
-                      <Grid container spacing={3}>
-                        <Grid item xs={12} sm={12} md={12} lg={6}>
-                          <Box
-                            component="img"
-                            src="/Images/sideImages/siteSide.svg"
-                            width={"100%"}
-                          />
-                        </Grid>
-
-                        <Grid item xs={12} sm={12} md={12} lg={6}>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={12}
-                            md={12}
-                            lg={12}
-                            margin={"10px 0px 20px 0px"}
-                          >
-                            <InputLabel
-                              shrink
-                              htmlFor="org_title"
-                              className={siteStyles.inputLabels}
-                            >
-                              Organisation Title
-                            </InputLabel>
-                            <TextField
-                              fullWidth
-                              id="org_title"
-                              {...register("org_title")}
-                              defaultValue={`${portalData.title}`}
-                            />
-                            {errors && errors.org_title
-                              ? ErrorShowing(errors?.org_title?.message)
-                              : ""}
-                          </Grid>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={12}
-                            md={12}
-                            lg={12}
-                            marginBottom={"20px"}
-                          >
-                            <InputLabel
-                              shrink
-                              htmlFor="org_llogo"
-                              className={siteStyles.inputLabels}
-                            >
-                              Organisation Logo
-                            </InputLabel>
-                            <Box className={siteStyles.siteAttachmentBox}>
-                              <InputLabel className={siteStyles.subbox}>
-                                <TextField
-                                  type="file"
-                                  {...register("org_logo")}
-                                  onChange={handleChange}
-                                  sx={{ display: "none" }}
-                                />
-                                {previewProfile?.org_logo ? (
-                                  <Box className={siteStyles.cameraIconMain}>
-                                    <Box
-                                      component={"img"}
-                                      src={previewProfile?.org_logo}
-                                      className={siteStyles.previewImage}
-                                      width={"200px"}
-                                    />
-                                    <UploadIcon
-                                      className={siteStyles.cameraAltIconLogo}
-                                    />{" "}
-                                  </Box>
-                                ) : portalData?.org_logo ? (
-                                  <Box className={siteStyles.cameraIconMain}>
-                                    <Box
-                                      component={"img"}
-                                      src={
-                                        BASE_URL + "/" + portalData?.org_logo
-                                      }
-                                      className={siteStyles.previewImage}
-                                      width={"200px"}
-                                    />
-                                    <UploadIcon
-                                      className={siteStyles.cameraAltIconLogo}
-                                    />{" "}
-                                  </Box>
-                                ) : (
-                                  <Typography
-                                    className={siteStyles.siteAttachments}
-                                  >
-                                    {" "}
-                                    <UploadIcon /> UPLOAD
-                                  </Typography>
-                                )}
-                              </InputLabel>
-                            </Box>
-                            {previewProfile?.org_logo
-                              ? ""
-                              : errors && errors.org_logoo
-                              ? ErrorShowing(errors?.org_logoo?.message)
-                              : ""}
-                          </Grid>
-                          <Grid
-                            item
-                            xs={12}
-                            sm={12}
-                            md={12}
-                            lg={12}
-                            marginBottom={"20px"}
-                          >
-                            <InputLabel
-                              shrink
-                              htmlFor="org_logo"
-                              className={siteStyles.inputLabels}
-                            >
-                              Organisation Favicon
-                            </InputLabel>
-                            {/* upload in db */}
-
-                            <Box className={siteStyles.siteAttachmentBox}>
-                              <InputLabel className={siteStyles.subbox}>
-                                <TextField
-                                  type="file"
-                                  {...register("org_favicon")}
-                                  onChange={handleChange}
-                                  sx={{ display: "none" }}
-                                />
-                                {previewProfile?.org_favicon ? (
-                                  <Box className={siteStyles.cameraIconMain}>
-                                    <Box
-                                      component={"img"}
-                                      src={previewProfile?.org_favicon}
-                                      className={siteStyles.previewImage}
-                                      width={"50px"}
-                                    />
-                                    <UploadIcon
-                                      className={
-                                        siteStyles.cameraAltIconFavicon
-                                      }
-                                    />{" "}
-                                  </Box>
-                                ) : portalData?.org_favicon ? (
-                                  <Box className={siteStyles.cameraIconMain}>
-                                    <Box
-                                      component={"img"}
-                                      src={
-                                        BASE_URL + "/" + portalData?.org_favicon
-                                      }
-                                      className={siteStyles.previewImage}
-                                      width={"50px"}
-                                    />
-                                    <UploadIcon
-                                      className={
-                                        siteStyles.cameraAltIconFavicon
-                                      }
-                                    />{" "}
-                                  </Box>
-                                ) : (
-                                  <Typography
-                                    className={siteStyles.siteAttachments}
-                                  >
-                                    {" "}
-                                    <UploadIcon /> UPLOAD
-                                  </Typography>
-                                )}
-                              </InputLabel>
-                            </Box>
-                            {previewProfile?.org_favicon
-                              ? ""
-                              : errors && errors.org_favicoon
-                              ? ErrorShowing(errors?.org_favicoon?.message)
-                              : ""}
-                          </Grid>
-
-                          <Grid
-                            item
-                            xs={12}
-                            sm={12}
-                            md={12}
-                            lg={12}
-                            textAlign={"right"}
-                          >
-                            {!isLoadingButton ? (
-                              <Button
-                                type="submit"
-                                size="large"
-                                variant="contained"
-                                id={styles.muibuttonBackgroundColor}
-                              >
-                                UPDATE
-                              </Button>
-                            ) : (
-                              <LoadingButton
-                                loading={isLoadingButton}
-                                size="large"
-                                className={siteStyles.siteLoadingButton}
-                                variant="contained"
-                                disabled
-                              >
-                                <CircularProgressBar />
-                              </LoadingButton>
-                            )}
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                    </Box>
-                  )
+                    </Grid>
+                  </Box>
                 ) : (
-                  <SpinnerProgress />
-                )}
+                  //  Show data from portal
+                  <Box
+                    component="form"
+                    method="POST"
+                    noValidate
+                    autoComplete="off"
+                    onSubmit={handleSubmit(onUpdate)}
+                    onReset={reset}
+                  >
+                    <Grid container spacing={3}>
+                      <Grid item xs={12} sm={12} md={12} lg={6}>
+                        <Box
+                          component="img"
+                          src="/Images/sideImages/siteSide.svg"
+                          width={"100%"}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={12} md={12} lg={6}>
+                        <Grid item xs={12} sm={12} md={12} lg={12} mt={4} mb={3}>
+                          <Typography className={styles.headingTitle}>
+                            SITE INFORMATION
+                          </Typography>
+                          <Divider />
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          margin={"10px 0px 20px 0px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_title"
+                            className={siteStyles.inputLabels}
+                          >
+                            Organisation Title
+                          </InputLabel>
+                          <TextField
+                            fullWidth
+                            id="org_title"
+                            {...register("org_title")}
+                            defaultValue={`${portalData.title}`}
+                          />
+                          {errors && errors.org_title
+                            ? ErrorShowing(errors?.org_title?.message)
+                            : ""}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          marginBottom={"20px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_llogo"
+                            className={siteStyles.inputLabels}
+                          >
+                            Organisation Logo
+                          </InputLabel>
+                          <Box className={siteStyles.siteAttachmentBox}>
+                            <InputLabel className={siteStyles.subbox}>
+                              <TextField
+                                type="file"
+                                {...register("org_logo")}
+                                onChange={handleChange}
+                                sx={{ display: "none" }}
+                              />
+                              {previewProfile?.org_logo ? (
+                                <Box className={siteStyles.cameraIconMain}>
+                                  <Box
+                                    component={"img"}
+                                    src={previewProfile?.org_logo}
+                                    className={siteStyles.previewImage}
+                                    width={"200px"}
+                                  />
+                                  <UploadIcon
+                                    className={siteStyles.cameraAltIconLogo}
+                                  />{" "}
+                                </Box>
+                              ) : portalData?.org_logo ? (
+                                <Box className={siteStyles.cameraIconMain}>
+                                  <Box
+                                    component={"img"}
+                                    src={BASE_URL + "/" + portalData?.org_logo}
+                                    className={siteStyles.previewImage}
+                                    width={"200px"}
+                                  />
+                                  <UploadIcon
+                                    className={siteStyles.cameraAltIconLogo}
+                                  />{" "}
+                                </Box>
+                              ) : (
+                                <Typography
+                                  className={siteStyles.siteAttachments}
+                                >
+                                  {" "}
+                                  <UploadIcon /> UPLOAD
+                                </Typography>
+                              )}
+                            </InputLabel>
+                          </Box>
+                          {previewProfile?.org_logo
+                            ? ""
+                            : errors && errors.org_logoo
+                            ? ErrorShowing(errors?.org_logoo?.message)
+                            : ""}
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          marginBottom={"20px"}
+                        >
+                          <InputLabel
+                            shrink
+                            htmlFor="org_logo"
+                            className={siteStyles.inputLabels}
+                          >
+                            Organisation Favicon
+                          </InputLabel>
+                          {/* upload in db */}
+
+                          <Box className={siteStyles.siteAttachmentBox}>
+                            <InputLabel className={siteStyles.subbox}>
+                              <TextField
+                                type="file"
+                                {...register("org_favicon")}
+                                onChange={handleChange}
+                                sx={{ display: "none" }}
+                              />
+                              {previewProfile?.org_favicon ? (
+                                <Box className={siteStyles.cameraIconMain}>
+                                  <Box
+                                    component={"img"}
+                                    src={previewProfile?.org_favicon}
+                                    className={siteStyles.previewImage}
+                                    width={"50px"}
+                                  />
+                                  <UploadIcon
+                                    className={siteStyles.cameraAltIconFavicon}
+                                  />{" "}
+                                </Box>
+                              ) : portalData?.org_favicon ? (
+                                <Box className={siteStyles.cameraIconMain}>
+                                  <Box
+                                    component={"img"}
+                                    src={
+                                      BASE_URL + "/" + portalData?.org_favicon
+                                    }
+                                    className={siteStyles.previewImage}
+                                    width={"50px"}
+                                  />
+                                  <UploadIcon
+                                    className={siteStyles.cameraAltIconFavicon}
+                                  />{" "}
+                                </Box>
+                              ) : (
+                                <Typography
+                                  className={siteStyles.siteAttachments}
+                                >
+                                  {" "}
+                                  <UploadIcon /> UPLOAD
+                                </Typography>
+                              )}
+                            </InputLabel>
+                          </Box>
+                          {previewProfile?.org_favicon
+                            ? ""
+                            : errors && errors.org_favicoon
+                            ? ErrorShowing(errors?.org_favicoon?.message)
+                            : ""}
+                        </Grid>
+                        <Grid item xs={12} sm={12} md={12} lg={12} mt={5} mb={3}>
+                          <Typography className={styles.headingTitle}>
+                            CONTENT GENERATOR
+                          </Typography>
+                          <Divider />
+                        </Grid>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          marginBottom={"20px"}
+                        >
+                          <Box className={siteStyles.secretbox}>
+                            <InputLabel
+                              shrink
+                              htmlFor="content_sk"
+                              className={siteStyles.inputLabels1}
+                            >
+                              Secret Key
+                            </InputLabel>
+                            <FormControlLabel
+                              sx={{
+                                display: "block",
+                              }}
+                              className={siteStyles.switchCss}
+                              control={
+                                <Switch
+                                  className={siteStyles.switchCss1}
+                                  checked={btnLoading}
+                                  //   onChange={() => setBtnLoading(!btnLoading)}
+                                  onClick={(e: any) =>
+                                    handleClick(e.target.checked)
+                                  }
+                                  name="btnLoading"
+                                  color="primary"
+                                />
+                              }
+                              label={undefined}
+                            />
+                          </Box>
+                          <TextField
+                            fullWidth
+                            id="content_sk"
+                            {...register("content_sk")}
+                            defaultValue={`${portalData.content_sk}`}
+                          />
+                          {errors && errors.content_sk
+                            ? ErrorShowing(errors?.content_sk?.message)
+                            : ""}
+                        </Grid>
+
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          textAlign={"right"}
+                        >
+                          {!isLoadingButton ? (
+                            <Button
+                              type="submit"
+                              size="large"
+                              variant="contained"
+                              id={styles.muibuttonBackgroundColor}
+                            >
+                              UPDATE
+                            </Button>
+                          ) : (
+                            <LoadingButton
+                              loading={isLoadingButton}
+                              size="large"
+                              className={siteStyles.siteLoadingButton}
+                              variant="contained"
+                              disabled
+                            >
+                              <CircularProgressBar />
+                            </LoadingButton>
+                          )}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </Box>
+                )
+              ) : (
+                <SpinnerProgress />
+              )}
             </CardContent>
           </Card>
         </Box>
       </Box>
-			<Footer />
+      <Footer />
     </>
   );
 };

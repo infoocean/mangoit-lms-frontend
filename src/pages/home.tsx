@@ -5,7 +5,7 @@ import Typography from "@mui/material/Typography";
 import WebViewNavbar from "@/common/LayoutNavigations/webviewnavbar";
 import WebViewFooter from "@/common/LayoutNavigations/webviewfooter";
 import styles from "../styles/webview.module.css";
-import Carousel from "react-material-ui-carousel";
+// import Carousel from "react-material-ui-carousel";
 import LockIcon from "@mui/icons-material/Lock";
 import HorizontalRuleIcon from "@mui/icons-material/HorizontalRule";
 import LocalLibraryIcon from "@mui/icons-material/LocalLibrary";
@@ -14,6 +14,8 @@ import { HandleCourseGet } from "@/services/course";
 import { TopEnrolledCourses } from "@/services/course_enroll";
 import { CourseCard } from "@/common/ResuableCardCmp/coursescard";
 import Link from "next/link";
+import "react-responsive-carousel/lib/styles/carousel.min.css";
+import { Carousel } from "react-responsive-carousel";
 
 export default function HomePage() {
   const [FreeCourses, setFreeCourses] = React.useState([]);
@@ -124,16 +126,15 @@ export default function HomePage() {
       {/*Landing page carousel*/}
       <Box className={styles.landingpagecarousel}>
         <Container maxWidth="lg">
-          <Carousel
+          {/* <Carousel
             autoPlay={true}
             animation="slide"
-            //navButtonsAlwaysVisible={true}
+            // navButtonsAlwaysVisible={true}
             IndicatorIcon={<HorizontalRuleIcon />}
             indicatorIconButtonProps={{
               style: {
                 padding: "15px",
                 color: "black",
-                
               },
             }}
             indicatorContainerProps={{
@@ -152,6 +153,18 @@ export default function HomePage() {
             }}
           >
             {items.map((item, i) => (
+              <Item key={i} item={item} />
+            ))}
+          </Carousel> */}
+
+          <Carousel
+            autoPlay={true}
+            interval={3000}
+            infiniteLoop={true}
+            showArrows={false}
+            showStatus={false}
+          >
+            {items?.map((item, i) => (
               <Item key={i} item={item} />
             ))}
           </Carousel>

@@ -13,7 +13,7 @@ export default function Home() {
     if (router?.asPath === '/') {
       return (<HomePage />)
     } else {
-      router.push(router.pathname);
+      router.push(router.asPath);
     }
   }
   return (<></>)

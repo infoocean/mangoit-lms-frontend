@@ -18,12 +18,17 @@ export const HandleSiteConfigCreate = async (
     .then((request) => {
       if (toasterCondition === "site saved") {
         toast.success("Site configuration submitted, will be updated soon");
+      } else if (toasterCondition === "content saved") {
+        toast.success(
+          "Site content generator key submitted, will be updated soon"
+        );
       } else {
         toast.success("Stripe configuration submitted");
       }
       return request;
     })
     .catch((error) => {
+      console.log("errr", error);
       if (error?.response === 401) {
         HandleLogout();
       } else {
@@ -82,6 +87,10 @@ export const HandleSiteConfigUpdate = async (
     .then((request) => {
       if (toasterCondition === "site update") {
         toast.success("Site configuration, will be updated soon");
+      } else if (toasterCondition === "content saved") {
+        toast.success(
+          "Site content generator key submitted, will be updated soon"
+        );
       } else {
         toast.success("Stripe configuration updated");
       }
@@ -92,6 +101,26 @@ export const HandleSiteConfigUpdate = async (
         HandleLogout();
       } else {
         toast.error("Failed to update configuration");
+      }
+      return error;
+    });
+};
+
+export const HandleSecretKeyUpdate = async (idd: any, updateData: any) => {
+  return await axios({
+    method: "PUT",
+    url: `${API.updateContentSecret}/${idd}`,
+    headers: LoginHeader(),
+    data: updateData,
+  })
+    .then((request) => {
+      return request;
+    })
+    .catch((error) => {
+      if (error.response.status === 401) {
+        HandleLogout();
+      } else {
+        toast.error("Content Update failed");
       }
       return error;
     });

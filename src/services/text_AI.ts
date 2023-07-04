@@ -1,20 +1,19 @@
 import axios from "axios";
 
-export const HandleAIText = async (text: any) => {
+export const HandleAIText = async (text: any, key: any) => {
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: `${text}` }],
-        max_tokens: 600,
+        max_tokens: 50,
         temperature: 0.7,
       },
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "Bearer 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",
+          Authorization: `Bearer ${key}`,
         },
       }
     );
@@ -25,21 +24,20 @@ export const HandleAIText = async (text: any) => {
   }
 };
 
-export const HandleAILongText = async (text: any) => {
+export const HandleAILongText = async (text: any, key: any) => {
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
       {
         model: "gpt-3.5-turbo",
-        messages: [{ role: "system", content: `${text}` }],
-        max_tokens: 1000,
+        messages: [{ role: "user", content: `${text}` }],
+        max_tokens: 100,
         temperature: 0.7,
       },
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization:
-            "Bearer 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",
+          Authorization: `Bearer ${key}`,
         },
       }
     );
@@ -61,3 +59,5 @@ export const aiBtnCss = {
     },
   },
 };
+
+//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

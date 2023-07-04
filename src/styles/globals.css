@@ -241,3 +241,7 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-text.MuiButton-textPrimary.Mu
   background: #e8661b !important;
   border-radius: 30px !important;
 }
+.css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase .MuiSwitch-input {
+  left: 0% !important;
+  width: 1% !important;
+}

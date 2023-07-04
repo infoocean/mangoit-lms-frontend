@@ -31,7 +31,7 @@ import {
 } from "@mui/material";
 // CSS Import
 import { ToastContainer, toast } from "react-toastify";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import RichEditor from "@/common/RichTextEditor/textEditor";
 import { Controller, useForm } from "react-hook-form";
 import { courseType } from "@/types/courseType";
@@ -48,6 +48,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import Footer from "@/common/LayoutNavigations/footer";
+import { HandleSiteGetByID } from "@/services/site";
 const BootstrapDialog = styled(Dialog)(({ theme }) => ({
   "& .MuiDialogContent-root": {
     padding: theme.spacing(2),
@@ -93,7 +94,8 @@ const AddCourse = () => {
   const [title, setTitle] = useState("");
   const [aiLoader, setAiLoader] = useState<any>(false);
   const [aiLoader1, setAiLoader1] = useState<any>(false);
-
+  const [siteKey, setSiteKey] = useState(false);
+  const [secretKey, setSecretKey] = useState<any>("");
   const {
     register,
     handleSubmit,
@@ -105,6 +107,15 @@ const AddCourse = () => {
   } = useForm<courseType | any>({
     resolver: yupResolver(courseValidations),
   });
+
+  useEffect(() => {
+    let localData: any;
+    if (typeof window !== "undefined") {
+      localData = window.localStorage.getItem("userData");
+    }
+    const user_id = JSON.parse(localData);
+    HandleSiteGetData(user_id?.id);
+  }, []);
 
   const handleContentChange = (value: string, identifier: string) => {
     if (identifier === "long_description") {
@@ -314,9 +325,9 @@ const AddCourse = () => {
   const generateShortDescription = async () => {
     try {
       setAiLoader(true);
-      await HandleAIText(title).then((data) => {
+      await HandleAIText(title, secretKey).then((data) => {
         let shortDesc = data?.substring(0, 400);
-        setShortDespcriptionContent(shortDesc);
+        setShortDespcriptionContent(data);
         setAiLoader(false);
       });
     } catch (e) {
@@ -327,15 +338,33 @@ const AddCourse = () => {
   const generateLongDescription = async () => {
     try {
       setAiLoader1(true);
-      await HandleAILongText(title).then((data) => {
+      await HandleAILongText(title, secretKey).then((data) => {
         let longDesc = data?.substring(0, 600);
-        setdespcriptionContent(longDesc);
+        setdespcriptionContent(data);
         setAiLoader1(false);
       });
     } catch (e) {
       setAiLoader1(false);
       console.log(e);
     }
+  };
+
+  const HandleSiteGetData = async (userId: any) => {
+    await HandleSiteGetByID(userId)
+      .then((res) => {
+        const getSiteData = res.data.filter(
+          (item: any) => item.key === "content_sk" && item.is_deleted === true
+        );
+        if (getSiteData?.length === 0) {
+          setSiteKey(false);
+        } else {
+          setSiteKey(true);
+          setSecretKey(getSiteData[0]?.value);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -587,7 +616,7 @@ const AddCourse = () => {
                       <InputLabel className={styles.InputLabelFont}>
                         Short Description
                       </InputLabel>
-                      {title && title !== null ? (
+                      {title && title !== null && siteKey === true ? (
                         <Button
                           variant="text"
                           className={styles.aiButton}
@@ -662,7 +691,7 @@ const AddCourse = () => {
                       <InputLabel className={styles.InputLabelFont}>
                         Long Description
                       </InputLabel>
-                      {title && title !== null ? (
+                      {title && title !== null && siteKey === true ? (
                         <Button
                           variant="text"
                           className={styles.aiButton}

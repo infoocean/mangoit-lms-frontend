@@ -47,6 +47,7 @@ import { HandleModuleGet } from "@/services/module";
 import { HandleSessionUpdate, HandleSessionGetByID } from "@/services/session";
 import { HandleAIText, aiBtnCss } from "@/services/text_AI";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
+import { HandleSiteGetByID } from "@/services/site";
 
 export default function UpdateSession() {
   const router: any = useRouter();
@@ -64,6 +65,8 @@ export default function UpdateSession() {
   const [value, setNewValue] = useState<any>({});
   const [mdvalue, setmdvalue] = useState<any>({});
   const [aiLoader, setAiLoader] = useState<any>(false);
+  const [siteKey, setSiteKey] = useState(false);
+  const [secretKey, setSecretKey] = useState<any>("");
 
   const {
     register,
@@ -84,6 +87,8 @@ export default function UpdateSession() {
       localData = window.localStorage.getItem("userData");
     }
     if (localData) {
+      const user_id = JSON.parse(localData);
+      HandleSiteGetData(user_id?.id);
       getSessionData(id);
     }
   }, []);
@@ -241,15 +246,33 @@ export default function UpdateSession() {
   const generateShortDescription = async () => {
     try {
       setAiLoader(true);
-      await HandleAIText(getSession?.title).then((data) => {
-        let shortDesc = data?.substring(0, 400);
-        setdespcriptionContent(shortDesc);
+      await HandleAIText(getSession?.title, secretKey).then((data) => {
+        // let shortDesc = data?.substring(0, 400);
+        setdespcriptionContent(data);
         setAiLoader(false);
       });
     } catch (e) {
       setAiLoader(false);
       console.log(e);
     }
+  };
+
+  const HandleSiteGetData = async (userId: any) => {
+    await HandleSiteGetByID(userId)
+      .then((res) => {
+        const getSiteData = res.data.filter(
+          (item: any) => item.key === "content_sk" && item.is_deleted === true
+        );
+        if (getSiteData?.length === 0) {
+          setSiteKey(false);
+        } else {
+          setSiteKey(true);
+          setSecretKey(getSiteData[0]?.value);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (
@@ -397,7 +420,9 @@ export default function UpdateSession() {
                         <InputLabel className={Sessions.InputLabelFont}>
                           Description
                         </InputLabel>
-                        {getSession && getSession?.title !== null ? (
+                        {getSession &&
+                        getSession?.title !== null &&
+                        siteKey === true ? (
                           <Button
                             variant="text"
                             className={styles.aiButton}

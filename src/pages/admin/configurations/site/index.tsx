@@ -1,5 +1,5 @@
 // ** External Components
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 import Navbar from "@/common/LayoutNavigations/navbar";
 import SideBar from "@/common/LayoutNavigations/sideBar";
@@ -14,11 +14,17 @@ import {
   CardContent,
   Divider,
   FormControlLabel,
+  FormGroup,
   Grid,
+  IconButton,
   InputLabel,
   Switch,
   TextField,
+  ThemeProvider,
+  Tooltip,
   Typography,
+  createMuiTheme,
+  createTheme,
 } from "@mui/material";
 import UploadIcon from "@mui/icons-material/Upload";
 import { LoadingButton } from "@mui/lab";
@@ -46,6 +52,8 @@ import {
 } from "@/services/site";
 import { NextPageContext } from "next";
 import Footer from "@/common/LayoutNavigations/footer";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import Link from "next/link";
 
 interface SiteConfigPageProps {
   siteConfigData: any; // Replace with the actual type of your site config data
@@ -249,6 +257,31 @@ const SiteConfiguration = () => {
       });
   };
 
+  const theme = createTheme({
+    components: {
+      MuiSwitch: {
+        styleOverrides: {
+          switchBase: {
+            color: "#9b9b9b !important",
+          },
+          colorPrimary: {
+            "&.Mui-checked": {
+              color: " #e8661b !important",
+            },
+          },
+          track: {
+            opacity: 0.2,
+            backgroundColor: "#020202 !important",
+            ".Mui-checked.Mui-checked + &": {
+              opacity: 0.7,
+              backgroundColor: "#e8661be6 !important",
+            },
+          },
+        },
+      },
+    },
+  });
+
   return (
     <>
       <Navbar portalData={portalData} />
@@ -289,11 +322,19 @@ const SiteConfiguration = () => {
                       </Grid>
 
                       <Grid item xs={12} sm={12} md={12} lg={6}>
-                        <Grid item xs={12} sm={12} md={12} lg={12} mt={4} mb={3}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          mt={4}
+                          mb={3}
+                        >
                           <Typography className={styles.headingTitle}>
                             SITE INFORMATION
                           </Typography>
-                          <Divider/>
+                          <Divider />
                         </Grid>
                         <Grid
                           item
@@ -427,11 +468,19 @@ const SiteConfiguration = () => {
                             ? ErrorShowing(errors?.org_favicoon?.message)
                             : ""}
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} mt={5} mb={3}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          mt={5}
+                          mb={3}
+                        >
                           <Typography className={styles.headingTitle}>
                             CONTENT GENERATOR
                           </Typography>
-                          <Divider className="vvv"/>
+                          <Divider className="vvv" />
                         </Grid>
                         <Grid
                           item
@@ -447,6 +496,30 @@ const SiteConfiguration = () => {
                             className={siteStyles.inputLabels}
                           >
                             Secret Key
+                            <Tooltip
+                              title={
+                                <Box>
+                                  <Fragment>
+                                    <Typography variant="caption">
+                                      Please provide your openAI API secret
+                                      key.For more information &nbsp;
+                                      <Link
+                                        target="_blank"
+                                        href="https://openai.com/"
+                                        className={siteStyles.tooltipcss}
+                                      >
+                                        Click here
+                                      </Link>
+                                    </Typography>
+                                  </Fragment>
+                                </Box>
+                              }
+                              placement="right-start"
+                            >
+                              <IconButton>
+                                <HelpOutlineIcon />
+                              </IconButton>
+                            </Tooltip>
                           </InputLabel>
                           <TextField
                             fullWidth
@@ -509,7 +582,15 @@ const SiteConfiguration = () => {
                         />
                       </Grid>
                       <Grid item xs={12} sm={12} md={12} lg={6}>
-                        <Grid item xs={12} sm={12} md={12} lg={12} mt={4} mb={3}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          mt={4}
+                          mb={3}
+                        >
                           <Typography className={styles.headingTitle}>
                             SITE INFORMATION
                           </Typography>
@@ -670,7 +751,15 @@ const SiteConfiguration = () => {
                             ? ErrorShowing(errors?.org_favicoon?.message)
                             : ""}
                         </Grid>
-                        <Grid item xs={12} sm={12} md={12} lg={12} mt={5} mb={3}>
+                        <Grid
+                          item
+                          xs={12}
+                          sm={12}
+                          md={12}
+                          lg={12}
+                          mt={5}
+                          mb={3}
+                        >
                           <Typography className={styles.headingTitle}>
                             CONTENT GENERATOR
                           </Typography>
@@ -691,26 +780,52 @@ const SiteConfiguration = () => {
                               className={siteStyles.inputLabels1}
                             >
                               Secret Key
+                              <Tooltip
+                                placement="right-start"
+                                title={
+                                  <Box>
+                                    <Fragment>
+                                      <Typography variant="caption">
+                                        This is your openAI APIs secret key.For
+                                        more information &nbsp;
+                                        <Link
+                                          target="_blank"
+                                          href="https://openai.com/"
+                                          className={siteStyles.tooltipcss}
+                                        >
+                                          Click here
+                                        </Link>
+                                      </Typography>
+                                    </Fragment>
+                                  </Box>
+                                }
+                              >
+                                <IconButton>
+                                  <HelpOutlineIcon />
+                                </IconButton>
+                              </Tooltip>
                             </InputLabel>
-                            <FormControlLabel
-                              sx={{
-                                display: "block",
-                              }}
-                              className={siteStyles.switchCss}
-                              control={
-                                <Switch
-                                  className={siteStyles.switchCss1}
-                                  checked={btnLoading}
-                                  //   onChange={() => setBtnLoading(!btnLoading)}
-                                  onClick={(e: any) =>
-                                    handleClick(e.target.checked)
+                            <ThemeProvider theme={theme}>
+                              <FormGroup>
+                                <FormControlLabel
+                                  sx={{
+                                    display: "block",
+                                  }}
+                                  className={siteStyles.switchCss}
+                                  control={
+                                    <Switch
+                                      checked={btnLoading}
+                                      onClick={(e: any) =>
+                                        handleClick(e.target.checked)
+                                      }
+                                      name="btnLoading"
+                                      color="primary"
+                                    />
                                   }
-                                  name="btnLoading"
-                                  color="primary"
+                                  label={undefined}
                                 />
-                              }
-                              label={undefined}
-                            />
+                              </FormGroup>
+                            </ThemeProvider>
                           </Box>
                           <TextField
                             fullWidth

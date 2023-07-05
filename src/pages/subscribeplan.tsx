@@ -54,7 +54,7 @@ export default function HomePage() {
         <Container maxWidth="lg">
           <Box>
             <Grid container spacing={2} justifyContent={"space-evenly"}>
-              {subsdata?.map((data, key) => {
+              {subsdata && subsdata?.map((data, key) => {
                 return <SubscribtionPanCard subsdata={data} key={key} />;
               })}
             </Grid>

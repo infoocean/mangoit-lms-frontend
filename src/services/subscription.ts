@@ -247,7 +247,7 @@ export const GetAllSubsctionPlans = async (search?: string, reqData?: any) => {
       return responce?.data;
     })
     .catch((error) => {
-      if (error.response.status === 401) HandleLogout();
+      if (error?.response?.status === 401) HandleLogout();
       else return error;
     });
 };

@@ -576,41 +576,7 @@ const AddCourse = () => {
                       ? ErrorShowing(errors?.videoattachments?.message)
                       : ""}
                   </Grid>
-                  {/* <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <Box className={SidebarStyles.aiCss}>
-                      <InputLabel className={styles.InputLabelFont}>
-                        Short Description
-                      </InputLabel>
-                      {title && title !== null ? (
-                        <Button
-                          variant="text"
-                          className={SidebarStyles.aiButton}
-                          onClick={generateShortDescription}
-                        >
-                          {aiLoader ? (
-                            <AutorenewIcon sx={aiBtnCss} />
-                          ) : (
-                            <AutorenewIcon />
-                          )}{" "}
-                          &nbsp;Auto Generate
-                        </Button>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                    <Box className={styles.quillShortDescription}>
-                      <RichEditor
-                        {...register("short_description")}
-                        value={shortDespcriptionContent}
-                        onChange={(e) =>
-                          handleContentChange(e, "short_description")
-                        }
-                      />
-                    </Box>
-                    {errors && errors.short_description
-                      ? ErrorShowing(errors?.short_description?.message)
-                      : ""}
-                  </Grid> */}
+                
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box className={SidebarStyles.aiCss}>
                       <InputLabel className={styles.InputLabelFont}>
@@ -619,7 +585,7 @@ const AddCourse = () => {
                       {title && title !== null && siteKey === true ? (
                         <Button
                           variant="text"
-                          className={styles.aiButton}
+                          className={SidebarStyles.aiButton}
                           onClick={generateShortDescription}
                         >
                           {aiLoader ? (
@@ -649,43 +615,7 @@ const AddCourse = () => {
                       : ""}
                     {/* {getShortDespcriptionContent ? '' : errors && errors.description ? ErrorShowing(errors?.description?.message) : ""} */}
                   </Grid>
-                  {/* <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <Box className={SidebarStyles.aiCss}>
-                      <InputLabel className={styles.InputLabelFont}>
-                        Long Description
-                      </InputLabel>
-                      {title && title !== null ? (
-                        <Button
-                          variant="text"
-                          className={SidebarStyles.aiButton}
-                          onClick={generateLongDescription}
-                        >
-                          {aiLoader1 ? (
-                            <AutorenewIcon sx={aiBtnCss} />
-                          ) : (
-                            <AutorenewIcon />
-                          )}{" "}
-                          &nbsp;Auto Generate
-                        </Button>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                    <Box className={styles.quillDescription}>
-                      <RichEditor
-                        value={despcriptionContent}
-                        onChange={(e) =>
-                          handleContentChange(e, "long_description")
-                        }
-                      />
-                    </Box>
-                    {errors && errors.long_description
-                      ? ErrorShowing(
-                          errors?.long_description?.message,
-                          "long_description"
-                        )
-                      : ""}
-                  </Grid> */}
+                  
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box className={SidebarStyles.aiCss}>
                       <InputLabel className={styles.InputLabelFont}>
@@ -694,7 +624,7 @@ const AddCourse = () => {
                       {title && title !== null && siteKey === true ? (
                         <Button
                           variant="text"
-                          className={styles.aiButton}
+                          className={SidebarStyles.aiButton}
                           onClick={generateLongDescription}
                         >
                           {aiLoader1 ? (

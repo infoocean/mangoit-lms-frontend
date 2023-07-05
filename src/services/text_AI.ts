@@ -1,6 +1,7 @@
 import axios from "axios";
 
 export const HandleAIText = async (text: any, key: any) => {
+  //user,assistant,system
   try {
     const response = await axios.post(
       "https://api.openai.com/v1/chat/completions",
@@ -8,7 +9,7 @@ export const HandleAIText = async (text: any, key: any) => {
         model: "gpt-3.5-turbo",
         messages: [{ role: "assistant", content: `${text}` }],
         max_tokens: 80,
-        temperature: 0.2,
+        temperature: 0.7,
       },
       {
         headers: {
@@ -18,7 +19,12 @@ export const HandleAIText = async (text: any, key: any) => {
       }
     );
     let textData = response?.data?.choices[0]?.message?.content;
-    return textData;
+    const lastFullStopIndex = textData?.lastIndexOf(".");
+    const extractedData = textData
+      ?.substring(0, lastFullStopIndex + 1)
+      ?.replace(/\d+\.$/, "")
+      .trim();
+    return extractedData;
   } catch (error) {
     console.error("Error:", error);
   }
@@ -30,8 +36,8 @@ export const HandleAILongText = async (text: any, key: any) => {
       "https://api.openai.com/v1/chat/completions",
       {
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: `${text}` }],
-        max_tokens: 110,
+        messages: [{ role: "assistant", content: `${text}` }],
+        max_tokens: 125,
         temperature: 0.7,
       },
       {
@@ -41,8 +47,15 @@ export const HandleAILongText = async (text: any, key: any) => {
         },
       }
     );
+
     let textData = response?.data?.choices[0]?.message?.content;
-    return textData;
+    const lastFullStopIndex = textData?.lastIndexOf(".");
+    const extractedData = textData
+      ?.substring(0, lastFullStopIndex + 1)
+      ?.replace(/\d+\.$/, "")
+      .trim();
+
+    return extractedData;
   } catch (error) {
     console.error("Error:", error);
   }

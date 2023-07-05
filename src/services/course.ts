@@ -27,7 +27,7 @@ export const HandleCourseGet = async (searchData: any, filterData: any) => {
       return request;
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         HandleLogout();
       } else {
         toast.error("Something went wrong");
@@ -60,7 +60,7 @@ export const HandleCourseGetadmin = async (
       return request;
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         HandleLogout();
       } else {
         toast.error("Something went wrong");
@@ -79,7 +79,7 @@ export const HandleCourseGetByID = async (courseId: any) => {
       return request;
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         HandleLogout();
       } else {
         toast.error("Course added failed");
@@ -100,7 +100,7 @@ export const HandleCourseCreate = async (reqData: any) => {
       return request;
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         HandleLogout();
       } else {
         toast.error("Course added failed");
@@ -121,7 +121,7 @@ export const HandleCourseUpdate = async (courseId: any, updateData: any) => {
       return request;
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         HandleLogout();
       } else {
         toast.error("Course Update failed");
@@ -140,7 +140,7 @@ export const HandleCourseByCourseId = async (subId: any) => {
       return request;
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         HandleLogout();
       } else {
         toast.error("subscription failed");
@@ -160,7 +160,7 @@ export const HandleCourseDelete = async (rowID: any, title: any) => {
       return request;
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         HandleLogout();
       } else {
         toast.error("Course Delete failed");
@@ -179,7 +179,7 @@ export const TotalLearner = async (courseId: any) => {
       return request;
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         HandleLogout();
       }
       return error;

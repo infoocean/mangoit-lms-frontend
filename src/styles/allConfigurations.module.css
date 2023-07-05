@@ -139,6 +139,11 @@
   margin-right: 0px !important;
 }
 
-span.MuiSwitch-thumb.css-jsexje-MuiSwitch-thumb {
+.tooltipcss {
   color: #e8661b !important;
+  text-decoration: underline !important;
+  background: white !important;
+  font-size: 13px !important;
+  padding: 2px !important;
+  border-radius: 2px !important;
 }

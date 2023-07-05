@@ -6,9 +6,9 @@ export const HandleAIText = async (text: any, key: any) => {
       "https://api.openai.com/v1/chat/completions",
       {
         model: "gpt-3.5-turbo",
-        messages: [{ role: "user", content: `${text}` }],
-        max_tokens: 50,
-        temperature: 0.7,
+        messages: [{ role: "assistant", content: `${text}` }],
+        max_tokens: 80,
+        temperature: 0.2,
       },
       {
         headers: {
@@ -31,7 +31,7 @@ export const HandleAILongText = async (text: any, key: any) => {
       {
         model: "gpt-3.5-turbo",
         messages: [{ role: "user", content: `${text}` }],
-        max_tokens: 100,
+        max_tokens: 110,
         temperature: 0.7,
       },
       {

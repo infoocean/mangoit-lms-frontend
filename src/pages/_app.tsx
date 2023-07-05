@@ -28,13 +28,14 @@ export default function App({
   const handleGetSiteOptionsDataById = async () => {
     await HandleGetAllSiteGet()
       .then((res) => {
+        
         const objWithTitle =
-          res && res.data.find((obj: any) => obj.key === "title");
+          res && res?.data?.find((obj: any) => obj?.key === "title");
         const objWithFavicon =
-          res && res.data.find((obj: any) => obj.key === "org_favicon");
+          res && res?.data?.find((obj: any) => obj?.key === "org_favicon");
 
-        setorgFavicon(objWithFavicon.value);
-        setorgTitle(objWithTitle.value);
+        setorgFavicon(objWithFavicon?.value);
+        setorgTitle(objWithTitle?.value);
       })
       .catch((err) => {
         console.log(err);

@@ -29,7 +29,7 @@ export default function HomePage() {
         <Container maxWidth={false} className={styles.imgwidthcss}>
           <Grid>
             <Image
-              src="/Images/sideImages/couseBanner.png"
+              src="/Images/sideImages/aboutUs.jpg"
               alt="image"
               width={100}
               height={300}

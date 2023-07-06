@@ -176,9 +176,9 @@ const EmailContentManage = () => {
           <BreadcrumbsHeading
             First="Home"
             Middle="Email Management"
-            Link="/admin/configurations/emailmanagement"
             Current="Update Email Management"
             Text="EMAIL"
+            Link="admin/configurations/emailmanagement"
           />
 
           {/* main content */}

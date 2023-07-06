@@ -159,7 +159,7 @@ export default function AddSession() {
             Middle="Module"
             Current="Add Module"
             Text="MODULE"
-            Link="/admin/courses/allmodules"
+            Link="admin/courses/allmodules"
           />
           {/* main content */}
           <Card>

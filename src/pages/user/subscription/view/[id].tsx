@@ -323,7 +323,7 @@ export default function View() {
               Current="Subscription View"
               Middle="Subscription"
               Text="VIEW"
-              Link="/user/subscription"
+              Link="user/subscription"
             />
             <Box className={courseStyle.backbtn}>
               <Link

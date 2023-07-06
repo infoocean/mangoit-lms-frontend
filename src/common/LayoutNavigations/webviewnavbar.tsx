@@ -11,7 +11,6 @@ import styles from "../../styles/webviewHeaderFooter.module.css";
 import MenuIcon from "@mui/icons-material/Menu";
 import Link from "next/link";
 import { capitalizeFirstLetter } from "../CapitalFirstLetter/capitalizeFirstLetter";
-import { AccountCircle, Margin } from "@mui/icons-material";
 import { HandleLogout } from "@/services/auth";
 import { BASE_URL } from "@/config/config";
 
@@ -251,12 +250,25 @@ export default function WebViewNavbar() {
                     <MenuItem>
                       Hii, {capitalizeFirstLetter(userData?.first_name)}
                     </MenuItem>
-                    <Link href="/user/profile">
-                      <MenuItem>Profile </MenuItem>
-                    </Link>
-                    <MenuItem>
-                      <Link href="/user/dashboard">Dashboard </Link>
-                    </MenuItem>
+                    {userData && userData?.role_id === 1 ? (
+                      <Box>
+                        <Link href="/profile">
+                          <MenuItem>Profile </MenuItem>
+                        </Link>
+                        <MenuItem>
+                          <Link href="/admin/dashboard">Dashboard </Link>
+                        </MenuItem>
+                      </Box>
+                    ) : (
+                      <Box>
+                        <Link href="/user/profile">
+                          <MenuItem>Profile </MenuItem>
+                        </Link>
+                        <MenuItem>
+                          <Link href="/user/dashboard">Dashboard </Link>
+                        </MenuItem>
+                      </Box>
+                    )}
                     <MenuItem onClick={HandleLogout}>
                       <Typography>Logout</Typography>
                     </MenuItem>

@@ -163,6 +163,7 @@ export default function HomePage() {
             infiniteLoop={true}
             showArrows={false}
             showStatus={false}
+            showThumbs={false}
           >
             {items?.map((item, i) => (
               <Item key={i} item={item} />

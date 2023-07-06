@@ -445,7 +445,7 @@ export default function UpdateCourse() {
             Middle="Course"
             Current="Update Course"
             Text="COURSE"
-            Link="/admin/courses/allcourses"
+            Link="admin/courses/allcourses"
           />
           {/* main content */}
           <Card>

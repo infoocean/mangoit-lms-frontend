@@ -118,7 +118,7 @@ export default function UpdateSubscriptionPlans() {
             Middle="Subscription Plans"
             Current="Update Subscription Plan"
             Text="SUBSCRIPTION PLANS"
-            Link="/admin/subscriptions/plans/"
+            Link="admin/subscriptions/plans/"
           />
           {/* main content */}
           <Card>

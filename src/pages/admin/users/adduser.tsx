@@ -90,7 +90,7 @@ export default function AddUser() {
             Middle="User"
             Current="Add User"
             Text="USER"
-            Link="/admin/users"
+            Link="admin/users"
           />
           {/* main content */}
           <Card>

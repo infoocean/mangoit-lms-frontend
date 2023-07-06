@@ -322,7 +322,7 @@ export default function Couseview() {
               Middle="Courses"
               Current={couseData && couseData?.title}
               Text=""
-              Link="/user/course"
+              Link="user/course"
             />
             <Box className={courseStyle.backbtn}>
               <Link href="/user/course" style={{ textDecoration: "none" }}>

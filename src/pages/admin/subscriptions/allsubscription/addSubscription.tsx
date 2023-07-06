@@ -102,7 +102,7 @@ export default function AddSubscription() {
             Middle="Subscription"
             Current="Add Subscription"
             Text="SUBSCRIPTION"
-            Link="/admin/subscriptions/allsubscription/"
+            Link="admin/subscriptions/allsubscription/"
           />
           {/* main content */}
           <Card>

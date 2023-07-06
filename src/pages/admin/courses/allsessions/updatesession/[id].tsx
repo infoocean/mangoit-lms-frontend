@@ -288,7 +288,7 @@ export default function UpdateSession() {
             Middle="Session"
             Current="Update Session"
             Text="SESSION"
-            Link="/admin/courses/allsessions"
+            Link="admin/courses/allsessions"
           />
           {/* main content */}
           <Card>

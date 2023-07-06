@@ -131,7 +131,7 @@ export default function UpdateSubscription() {
             Middle="Subscription"
             Current="Update Subscription"
             Text="SUBSCRIPTION"
-            Link="/admin/subscriptions/allsubscription/"
+            Link="admin/subscriptions/allsubscription/"
           />
           {/* main content */}
           <Card>

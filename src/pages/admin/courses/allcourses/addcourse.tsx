@@ -379,7 +379,7 @@ const AddCourse = () => {
             Middle="Courses"
             Current="Add Course"
             Text="COURSES"
-            Link="/admin/courses/allcourses"
+            Link="admin/courses/allcourses"
           />
           {/* main content */}
           <Card>

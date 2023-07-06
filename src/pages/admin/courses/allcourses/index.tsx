@@ -369,7 +369,7 @@ const AllCourses = () => {
                   <Table stickyHeader aria-label="sticky table">
                     <TableHead>
                       <TableRow>
-                        {columns.map((column) => (
+                        {columns?.map((column) => (
                           <TableCell
                             key={column.id}
                             align={column.align}

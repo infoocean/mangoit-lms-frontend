@@ -208,7 +208,7 @@ export default function AddSession() {
             Middle="Session"
             Current="Add Session"
             Text="SESSION"
-            Link="/admin/courses/allsessions"
+            Link="admin/courses/allsessions"
           />
           {/* main content */}
           <Card>

@@ -234,7 +234,7 @@ export default function UpdateModule() {
             Middle="Module"
             Current="Update Module"
             Text="MODULE"
-            Link="/admin/courses/allmodules"
+            Link="admin/courses/allmodules"
           />
           {/* main content */}
           <Card>

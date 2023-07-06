@@ -124,7 +124,7 @@ export default function Navbar({
       onClose={handleMenuClose}
     >
       {userData && userData?.role_id === 1 ? (
-        <React.Fragment>
+        <Box>
           <MenuItem
             onClick={() => {
               router.push("/profile"), handleMenuClose();
@@ -139,9 +139,9 @@ export default function Navbar({
           >
             <Typography>View Site</Typography>
           </MenuItem>
-        </React.Fragment>
+        </Box>
       ) : (
-        <React.Fragment>
+        <Box>
           <MenuItem
             onClick={() => {
               router.push("/user/profile"), handleMenuClose();
@@ -156,7 +156,7 @@ export default function Navbar({
           >
             <Typography>View Site</Typography>
           </MenuItem>
-        </React.Fragment>
+        </Box>
       )}
       <MenuItem onClick={HandleLogout}>
         <Typography>Logout</Typography>
@@ -201,7 +201,7 @@ export default function Navbar({
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" className={styles.appBarCss}>
         <Toolbar>
-          <Link href={"dashboard"}>
+          <Link href="/">
             <Box
               component="img"
               src={

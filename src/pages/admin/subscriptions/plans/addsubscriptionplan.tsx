@@ -90,7 +90,7 @@ export default function AddSubscriptionPlans() {
             Middle="Subscription Plans"
             Current="Add Subscription Plan"
             Text="SUBSCRIPTION PLANS"
-            Link="/admin/subscriptions/plans/"
+            Link="admin/subscriptions/plans/"
           />
           {/* main content */}
           <Card>

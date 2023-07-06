@@ -118,7 +118,7 @@ export default function UpdateUser() {
             Middle="User"
             Current="Update User"
             Text="USER"
-            Link="/admin/users"
+            Link="admin/users"
           />
           {/* main content */}
           <Card>

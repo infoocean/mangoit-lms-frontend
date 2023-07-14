@@ -437,14 +437,26 @@ const AllUsers = () => {
                                   >
                                     <ModeEditOutlineIcon />
                                   </Button>
-                                  <Button
-                                    className={UserCss.editDeleteButton}
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={() => handleClickOpen(row)}
-                                  >
-                                    <DeleteOutlineIcon />
-                                  </Button>
+                                  {/* {row?.role_id === 1 ? (
+                                    <Button
+                                      className={UserCss.editDeleteButton}
+                                      variant="outlined"
+                                      color="error"
+                                      onClick={() => handleClickOpen(row)}
+                                      disabled
+                                    >
+                                      <DeleteOutlineIcon />
+                                    </Button>
+                                  ) : ( */}
+                                    <Button
+                                      className={UserCss.editDeleteButton}
+                                      variant="outlined"
+                                      color="error"
+                                      onClick={() => handleClickOpen(row)}
+                                    >
+                                      <DeleteOutlineIcon />
+                                    </Button>
+                                  {/* )} */}
                                 </TableCell>
                               </TableRow>
                             );
@@ -524,7 +536,7 @@ const AllUsers = () => {
           </Card>
         </Box>
       </Box>
-      <Footer/>
+      <Footer />
       <ToastContainer />
     </>
   );

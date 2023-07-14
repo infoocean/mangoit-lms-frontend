@@ -646,6 +646,7 @@
   height: 52px !important;
   margin-top: 25px !important;
   border-bottom: 3px solid #e8661b !important;
+  width: max-content !important;
 }
 .supcss {
   vertical-align: super !important;
@@ -675,7 +676,7 @@
   margin-right: 4px !important;
 }
 .divfont {
-  font-size: 17px !important;
+  font-size: 16px !important;
 }
 
 .enrolledplan {

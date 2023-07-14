@@ -245,3 +245,14 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-text.MuiButton-textPrimary.Mu
   left: 0% !important;
   width: 1% !important;
 }
+.btnglobal {
+  background: #e8661b !important;
+  color: white !important;
+  border: none !important;
+}
+
+.btnglobal1 {
+  /* padding: 5px 9px !important; */
+  min-width: 30px !important;
+  /* margin: 3px !important; */
+}

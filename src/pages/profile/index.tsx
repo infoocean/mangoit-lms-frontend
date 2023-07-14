@@ -356,11 +356,12 @@ export default function Profile() {
                               label="Role"
                               {...register("role_id")}
                               defaultValue={getUserData.role_id}
-                              disabled={!toggle}
+                              // disabled={!toggle}
+                              disabled
                               // onChange={changeRole}
                             >
                               <MenuItem value={1}>Admin</MenuItem>
-                              <MenuItem value={2}>Learner</MenuItem>
+                              {/* <MenuItem value={2}>Learner</MenuItem> */}
                               {/* <MenuItem value={1}>Admin</MenuItem> 
                                <MenuItem value={2}>Learner</MenuItem>  */}
                               {/* <MenuItem value={roleId}>{roleName}</MenuItem> */}

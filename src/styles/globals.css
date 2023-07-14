@@ -80,7 +80,7 @@ a {
   border-bottom-right-radius: 23px !important;
   max-width: 200px !important;
   color: white !important;
-  font-size: 17px !important;
+  /* font-size: 17px !important; */
   background-color: #e8661b !important;
 }
 .css-16jkw2k > .ps-menu-button:hover {

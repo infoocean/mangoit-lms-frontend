@@ -111,7 +111,7 @@ const Dashboard = () => {
                       <Typography className={dashboardStyles.quickstatText}>
                         Earning
                       </Typography>
-                      <Typography>{dashboardContent?.totalSubscriptionsPrice ? `$${dashboardContent?.totalSubscriptionsPrice}`:''}</Typography>
+                      <Typography>{dashboardContent?.totalSubscriptionsPrice ? `$${dashboardContent?.totalSubscriptionsPrice}`:0}</Typography>
                     </Box>
                     <Box
                       component={"img"}

@@ -238,7 +238,7 @@ export function SubscribtionPanCard(props: any) {
                   align="left"
                   className={styles.divfont}
                 >
-                  All features in {props?.subsdata?.title}
+                  All features in {props?.subsdata?.title?.toLowerCase()}
                 </Typography>
               </Box>
               <Box className={styles.displayBox}>
@@ -250,7 +250,7 @@ export function SubscribtionPanCard(props: any) {
                   align="left"
                   className={styles.divfont}
                 >
-                  You can access {totalcrscount} Courses
+                  You can access all courses
                 </Typography>
               </Box>{" "}
               <Box className={styles.displayBox}>
@@ -262,7 +262,7 @@ export function SubscribtionPanCard(props: any) {
                   align="left"
                   className={styles.divfont}
                 >
-                  You can access {totalmodulecount} Modules
+                  You can access all modules
                 </Typography>
               </Box>{" "}
               <Box className={styles.displayBox}>
@@ -274,7 +274,7 @@ export function SubscribtionPanCard(props: any) {
                   align="left"
                   className={styles.divfont}
                 >
-                  You can access {totalsessionscount} Sessions
+                  You can access all sessions
                 </Typography>
               </Box>
             </Box>

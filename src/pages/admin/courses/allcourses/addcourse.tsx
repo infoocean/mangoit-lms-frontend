@@ -45,6 +45,7 @@ import PlaylistAddIcon from "@mui/icons-material/PlaylistAdd";
 import CloseIcon from "@mui/icons-material/Close";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import Footer from "@/common/LayoutNavigations/footer";
@@ -576,7 +577,7 @@ const AddCourse = () => {
                       ? ErrorShowing(errors?.videoattachments?.message)
                       : ""}
                   </Grid>
-                
+
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box className={SidebarStyles.aiCss}>
                       <InputLabel className={styles.InputLabelFont}>
@@ -615,7 +616,7 @@ const AddCourse = () => {
                       : ""}
                     {/* {getShortDespcriptionContent ? '' : errors && errors.description ? ErrorShowing(errors?.description?.message) : ""} */}
                   </Grid>
-                  
+
                   <Grid item xs={12} sm={12} md={12} lg={12}>
                     <Box className={SidebarStyles.aiCss}>
                       <InputLabel className={styles.InputLabelFont}>
@@ -738,6 +739,7 @@ const AddCourse = () => {
                 size="small"
                 onClick={ResetTopicRow}
                 startIcon={<RestartAltOutlinedIcon />}
+                className="btnglobal"
               >
                 Reset
               </Button>
@@ -746,6 +748,7 @@ const AddCourse = () => {
                 size="small"
                 onClick={handleAddTopicRow}
                 startIcon={<AddIcon />}
+                className="btnglobal"
               >
                 Add New
               </Button>
@@ -783,10 +786,12 @@ const AddCourse = () => {
                           onChange={(e) => updateCourseState(e)}
                         />
                         <Button
+                          className="btnglobal1"
                           variant="outlined"
+                          color="error"
                           onClick={() => handleRemoveSpecificTopicRow(idx)}
                         >
-                          <DeleteIcon />
+                          <DeleteOutlineIcon />
                         </Button>
                       </Stack>
                     ))}
@@ -803,6 +808,7 @@ const AddCourse = () => {
               variant="contained"
               onClick={handleCloseCourseTopicBox}
               id={styles.muibuttonBackgroundColor}
+              className="btnglobal"
             >
               Cancel
             </Button>
@@ -812,6 +818,7 @@ const AddCourse = () => {
               variant="contained"
               id={styles.muibuttonBackgroundColor}
               onClick={courseTopic}
+              className="btnglobal"
             >
               Submit
             </Button>
@@ -844,6 +851,7 @@ const AddCourse = () => {
                 size="small"
                 onClick={ResetMaterialRow}
                 startIcon={<RestartAltOutlinedIcon />}
+                className="btnglobal"
               >
                 Reset
               </Button>
@@ -852,6 +860,7 @@ const AddCourse = () => {
                 size="small"
                 onClick={handleAddCourseMaterialRow}
                 startIcon={<AddIcon />}
+                className="btnglobal"
               >
                 Add New{" "}
               </Button>
@@ -881,11 +890,14 @@ const AddCourse = () => {
                         size="small"
                         onChange={(e) => updateMaterialState(e)}
                       />
+                    
                       <Button
+                        className="btnglobal1"
                         variant="outlined"
+                        color="error"
                         onClick={() => handleRemoveSpecificMaterialRow(idx)}
                       >
-                        <DeleteIcon />
+                        <DeleteOutlineIcon />
                       </Button>
                     </Stack>
                   ))}
@@ -902,6 +914,7 @@ const AddCourse = () => {
               variant="contained"
               onClick={handleCloseStudyMaterialBox}
               id={styles.muibuttonBackgroundColor}
+              className="btnglobal"
             >
               Cancel
             </Button>
@@ -911,6 +924,7 @@ const AddCourse = () => {
               variant="contained"
               id={styles.muibuttonBackgroundColor}
               onClick={courseMaterial}
+              className="btnglobal"
             >
               Submit
             </Button>

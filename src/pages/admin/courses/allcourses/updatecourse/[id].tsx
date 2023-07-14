@@ -52,6 +52,7 @@ import { HandleCourseGetByID, HandleCourseUpdate } from "@/services/course";
 import EditCalendarIcon from "@mui/icons-material/EditCalendar";
 import BorderColorIcon from "@mui/icons-material/BorderColor";
 import CloseIcon from "@mui/icons-material/Close";
+import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import RestartAltOutlinedIcon from "@mui/icons-material/RestartAltOutlined";
 import AddIcon from "@mui/icons-material/Add";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -389,7 +390,7 @@ export default function UpdateCourse() {
   const generateShortDescription = async () => {
     try {
       setAiLoader(true);
-      await HandleAIText(getCourse?.title,secretKey).then((data) => {
+      await HandleAIText(getCourse?.title, secretKey).then((data) => {
         // let shortDesc = data?.substring(0, 400);
         setShortDespcriptionContent(data);
         setAiLoader(false);
@@ -403,7 +404,7 @@ export default function UpdateCourse() {
   const generateLongDescription = async () => {
     try {
       setAiLoader1(true);
-      await HandleAILongText(getCourse?.title,secretKey).then((data) => {
+      await HandleAILongText(getCourse?.title, secretKey).then((data) => {
         // let longDesc = data?.substring(0, 600);
         setLongDespcriptionContent(data);
         setAiLoader1(false);
@@ -424,7 +425,7 @@ export default function UpdateCourse() {
           setSiteKey(false);
         } else {
           setSiteKey(true);
-          setSecretKey(getSiteData[0]?.value)
+          setSecretKey(getSiteData[0]?.value);
         }
       })
       .catch((err) => {
@@ -815,6 +816,7 @@ export default function UpdateCourse() {
                 size="small"
                 onClick={ResetTopicRow}
                 startIcon={<RestartAltOutlinedIcon />}
+                className="btnglobal"
               >
                 Reset
               </Button>
@@ -823,6 +825,7 @@ export default function UpdateCourse() {
                 size="small"
                 onClick={handleAddTopicRow}
                 startIcon={<AddIcon />}
+                className="btnglobal"
               >
                 Add New
               </Button>
@@ -859,11 +862,14 @@ export default function UpdateCourse() {
                           size="small"
                           onChange={(e) => updateCourseState(e)}
                         />
+
                         <Button
+                          className="btnglobal1"
                           variant="outlined"
+                          color="error"
                           onClick={() => handleRemoveSpecificTopicRow(idx)}
                         >
-                          <DeleteIcon />
+                          <DeleteOutlineIcon />
                         </Button>
                       </Stack>
                     ))}
@@ -880,6 +886,7 @@ export default function UpdateCourse() {
               variant="contained"
               onClick={handleCloseCourseTopicBox}
               id={styles.muibuttonBackgroundColor}
+              className="btnglobal"
             >
               Cancel
             </Button>
@@ -889,6 +896,7 @@ export default function UpdateCourse() {
               variant="contained"
               id={styles.muibuttonBackgroundColor}
               onClick={courseTopic}
+              className="btnglobal"
             >
               Submit
             </Button>
@@ -921,6 +929,7 @@ export default function UpdateCourse() {
                 size="small"
                 onClick={ResetMaterialRow}
                 startIcon={<RestartAltOutlinedIcon />}
+                className="btnglobal"
               >
                 Reset
               </Button>
@@ -929,6 +938,7 @@ export default function UpdateCourse() {
                 size="small"
                 onClick={handleAddCourseMaterialRow}
                 startIcon={<AddIcon />}
+                className="btnglobal"
               >
                 Add New{" "}
               </Button>
@@ -965,11 +975,14 @@ export default function UpdateCourse() {
                           size="small"
                           onChange={(e) => updateMaterialState(e)}
                         />
+
                         <Button
+                          className="btnglobal1"
                           variant="outlined"
+                          color="error"
                           onClick={() => handleRemoveSpecificMaterialRow(idx)}
                         >
-                          <DeleteIcon />
+                          <DeleteOutlineIcon />
                         </Button>
                       </Stack>
                     ))}
@@ -986,6 +999,7 @@ export default function UpdateCourse() {
               variant="contained"
               onClick={handleCloseStudyMaterialBox}
               id={styles.muibuttonBackgroundColor}
+              className="btnglobal"
             >
               Cancel
             </Button>
@@ -995,6 +1009,7 @@ export default function UpdateCourse() {
               variant="contained"
               id={styles.muibuttonBackgroundColor}
               onClick={courseMaterial}
+              className="btnglobal"
             >
               Submit
             </Button>

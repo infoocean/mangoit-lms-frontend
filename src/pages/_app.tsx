@@ -28,7 +28,6 @@ export default function App({
   const handleGetSiteOptionsDataById = async () => {
     await HandleGetAllSiteGet()
       .then((res) => {
-        
         const objWithTitle =
           res && res?.data?.find((obj: any) => obj?.key === "title");
         const objWithFavicon =
@@ -61,7 +60,9 @@ export default function App({
   const segments = trimmedUrl.split("/");
   const updateuser = segments[segments.length - 2];
   let siteTitle =
-    lastSegment && lastSegment === "[id]" ? updateuser : lastSegment;
+    (lastSegment && lastSegment === "[id]") || lastSegment === "[session_id]"
+      ? updateuser
+      : lastSegment;
 
   return (
     <>

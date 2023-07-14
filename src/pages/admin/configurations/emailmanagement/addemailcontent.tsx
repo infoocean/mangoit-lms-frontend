@@ -106,7 +106,7 @@ const AddEmailContent = () => {
       .then((res) => {
         if (res?.status === 201) {
           setTimeout(() => {
-            router.replace("admin/configurations/emailmanagement/");
+            router.replace("/admin/configurations/emailmanagement/");
           }, 2000);
         }
         setLoadingButton(false);

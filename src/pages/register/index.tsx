@@ -24,6 +24,8 @@ import CircularProgressBar from "@/common/CircularProcess/circularProgressBar";
 import AuthSidebar from "../../common/LayoutNavigations/authSideLayout";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Link from "next/link";
+import { CreateFirebase } from "../user/chat/firebaseFunctions";
+
 
 const theme = createTheme();
 
@@ -44,18 +46,32 @@ export default function Register() {
 
   const onSubmit = async (event: any) => {
     setLoading(true);
-    await HandleRegister(event)
-      .then((res) => {
-        if (res.status === 201) {
-          setTimeout(() => {
-            router.push("/login");
-          }, 1000);
-        }
+    try {
+      const res = await HandleRegister(event)
+      if (res.status === 201) {
+        CreateFirebase(event)
+        setTimeout(() => {
+          router.push("/login");
+        }, 1000);
         setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+      }
+    }
+    catch (error) {
+      setLoading(false);
+    }
+
+    // await HandleRegister(event)
+    //   .then((res) => {
+    //     if (res.status === 201) {
+    //       setTimeout(() => {
+    //         router.push("/login");
+    //       }, 1000);
+    //     }
+    //     setLoading(false);
+    //   })
+    //   .catch(() => {
+    //     setLoading(false);
+    //   });
   };
 
   function ErrorShowing(errorMessage: any) {

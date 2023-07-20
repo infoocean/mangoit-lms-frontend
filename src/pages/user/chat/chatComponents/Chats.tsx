@@ -2,7 +2,8 @@ import { doc, onSnapshot } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext,ChatContext } from "../index";
 import { db } from "../firebase";
-import { Box } from "@mui/material";
+import { Avatar, Box } from "@mui/material";
+import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 
 const Chats = () => {
   const [chats, setChats] = useState<any>([]);
@@ -31,12 +32,13 @@ const Chats = () => {
     <>
       {Object.entries(chats)?.sort((a:any,b:any)=>b[1].date - a[1].date).map((chat:any) => (
         <Box
+        sx={{display: 'flex',margin: '10px 5px'}}
           onClick={() => handleSelect(chat[1].userInfo)}
         >
-          <img src={chat[1].userInfo.photoURL} alt="" />
-          <Box>
-            <span>{chat[1].userInfo.displayName}</span>
-            <p>{chat[1].lastMessage?.text}</p>
+          <Avatar src={chat[1].userInfo.photoURL}/>
+          <Box sx={{marginLeft: '10px'}}>
+            <span style={{fontSize: '18px', fontWeight:' 600'}}>{capitalizeFirstLetter(chat[1].userInfo.displayName)}</span>
+            <p style={{fontSize: '14px'}}>{capitalizeFirstLetter(chat[1].lastMessage?.text)}</p>
           </Box>
         </Box>
       ))}

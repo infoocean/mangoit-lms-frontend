@@ -1,40 +1,80 @@
 import React, { useContext, useEffect, useRef } from "react";
-import { AuthContext } from "../index";
-// import { AuthContext } from "../context/AuthContext";
-// import { ChatContext } from "../context/ChatContext";
+import { AuthContext, ChatContext } from "../index";
+import { Avatar, Box, Divider, Fab, Grid, List, ListItem, ListItemText, TextField } from "@mui/material";
+import { makeStyles } from "@mui/styles";
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+  chatSection: {
+    width: '100%',
+    height: '50vh'
+  },
+  headBG: {
+    backgroundColor: '#e0e0e0'
+  },
+  borderRight500: {
+    borderRight: '1px solid #e0e0e0'
+  },
+  messageArea: {
+    height: '20vh',
+    // overflowY: 'auto'
+  }
+});
 
-const Message = (props:any) => {
-  const { currentUser }:any = useContext(AuthContext);
- 
+const Message = ({ message }: any) => {
+  const { currentUser }: any = useContext(AuthContext);
+  const { data }: any = useContext(ChatContext);
 
-  // const { data } = useContext(ChatContext);
   const ref = useRef();
-// const currentUser = props.currentUser
+
   useEffect(() => {
-    // ref?.current?.scrollIntoView({ behavior: "smooth" });
-  }, [props.message]);
-// console.log('uuuuuu', props.currentUser)
+    ref.current?.scrollIntoView({ behavior: "smooth" });
+  }, [message]);
+
+  const classes = useStyles();
   return (
-    <div
-      // ref={ref}
-      className={`message ${props.message.senderId === currentUser.uid && "owner"}`}
+    <>
+   
+
+    <Box
+      ref={ref}
+      className={`message ${message.senderId === currentUser.uid && "owner"}`}
     >
-      <div className="messageInfo">
+      {/* <Box className="messageInfo">
         <img
           src={
-            props.message.senderId === currentUser.uid
+            message.senderId === currentUser.uid
               ? currentUser.photoURL
-              : props.data.user.photoURL
+              : data.user.photoURL
           }
           alt=""
         />
         <span>just now</span>
-      </div>
-      <div className="messageContent">
-        <p>{props.message.text}</p>
-        {props.message.img && <img src={props.message.img} alt="" />}
-      </div>
-    </div>
+      </Box> */}
+     
+    <List >
+      <ListItem key="1">
+        <Grid container>
+          <Grid item xs={12} sx={{display:'flex',flexDirection: 'row-reverse'}}>
+            <Avatar src={message.img} alt=""/>
+            <span >{message.text} </span>
+          </Grid>
+          {/* <Grid item xs={12}>
+            <ListItemText secondary="09:30"></ListItemText>
+          </Grid> */}
+        </Grid>
+      </ListItem>
+     
+    </List>
+    
+
+      {/* <Box className="messageContent">
+        <p>{message.text}</p>
+        {message.img && <img src={message.img} alt="" />}
+      </Box> */}
+    </Box>
+    </>
   );
 };
 

@@ -1,5 +1,8 @@
+import { createContext, useEffect, useReducer, useState } from "react";
 import Navbar from "@/common/LayoutNavigations/navbar";
 import SideBar from "@/common/LayoutNavigations/sideBar";
+import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
+//firebase imports
 import {
   collection,
   query,
@@ -12,17 +15,44 @@ import {
   getDoc,
 } from "firebase/firestore";
 import { db } from "./firebase";
-import { Box, Card, CardContent, Grid, IconButton, TextField, Typography } from "@mui/material";
-import { createContext, useEffect, useReducer, useState } from "react";
-import SidebarStyles from "../../../styles/sidebar.module.css";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
-import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
+//Mui Components
+import { Avatar, Box, Card, CardContent, Divider, Fab, Grid, IconButton, List, ListItem, ListItemIcon, ListItemText, Paper, TextField, Typography } from "@mui/material";
+
+//CSS stylling
+import SidebarStyles from "../../../styles/sidebar.module.css";
+import ChatStyle from "../../../styles/chat.module.css";
+
+//chat components
 import Messages from "./chatComponents/Messages";
 import Input from "./chatComponents/Input";
 import Chats from "./chatComponents/Chats";
+import { makeStyles } from "@mui/styles";
+import Message from "./chatComponents/Message";
+
 export const AuthContext: any = createContext('');
-export const ChatContext :any = createContext('');
+export const ChatContext: any = createContext('');
+
+const useStyles = makeStyles({
+  table: {
+    minWidth: 650,
+  },
+  chatSection: {
+    width: '100%',
+    height: '80vh'
+  },
+  headBG: {
+    backgroundColor: '#e0e0e0'
+  },
+  borderRight500: {
+    borderRight: '1px solid #e0e0e0'
+  },
+  messageArea: {
+    height: '70vh',
+    overflowY: 'auto'
+  }
+});
 
 const Chat = () => {
   const [currentUser, setCurrentUser] = useState<any>({});
@@ -45,7 +75,7 @@ const Chat = () => {
     user: {},
   };
 
-  const chatReducer = (state:any, action:any) => {
+  const chatReducer = (state: any, action: any) => {
     switch (action.type) {
       case "CHANGE_USER":
         return {
@@ -124,14 +154,14 @@ const Chat = () => {
     setUser(null);
     setUsername("")
   };
+
+  const classes = useStyles();
   // console.log('combineIDD',combineIDD)
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user }}>
-
       <Navbar />
       <Box className={SidebarStyles.combineContentAndSidebar}>
         <SideBar />
-        {/* main content */}
         <Box className={SidebarStyles.siteBodyContainer}>
           {/* breadcumbs */}
           <BreadcrumbsHeading
@@ -141,46 +171,103 @@ const Chat = () => {
             Link="/user/chat"
           />
           {/* main content */}
-          <ChatContext.Provider value={{ data:state, dispatch }}>
-            <Box>
-              <Box >
-                <TextField
-                  id="standard-search"
-                  value={username}
-                  variant="outlined"
-                  placeholder="Find a user"
-                  onKeyDown={handleKey}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </Box>
-              {err && <span>User not found!</span>}
-              {user && (
-                <Box className="userChat" onClick={handleSelect}>
-                  <img src={user.photoURL} alt="" />
-                  <Box className="userChatInfo">
-                    <span>{user.displayName}</span>
-                  </Box>
-                </Box>
-              )}
-              <Chats />
-            </Box>
+          <Card>
+            <CardContent>
+              <ChatContext.Provider value={{ data: state, dispatch }}>
+                <Grid container component={Paper} className={classes.chatSection}>
+                  <Grid item xs={12} style={{ padding: '10px' }}>
+                    <TextField
+                      id="standard-search"
+                      value={username}
+                      variant="outlined"
+                      placeholder="Find a user"
+                      onKeyDown={handleKey}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                  </Grid>
+                  <Divider />
+                  <List>
+                    {err && <span>User not found!</span>}
+                    {user && (
+                      <Box onClick={handleSelect}>
+                        <Box
+                          component="img"
+                          src={user.photoURL} alt=""
+                        />
+                        <img src={user.photoURL} alt="" />
+                        <Box className={ChatStyle.userChatInfo}>
+                          <span>{user.displayName}</span>
+                        </Box>
+                      </Box>
+                    )}
+                  </List>
+                  <Divider />
+                  <List>
+                    <Chats />
+                  </List>
+                  <Grid item xs={9}>
+                    <List className={classes.messageArea}>
+                      <ListItem key="1">
+                        <Grid container>
+                          <Grid item xs={12}>
+                            <Messages />
+                          </Grid>
+                        </Grid>
+                      </ListItem>
+                      <Grid container style={{ padding: '20px' }}>
+                        <Input />
+                      </Grid>
 
-            <Box sx={{ float: 'right' }}>
+                    </List>
+                  </Grid>
+                </Grid>
+              </ChatContext.Provider>
+            </CardContent>
+          </Card>
 
-              <Messages
-                data={combineIDD}
-                currentUser={currentUser}
-              />
 
-              <Input
-                currentUser={currentUser}
-              // data={user}
-              />
-            </Box>
-          </ChatContext.Provider>
+          {/* <ChatContext.Provider value={{ data: state, dispatch }}>
+            <div>
+
+              <Grid container component={Paper} className={classes.chatSection}>
+                <Grid item xs={3} className={classes.borderRight500}>
+
+                  <Grid item xs={12} style={{ padding: '10px' }}>
+                    <TextField
+                      id="standard-search"
+                      value={username}
+                      variant="outlined"
+                      placeholder="Find a user"
+                      onKeyDown={handleKey}
+                      onChange={(e) => setUsername(e.target.value)}
+                    />
+                  </Grid>
+                  <Divider />
+                  {err && <span>User not found!</span>}
+                  {user && (
+                    <Box  onClick={handleSelect}>                      
+                      <Avatar  src={user.photoURL} alt="" />
+                      <Box className={ChatStyle.userChatInfo}>
+                        <span>{user.displayName}</span>
+                      </Box>
+                    </Box>
+                  )}
+                  <List>
+                    <Chats />
+                  </List>
+                </Grid>
+                <Grid item xs={9}>
+                  <Messages />
+                  <Divider />
+                  <Input />
+        
+                </Grid>
+              </Grid>
+            </div>
+          </ChatContext.Provider> */}
         </Box>
       </Box>
-    </AuthContext.Provider>
+    </AuthContext.Provider >
   );
 }
 

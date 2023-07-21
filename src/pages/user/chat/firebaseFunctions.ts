@@ -4,10 +4,16 @@ import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
-export const CurrentUser = () => {
-    onAuthStateChanged(auth, (getUser) => {
-         console.log(getUser);
+
+
+export const CurrentUser = async () => {
+    let user: any;
+    await onAuthStateChanged(auth, (getUser) => {
+        if (getUser) {
+            user = getUser;
+        }
     });
+    return user;
 }
 
 export const CreateFirebase = async (event: any) => {
@@ -29,5 +35,15 @@ export const CreateFirebase = async (event: any) => {
 export const LoginFirestore = async (event: any) => {
     const email = event?.email;
     const password = event?.password;
-    await signInWithEmailAndPassword(auth, email, password);
+    const dt = await signInWithEmailAndPassword(auth, email, password);
+    return dt;
 }
+
+export const UpdateFireStoreData = async (data: any) => {
+
+    // await updateProfile(user, {
+    //     displayName
+    // });
+    // return user;
+}
+

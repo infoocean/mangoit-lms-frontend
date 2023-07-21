@@ -29,7 +29,6 @@ import Messages from "./chatComponents/Messages";
 import Input from "./chatComponents/Input";
 import Chats from "./chatComponents/Chats";
 import { makeStyles } from "@mui/styles";
-import Message from "./chatComponents/Message";
 
 export const AuthContext: any = createContext('');
 export const ChatContext: any = createContext('');
@@ -115,15 +114,14 @@ const Chat = () => {
   };
 
   const handleSelect = async () => {
-    //check whether the group(chats in firestore) exists, if not create
     const combinedId =
       currentUser.uid > user.uid
         ? currentUser.uid + user.uid
         : user.uid + currentUser.uid;
-
     setCombineIDD(combinedId);
 
     try {
+    //check whether the group(chats in firestore) exists, if not create
       const res = await getDoc(doc(db, "chats", combinedId));
 
       if (!res.exists()) {

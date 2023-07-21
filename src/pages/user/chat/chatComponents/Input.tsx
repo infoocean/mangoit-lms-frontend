@@ -48,6 +48,7 @@ const Input = () => {
         }
       );
     } else {
+      console.log('first,',data)
       await updateDoc(doc(db, "chats", data.chatId), {
         messages: arrayUnion({
           id: uuid(),

@@ -1,6 +1,5 @@
 // React Import
 import { useState, useEffect } from "react";
-
 // MUI Import
 import {
   Button,
@@ -16,19 +15,15 @@ import {
 import EditIcon from "@mui/icons-material/Edit";
 import CameraAltIcon from "@mui/icons-material/CameraAlt";
 import { LoadingButton } from "@mui/lab";
-
 // validation import
 import { userProfileValidations } from "@/validation_schema/profileValidation";
-
 // Helper Import
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 // Types Import
 import { userType } from "@/types/userType";
-
 // External Components
 import Navbar from "@/common/LayoutNavigations/navbar";
 import SideBar from "@/common/LayoutNavigations/sideBar";
@@ -36,16 +31,20 @@ import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 import CircularProgressBar from "@/common/CircularProcess/circularProgressBar";
-
 // CSS Import
 import profiles from "../../../styles/profile.module.css";
 import styles from "../../../styles/sidebar.module.css";
-
 // API services
 import { HandleProfile } from "@/services/user";
 import { HandleUpdateProfile } from "@/services/user";
 import { BASE_URL } from "@/config/config";
 import Footer from "@/common/LayoutNavigations/footer";
+import { CurrentUser, UpdateFireStoreData } from "../chat/firebaseFunctions";
+//firebase functions
+import { auth, storage } from "../../../pages/user/chat/firebase";
+import { getIdToken, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
+// const auth = firebase.auth();
 
 export default function Profile() {
   const [previewProfile, setPreviewProfile] = useState<string | any>("");
@@ -54,6 +53,7 @@ export default function Profile() {
   const [isLoadingButton, setLoadingButton] = useState<boolean>(false);
   const [getUserData, setUserData] = useState<userType | any>(null);
   const [toggle, setToggle] = useState<boolean>(false);
+  const [currentUser, setCurrentUser] = useState<any>({});
 
   const {
     register,
@@ -73,18 +73,128 @@ export default function Profile() {
       formData.append(key, reqData[key]);
     }
     setLoadingButton(true);
-    await HandleUpdateProfile(reqData.id, formData)
-      .then((res) => {
-        setLoadingButton(false);
+    try {
+      const res = await HandleUpdateProfile(reqData.id, formData)
+      setLoadingButton(false);
+      UpdateFireStoreData(event)
+      //-----------------------------------------------------------------  
+      if (res) {
+        const displayName = event?.first_name
+        const user:any = auth.currentUser;
+        const date = new Date().getTime();
+        const storageRef = ref(storage, `${displayName + date}`);
 
-        setTimeout(() => {
-          setToggle(!toggle);
-          getProfileData(res.data.id);
-        }, 900);
-      })
-      .catch((err) => {
-        setLoadingButton(false);
-      });
+        await uploadBytesResumable(storageRef, file).then(() => {
+          getDownloadURL(storageRef).then(async (downloadURL) => {
+
+            const data = updateProfile(user, {
+              displayName,
+              photoURL: downloadURL,
+              // Add other profile-related properties here if needed
+            })
+            console.log('dt', data)
+          });
+        });
+        // .then(() => {
+        //   console.log('Profile updated successfully!');
+        // })
+        // .catch((error: any) => {
+        //   console.error('Error updating profile:', error);
+        // });
+
+
+        // Usage example:
+        // const newDisplayName = event?.first_name;
+        // updateProfileData(newDisplayName);
+
+
+
+        // user.updateProfile({
+        //   displayName: event?.first_name,
+        //   // Add other profile-related properties here if needed
+        // })
+        //   .then(() => {
+        //     console.log('Profile updated successfully!');
+        //   })
+        //   .catch((error: any) => {
+        //     console.error('Error updating profile:', error);
+        //   });
+        // auth.currentUser
+        //   try {
+        //     const displayName = event?.first_name
+        //     //Create user
+        //     const loginUser = await CurrentUser()
+        //     console.log("user", loginUser);
+        //       if (loginUser) {
+        //      await updateProfile(loginUser, {
+        //         displayName,
+        //       }).then((dt) => {
+        //         console.log('dt',dt)
+        //       });}
+        //     // const loginUser = await onAuthStateChanged(auth);
+
+        //     // //Create a unique image name
+
+        //     // //Update profile
+        //     // if (loginUser) {
+        //     //  await updateProfile(loginUser.user, {
+        //     //     displayName,
+        //     //   }).then((dt) => {
+        //     //     console.log('dt',dt)
+        //     //   });
+
+        //     // }
+
+        //     // user.updateProfile({
+        //     //   displayName: newDisplayName,
+        //     // })
+        //     //   .then(() => {
+        //     //     console.log('Profile name updated successfully!');
+        //     //   })
+        //     //   .catch((error) => {
+        //     //     console.error('Error updating profile name:', error);
+        //     //   });
+        //     // const dt = await updateProfile(loginUser.user, {
+        //     //   displayName,
+        //     // });
+        //     // console.log('dt',dt)
+
+        //     // //create user on firestore
+        //     // await setDoc(doc(db, "users", res.user.uid), {
+        //     //   uid: res.user.uid,
+        //     //   displayName,
+        //     //   email,
+        //     //   photoURL: downloadURL,
+        //     // });
+
+        //     // //create empty user chats on firestore
+        //     // await setDoc(doc(db, "userChats", res.user.uid), {});
+
+        //   } catch (err) {
+        //     setLoading(false);
+        //   }
+
+      }
+      //-------------------------------------------------------------
+      setTimeout(() => {
+        setToggle(!toggle);
+        getProfileData(res.data.id);
+      }, 1000);
+    } catch (err) {
+      setLoadingButton(false);
+    }
+    //     await HandleUpdateProfile(reqData.id, formData)
+    //       .then((res) => {
+    //         setLoadingButton(false);
+
+    //         setTimeout(() => {
+    //           setToggle(!toggle);
+    //           getProfileData(res.data.id);
+    //         }, 900);
+    //       })
+    //       .catch((err) => {
+    //         setLoadingButton(false);
+    //       });
   };
 
   const getProfileData = (userId: any) => {
@@ -130,6 +240,8 @@ export default function Profile() {
       const userId = JSON.parse(localData);
       getProfileData(userId?.id);
     }
+
+
   }, []);
 
   function ErrorShowing(errorMessage: any) {
@@ -212,8 +324,8 @@ export default function Profile() {
                                         previewProfile
                                           ? previewProfile
                                           : getUserData.profile_pic
-                                          ? `${BASE_URL}/${getUserData.profile_pic}`
-                                          : "/profile.png"
+                                            ? `${BASE_URL}/${getUserData.profile_pic}`
+                                            : "/profile.png"
                                       }
                                     />
                                     <IconButton
@@ -245,14 +357,14 @@ export default function Profile() {
                               >
                                 {getUserData
                                   ? capitalizeFirstLetter(
-                                      getUserData?.first_name
-                                    )
+                                    getUserData?.first_name
+                                  )
                                   : ""}
                                 &nbsp;
                                 {getUserData
                                   ? capitalizeFirstLetter(
-                                      getUserData?.last_name
-                                    )
+                                    getUserData?.last_name
+                                  )
                                   : ""}
                               </Typography>
 

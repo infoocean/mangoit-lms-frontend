@@ -26,6 +26,7 @@ const Chats = () => {
 
   const handleSelect = (u:any) => {
     dispatch({ type: "CHANGE_USER", payload: u });
+    // console.log('u,u', u);
   };
 
   return (

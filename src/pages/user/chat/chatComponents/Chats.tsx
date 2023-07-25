@@ -28,7 +28,7 @@ const Chats = () => {
     dispatch({ type: "CHANGE_USER", payload: u });
     // console.log('u,u', u);
   };
-
+  console.log('cat',chats)
   return (
     <>
       {Object.entries(chats)?.sort((a:any,b:any)=>b[1].date - a[1].date).map((chat:any) => (
@@ -36,9 +36,9 @@ const Chats = () => {
         sx={{display: 'flex',margin: '10px 5px'}}
           onClick={() => handleSelect(chat[1].userInfo)}
         >
-          <Avatar src={chat[1].userInfo.photoURL}/>
+          <Avatar  alt="" />
           <Box sx={{marginLeft: '10px'}}>
-            <span style={{fontSize: '18px', fontWeight:' 600'}}>{capitalizeFirstLetter(chat[1].userInfo.displayName)}</span>
+            {/* <span style={{fontSize: '18px', fontWeight:' 600'}}>{capitalizeFirstLetter(chat[1].userInfo.displayName)}</span> */}
             <p style={{fontSize: '14px'}}>{capitalizeFirstLetter(chat[1].lastMessage?.text)}</p>
           </Box>
         </Box>

@@ -24,7 +24,7 @@ import { BASE_URL } from "@/config/config";
 // });
 
 const Message = ({ message }: any) => {
-  console.log('message', message);
+  // console.log('message', message);
   const { currentUser }: any = useContext(AuthContext);
 
   const ref: any = useRef();

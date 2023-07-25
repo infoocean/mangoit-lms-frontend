@@ -1,8 +1,9 @@
 import { createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { auth, db, storage } from "./firebase";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import { useEffect, useState } from "react";
 
 
 
@@ -40,10 +41,30 @@ export const LoginFirestore = async (event: any) => {
 }
 
 export const UpdateFireStoreData = async (data: any) => {
-
     // await updateProfile(user, {
     //     displayName
     // });
     // return user;
 }
+
+// Custom Hook
+export function getUserChats(currentUser:any) {
+    const [chats, setChats] = useState<any>([]);
+  
+    useEffect(() => {
+        const getChats = () => {
+          const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+            setChats(doc.data());
+          });
+    
+          return () => {
+            unsub();
+          };
+        };
+    
+        currentUser.uid && getChats();
+      }, [currentUser.uid]);
+  
+    return chats;
+  }
 

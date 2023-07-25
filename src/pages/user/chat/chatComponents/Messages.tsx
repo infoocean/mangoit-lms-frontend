@@ -10,17 +10,15 @@ const Messages = (props:any) => {
   // const { currentUser }:any = useContext(AuthContext);
   
   useEffect(() => {
-    console.log('props',props)
     const unSub = onSnapshot(doc(db, "chats", props?.data?.combineIDD), (doc) => {
       doc.exists() && setMessages(doc.data().messages);
     });
-
     return () => {
       unSub();
     };
   }, [props]);
-   //devndra-mahipal : ofjNgW15gQVhXU2xDDXTx8Ld80l2FyoVaRyU08YkgOhP01P7uzYjtVz2
-  // fbqS8ITyG5aehXXxYeyHM30JuWM2DhHAS0Ao03ZPkfHUftFRQRWIx3X2
+
+  // console.log('messages', messages);
   return (
     <>
       {messages.map((m:any) => (

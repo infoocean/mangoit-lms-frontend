@@ -45,12 +45,15 @@ const Chat = () => {
   const [user, setUser] = useState<any>(null);
   const [err, setErr] = useState<any>(false);
   const [combineIDD, setCombineIDD] = useState<any>(null);
-  const [getchats, setChats] = useState<any>([]);
+  const [allchats, setChats] = useState<any>([]);
+  const [chatsUsers, setChatUsers] = useState<any>([]);
+
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (getUser: any) => {
       setCurrentUser(getUser);
       getUsereData();
+      getAllChatUsers();
     });
     return () => {
       unsub();
@@ -75,8 +78,19 @@ const Chat = () => {
     };
     currentUser.uid && getChats();
   }, [currentUser.uid]);
+  console.log('allchats',allchats)
+  
   // const userChats = getUserChats(currentUser)
-  console.log("ddattt,",getchats)
+  // console.log("ddattt,",getchats)
+  const getAllChatUsers = async () => {
+    const colRef = collection(db, "userChats")
+    const docsSnap = await getDocs(colRef);
+    docsSnap.forEach(doc => {
+      setChatUsers(doc.data());
+    })
+  }
+  
+  console.log('chatsUsers',chatsUsers)
 
   const INITIAL_STATE = {
     chatId: "null",
@@ -119,11 +133,12 @@ const Chat = () => {
   };
 
   const handleclick = async (e: any) => {
+    console.log('eeee',e?.email)
     setRow(e)
     let user: any
     const q = query(
       collection(db, "users"),
-      where("displayName", "==", e?.first_name)
+      where("email", "==", e?.email)
     );
 
     try {

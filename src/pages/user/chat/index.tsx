@@ -47,13 +47,16 @@ const Chat = () => {
   const [combineIDD, setCombineIDD] = useState<any>(null);
   const [allchats, setChats] = useState<any>([]);
   const [chatsUsers, setChatUsers] = useState<any>([]);
+  const [liveChatDetail, setLiveChatDetail] = useState<any>();
 
+  const [prevMessageDate, setPrevMessageDate] = useState(null);
+  // let allUser
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (getUser: any) => {
       setCurrentUser(getUser);
       getUsereData();
-      getAllChatUsers();
+      // getAllChatUsers();
     });
     return () => {
       unsub();
@@ -66,31 +69,66 @@ const Chat = () => {
     });
   };
 
+
   useEffect(() => {
     const getChats = () => {
-      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc: any) => {
         setChats(doc.data());
-      });
 
+        Object.entries(doc.data())?.map((chat: any) => {
+          const isCurrentMessageGreater = handleMessage(chat[1]);
+          if (isCurrentMessageGreater) {
+            setLiveChatDetail(isCurrentMessageGreater?.userInfo?.email)
+          }
+        });
+      });
       return () => {
         unsub();
       };
     };
     currentUser.uid && getChats();
-  }, [currentUser.uid]);
-  console.log('allchats',allchats)
-  
-  // const userChats = getUserChats(currentUser)
-  // console.log("ddattt,",getchats)
-  const getAllChatUsers = async () => {
-    const colRef = collection(db, "userChats")
-    const docsSnap = await getDocs(colRef);
-    docsSnap.forEach(doc => {
-      setChatUsers(doc.data());
-    })
-  }
-  
-  console.log('chatsUsers',chatsUsers)
+  }, [currentUser.uid, prevMessageDate]);
+
+
+  const handleMessage = (newMessage: any) => {
+    const currentMessageDate = newMessage?.date?.seconds;
+    setPrevMessageDate(currentMessageDate);
+    if (prevMessageDate && currentMessageDate > prevMessageDate) {
+      return newMessage;
+    }
+  };
+
+  console.log('liveChatDetail', liveChatDetail)
+  // const getAllChatUsers = async () => {
+  //   const colRef = collection(db, "users");
+  //   const docsSnap = await getDocs(colRef);
+
+  //   const usersData: any = [];
+  //   docsSnap.forEach(doc => {
+  //     usersData.push(doc.data().uid);
+  //   });
+  //   setChatUsers(usersData)
+
+  // }
+
+  // const matchUsersEmail = async()=>{
+  //   const foundUid = chatsUsers.find((uid: any) => uid === liveChatDetail);
+  //   console.log('found uid: ', foundUid);
+
+  //   const q = query(
+  //     collection(db, "users"),
+  //     where("uid", "==", foundUid)
+  //   );
+
+  //   const querySnapshot = await getDocs(q);
+  //   querySnapshot.forEach((doc) => {
+  //   console.log('datat',doc.data())
+  //   });
+  // }
+  // matchUsersEmail()
+  // console.log('chatsUsers', chatsUsers)
+  // console.log('oneUsers', liveChatDetail)
+
 
   const INITIAL_STATE = {
     chatId: "null",
@@ -133,7 +171,7 @@ const Chat = () => {
   };
 
   const handleclick = async (e: any) => {
-    console.log('eeee',e?.email)
+    // console.log('eeee', e?.email)
     setRow(e)
     let user: any
     const q = query(
@@ -203,6 +241,7 @@ const Chat = () => {
       [combineIDD + ".userInfo"]: {
         uid: user.uid,
         displayName: user.displayName,
+        email: user.email,
       },
       [combineIDD + ".date"]: serverTimestamp(),
     });
@@ -214,6 +253,7 @@ const Chat = () => {
       [combineIDD + ".userInfo"]: {
         uid: currentUser.uid,
         displayName: currentUser.displayName,
+        email: currentUser.email,
       },
       [combineIDD + ".date"]: serverTimestamp(),
     });
@@ -280,6 +320,7 @@ const Chat = () => {
                                 }
                               />
                               {row?.first_name}
+                              {row?.email == liveChatDetail ? <span>message</span> : ''}
                             </TableCell>
                           </TableRow>
                         ))}

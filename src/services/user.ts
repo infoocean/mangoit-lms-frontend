@@ -4,7 +4,7 @@ import { API } from "@/config/config";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { HandleLogout } from "./auth";
+import { HandleLogin, HandleLogout } from "./auth";
 
 export const HandleUserGet = async (searchData: any, filterData: any) => {
   const API_URL = searchData
@@ -67,25 +67,25 @@ export const GetUserByemail = async (reqdata: any) => {
       return error;
     });
 };
-  export const HandleUserDelete = async (rowID: any) => {
-    return await axios({
-      method: "DELETE",
-      url: `${API.deleteUser}/${rowID}`,
-      headers: LoginHeader(),
+export const HandleUserDelete = async (rowID: any) => {
+  return await axios({
+    method: "DELETE",
+    url: `${API.deleteUser}/${rowID}`,
+    headers: LoginHeader(),
+  })
+    .then((request) => {
+      toast.success("User Deleted Successfully");
+      return request;
     })
-      .then((request) => {
-        toast.success("User Deleted Successfully");
-        return request;
-      })
-      .catch((error) => {
-        if (error.response.status === 401) {
-          HandleLogout();
-        } else {
-          toast.error("Something went wrong");
-        }
-        return error;
-      });
-  };
+    .catch((error) => {
+      if (error.response.status === 401) {
+        HandleLogout();
+      } else {
+        toast.error("Something went wrong");
+      }
+      return error;
+    });
+};
 
 export const HandleUpdateProfile = async (userId: number, reqData: any) => {
   return await axios({
@@ -108,4 +108,25 @@ export const HandleUpdateProfile = async (userId: number, reqData: any) => {
       }
       return error;
     });
+};
+
+export const HandleUpdateFirebaseId = async (loginData: any, reqData: any) => {
+  const loginTokenData = await axios({
+    method: "POST",
+    url: `${API.login}`,
+    data: loginData,
+    headers: authHeader(),
+  });
+  const getToken = loginTokenData?.data?.loginToken;
+  const authToken: any = localStorage.getItem("authToken");
+
+  return await axios({
+    method: "PUT",
+    url: `${API.userUpdateById}/${reqData?.db_id}`,
+    headers: {
+      logintoken: `${getToken}`,
+      Authorization: `Bearer ${authToken}`,
+    },
+    data: { email: loginData?.email, firebase_id: reqData?.firebase_id },
+  });
 };

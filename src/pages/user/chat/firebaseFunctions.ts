@@ -24,7 +24,7 @@ export const CreateFirebase = async (event: any, db_id:any) => {
     const res = await createUserWithEmailAndPassword(auth, email, password);
 
     //create user on firestore
-    await setDoc(doc(db, "users", res.user.uid), {
+       await setDoc(doc(db, "users", res.user.uid), {
         uid: res.user.uid,
         displayName,
         email,
@@ -32,6 +32,8 @@ export const CreateFirebase = async (event: any, db_id:any) => {
     });
     //create empty user chats on firestore
     await setDoc(doc(db, "userChats", res.user.uid), {});
+
+    return res;
 }
 
 export const LoginFirestore = async (event: any) => {

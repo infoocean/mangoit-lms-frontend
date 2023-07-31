@@ -333,7 +333,7 @@ const Chat = () => {
                                 }
                               />
                               {row?.first_name}
-                              {row?.email == liveChatDetail?.userInfo?.email ? <Typography sx={{ color: 'red' }}>{liveChatDetail?.lastMessage?.text}</Typography> : ''}
+                              {row?.email == liveChatDetail?.userInfo?.email ? <Typography sx={{ color: 'red', padding:'5px' }}>{liveChatDetail?.lastMessage?.text}</Typography> : ''}
                             </TableCell>
                           </TableRow>
                         ))}

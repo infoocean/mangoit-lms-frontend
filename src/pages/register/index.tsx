@@ -25,6 +25,7 @@ import AuthSidebar from "../../common/LayoutNavigations/authSideLayout";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Link from "next/link";
 import { CreateFirebase } from "../user/chat/firebaseFunctions";
+import { HandleUpdateFirebaseId, HandleUpdateProfile } from "@/services/user";
 
 
 const theme = createTheme();
@@ -48,10 +49,19 @@ export default function Register() {
     setLoading(true);
     try {
       const res = await HandleRegister(event)
-      const db_id = res?.data?.id;
+
       if (res.status === 201) {
-        CreateFirebase(event, db_id)
+        const db_id = res?.data?.id;
+        const email = res?.data?.email;
+        const password = event?.password;
+
+        const getFirebaseUser = await CreateFirebase(event, db_id)
         
+        const firebase_id = getFirebaseUser?.user?.uid
+        const loginData = { email, password }
+        const reqData = {db_id,  firebase_id };
+
+        HandleUpdateFirebaseId(loginData, reqData)
         setTimeout(() => {
           router.push("/login");
         }, 1000);

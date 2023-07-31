@@ -42,6 +42,7 @@ export const HandleRegister = async(reqData:any) =>{
 }
 
 export const HandleLogin = async(reqData:any) =>{
+  console.log('event',reqData)
   return await axios({
     method: "POST",
     url: `${API.login}`,

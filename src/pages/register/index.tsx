@@ -48,8 +48,10 @@ export default function Register() {
     setLoading(true);
     try {
       const res = await HandleRegister(event)
+      const db_id = res?.data?.id;
       if (res.status === 201) {
-        CreateFirebase(event)
+        CreateFirebase(event, db_id)
+        
         setTimeout(() => {
           router.push("/login");
         }, 1000);

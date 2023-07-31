@@ -18,6 +18,8 @@ import { db } from "./firebase";
 import { v4 as uuid } from "uuid";
 import { Avatar, Box, Button, Card, CardContent, Grid, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
+import MessageIcon from '@mui/icons-material/Message';
 import { SearchOutlined } from "@mui/icons-material";
 import List, { ListClassKey } from '@mui/material/List';
 import { createContext, useEffect, useReducer, useState } from "react";
@@ -32,6 +34,7 @@ import { HandleUserGet } from "@/services/user";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { BASE_URL } from "@/config/config";
 import { getUserChats } from "./firebaseFunctions";
+import { red } from "@mui/material/colors";
 export const AuthContext: any = createContext('');
 export const ChatContext: any = createContext('');
 
@@ -65,11 +68,20 @@ const Chat = () => {
 
   const getUsereData = () => {
     HandleUserGet("", "").then((users) => {
-      setRows(users.data);
+      let localData: any;
+      if (typeof window !== "undefined") {
+        localData = window.localStorage.getItem("userData");
+      }
+      const LoginUser = JSON.parse(localData)
+      console.log('LoginUser', LoginUser?.id)
+      if (LoginUser) {
+        const dataUsers = users?.data?.filter((user: { id: any; }) => user.id !== LoginUser?.id)
+        setRows(dataUsers);
+      }
     });
   };
 
-
+  // console.log('rroq',rows)
   useEffect(() => {
     const getChats = () => {
       const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc: any) => {
@@ -78,7 +90,7 @@ const Chat = () => {
         Object.entries(doc.data())?.map((chat: any) => {
           const isCurrentMessageGreater = handleMessage(chat[1]);
           if (isCurrentMessageGreater) {
-            setLiveChatDetail(isCurrentMessageGreater?.userInfo?.email)
+            setLiveChatDetail(isCurrentMessageGreater)
           }
         });
       });
@@ -301,6 +313,7 @@ const Chat = () => {
                     }}
                   />
 
+                  {/* ---------------------------------  all  chats---------------------------------- */}
                   < TableContainer sx={{ width: '275px' }}>
                     <Table>
                       <TableBody>
@@ -320,7 +333,7 @@ const Chat = () => {
                                 }
                               />
                               {row?.first_name}
-                              {row?.email == liveChatDetail ? <span>message</span> : ''}
+                              {row?.email == liveChatDetail?.userInfo?.email ? <Typography sx={{ color: 'red' }}>{liveChatDetail?.lastMessage?.text}</Typography> : ''}
                             </TableCell>
                           </TableRow>
                         ))}
@@ -333,6 +346,7 @@ const Chat = () => {
 
               <Box sx={{ width: '890px' }}>
                 {/* <Input /> */}
+                {/* ---------------------- chat user ------------------------------------------- */}
                 {user && (
                   <Box>
                     <Box sx={{ float: "left" }}>
@@ -348,18 +362,27 @@ const Chat = () => {
                       data={{ combineIDD, row }}
                     />
                     { /*---------------- input field for send messages ------------------ */}
-                    <TextField
-                      id="standard-search"
-                      value={text}
-                      variant="outlined"
-                      onChange={(e) => setText(e.target.value)}
-                      placeholder="Type something..."
-                      fullWidth
-                    />
-                    <Button
-                      // id={sidebarStyles.muibuttonBackgroundColor}
-                      onClick={handleSend}>Send
-                    </Button>
+                    <Box sx={{
+                      position: 'fixed',
+                      top: '650px',
+                      right: '10px',
+                      padding: '6px',
+                      color: '#fff',
+                      width: '890px',
+                    }}>
+                      <TextField
+                        id="standard-search"
+                        value={text}
+                        variant="outlined"
+                        onChange={(e) => setText(e.target.value)}
+                        placeholder="Type something..."
+                        fullWidth
+                      />
+                      <Button
+                        // id={sidebarStyles.muibuttonBackgroundColor}
+                        onClick={handleSend}>Send
+                      </Button>
+                    </Box>
                   </Box>
                 )}
               </Box>

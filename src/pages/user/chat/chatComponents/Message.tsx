@@ -52,6 +52,7 @@ const Message = ({ message }: any) => {
                   }
                 />
                 <span >{message?.m?.text} </span>
+                <span >{message?.m?.displayName} </span>
               </Grid>
               {/* <Grid item xs={12}>
             <ListItemText secondary="09:30"></ListItemText>

@@ -1,8 +1,10 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext, ChatContext } from "../index";
 import { Avatar, Box, Divider, Fab, Grid, List, ListItem, ListItemText, TextField } from "@mui/material";
 import { makeStyles } from "@mui/styles";
 import { BASE_URL } from "@/config/config";
+import { HandleUserGet } from "@/services/user";
+import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 // const useStyles = makeStyles({
 //   table: {
 //     minWidth: 650,
@@ -24,6 +26,9 @@ import { BASE_URL } from "@/config/config";
 // });
 
 const Message = ({ message }: any) => {
+  const [rows, setRows] = useState<any>([]);
+  const [loginUser, setLoginUser] = useState<any>(null);
+
   // console.log('message', message);
   const { currentUser }: any = useContext(AuthContext);
 
@@ -31,37 +36,50 @@ const Message = ({ message }: any) => {
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
+    getUsereData();
   }, [message]);
-  // const classes = useStyles();
+
+  const getUsereData = () => {
+    HandleUserGet("", "").then((users) => {
+      let localData: any;
+      if (typeof window !== "undefined") {
+        localData = window.localStorage.getItem("userData");
+      }
+      const LoginUser = JSON.parse(localData)
+      setLoginUser(LoginUser)
+    });
+  }
+
+  const manageData: any = (message?.m?.senderId === currentUser?.uid) ? { display: 'flex', flexDirection: 'row-reverse' } : { display: 'flex', justifyContent: "left" };
+  const manageBoxData: any = (message?.m?.senderId === currentUser?.uid) ? { maxWidth: 'auto', display: 'flex', marginRight: '25px' } : { maxWidth: 'auto', display: 'flex', marginRight: '25px', flexDirection: 'row-reverse' };
   return (
     <>
-      <Box
-        ref={ref}
-        className={`message ${message?.m?.senderId === currentUser.uid && "owner"}`}
-      >
 
-        <List >
-          <ListItem key="1">
-            <Grid container>
-              <Grid item xs={12} sx={{ display: 'flex', flexDirection: 'row-reverse' }}>
+      <p ref={ref} key="1">
+        <Grid container>
+          <Grid item xs={12} sx={manageData}>
+
+            <Box sx={manageBoxData}>
+              <Box sx={{ padding: '15px' }}>
+                <span >{message?.m?.text}</span>
+              </Box>
+
+              <Box>
                 <Avatar
                   src={
-                    message?.props?.data?.row?.profile_pic
-                      ? `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
-                      : "/profile.png"
+                    message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
                   }
                 />
-                <span >{message?.m?.text} </span>
-                <span >{message?.m?.displayName} </span>
-              </Grid>
-              {/* <Grid item xs={12}>
+                <span style={{ fontSize: '17px', fontWeight: ' 600' }}>{message?.m?.senderId === currentUser?.uid ? capitalizeFirstLetter(loginUser?.first_name) : capitalizeFirstLetter(message?.props?.data?.row?.first_name)} </span>
+              </Box>
+            </Box>
+          </Grid>
+          {/* <Grid item xs={12}>
             <ListItemText secondary="09:30"></ListItemText>
           </Grid> */}
-            </Grid>
-          </ListItem>
+        </Grid>
+      </p>
 
-        </List>
-      </Box>
     </>
   );
 };

@@ -154,6 +154,12 @@ export const VerticalMenuItems = () => {
         ],
       },
       {
+        title: "Chat",
+        icon: ChatIcon,
+        path: "/user/chat",
+        disable: false,
+      },
+      {
         title: "Logout",
         icon: PowerSettingsNewOutlinedIcon,
         disable: false,

@@ -20,7 +20,7 @@ import { Avatar, Box, Button, Card, CardContent, Grid, IconButton, Table, TableB
 import CloseIcon from "@mui/icons-material/Close";
 import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
 import MessageIcon from '@mui/icons-material/Message';
-import { SearchOutlined } from "@mui/icons-material";
+import { Margin, SearchOutlined } from "@mui/icons-material";
 import List, { ListClassKey } from '@mui/material/List';
 import { createContext, useEffect, useReducer, useState } from "react";
 import SidebarStyles from "../../../styles/sidebar.module.css";
@@ -29,7 +29,7 @@ import { onAuthStateChanged } from "firebase/auth";
 import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 import Messages from "./chatComponents/Messages";
 // import Input from "./chatComponents/Input";
-import Chats from "./chatComponents/Chats";
+// import Chats from "./chatComponents/Chats";
 import { HandleUserGet } from "@/services/user";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { BASE_URL } from "@/config/config";
@@ -53,6 +53,8 @@ const Chat = () => {
   const [liveChatDetail, setLiveChatDetail] = useState<any>();
 
   const [prevMessageDate, setPrevMessageDate] = useState(null);
+  const [colorsLastMessage, setcolorsLastMessage] = useState({ color: '#d32f2f', fontSize: '14px', padding: '5px' });
+
   // let allUser
 
   useEffect(() => {
@@ -73,7 +75,6 @@ const Chat = () => {
         localData = window.localStorage.getItem("userData");
       }
       const LoginUser = JSON.parse(localData)
-      console.log('LoginUser', LoginUser?.id)
       if (LoginUser) {
         const dataUsers = users?.data?.filter((user: { id: any; }) => user.id !== LoginUser?.id)
         setRows(dataUsers);
@@ -81,12 +82,12 @@ const Chat = () => {
     });
   };
 
-  // console.log('rroq',rows)
   useEffect(() => {
     const getChats = () => {
+      // const chatsRef = doc(db, "userChats", currentUser.uid);
       const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc: any) => {
         setChats(doc.data());
-
+        // {Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat)
         Object.entries(doc.data())?.map((chat: any) => {
           const isCurrentMessageGreater = handleMessage(chat[1]);
           if (isCurrentMessageGreater) {
@@ -110,36 +111,7 @@ const Chat = () => {
     }
   };
 
-  console.log('liveChatDetail', liveChatDetail)
-  // const getAllChatUsers = async () => {
-  //   const colRef = collection(db, "users");
-  //   const docsSnap = await getDocs(colRef);
-
-  //   const usersData: any = [];
-  //   docsSnap.forEach(doc => {
-  //     usersData.push(doc.data().uid);
-  //   });
-  //   setChatUsers(usersData)
-
-  // }
-
-  // const matchUsersEmail = async()=>{
-  //   const foundUid = chatsUsers.find((uid: any) => uid === liveChatDetail);
-  //   console.log('found uid: ', foundUid);
-
-  //   const q = query(
-  //     collection(db, "users"),
-  //     where("uid", "==", foundUid)
-  //   );
-
-  //   const querySnapshot = await getDocs(q);
-  //   querySnapshot.forEach((doc) => {
-  //   console.log('datat',doc.data())
-  //   });
-  // }
-  // matchUsersEmail()
-  // console.log('chatsUsers', chatsUsers)
-  // console.log('oneUsers', liveChatDetail)
+  // console.log('liveChatDetail', liveChatDetail)
 
 
   const INITIAL_STATE = {
@@ -183,7 +155,7 @@ const Chat = () => {
   };
 
   const handleclick = async (e: any) => {
-    // console.log('eeee', e?.email)
+    // console.log('eeee', e?.firebase_id)
     setRow(e)
     let user: any
     const q = query(
@@ -235,44 +207,57 @@ const Chat = () => {
       }
     } catch (err) { }
   }
+  const handleKeyPress = (event: any) => {
+    if (event.key === 'Enter') {
+      handleSend();
+    }
+  };
+
 
   const handleSend = async () => {
-    const messages = await updateDoc(doc(db, "chats", combineIDD), {
-      messages: arrayUnion({
-        id: uuid(),
-        text,
-        senderId: currentUser.uid,
-        date: Timestamp.now(),
-      }),
-    });
+    if (text.length > 0) {
+      const messages = await updateDoc(doc(db, "chats", combineIDD), {
+        messages: arrayUnion({
+          id: uuid(),
+          text,
+          senderId: currentUser.uid,
+          date: Timestamp.now(),
+        }),
+      });
 
-    const chats = await updateDoc(doc(db, "userChats", currentUser.uid), {
-      [combineIDD + ".lastMessage"]: {
-        text,
-      },
-      [combineIDD + ".userInfo"]: {
-        uid: user.uid,
-        displayName: user.displayName,
-        email: user.email,
-      },
-      [combineIDD + ".date"]: serverTimestamp(),
-    });
+      const chats = await updateDoc(doc(db, "userChats", currentUser.uid), {
+        [combineIDD + ".lastMessage"]: {
+          text,
+        },
+        [combineIDD + ".userInfo"]: {
+          uid: user.uid,
+          displayName: user.displayName,
+          email: user.email,
+        },
+        [combineIDD + ".date"]: serverTimestamp(),
+      });
 
-    await updateDoc(doc(db, "userChats", user.uid), {
-      [combineIDD + ".lastMessage"]: {
-        text,
-      },
-      [combineIDD + ".userInfo"]: {
-        uid: currentUser.uid,
-        displayName: currentUser.displayName,
-        email: currentUser.email,
-      },
-      [combineIDD + ".date"]: serverTimestamp(),
-    });
+      await updateDoc(doc(db, "userChats", user.uid), {
+        [combineIDD + ".lastMessage"]: {
+          text,
+        },
+        [combineIDD + ".userInfo"]: {
+          uid: currentUser.uid,
+          displayName: currentUser.displayName,
+          email: currentUser.email,
+        },
+        [combineIDD + ".date"]: serverTimestamp(),
+      });
 
-    setText("");
-    // setImg(null);
+      setText("");
+      // setImg(null);
+
+    }
   };
+
+  const changeTextColor = () => {
+    setcolorsLastMessage({ ...colorsLastMessage, color: 'green' })
+  }
 
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user }}>
@@ -292,100 +277,111 @@ const Chat = () => {
           <ChatContext.Provider value={{ data: state, dispatch }}>
             <Box sx={{ maxWidth: 'auto', display: 'flex', }}>
               <Box sx={{ width: '300px' }}>
-                <Box>
-                  <TextField
-                    id="standard-search"
-                    value={search}
-                    variant="outlined"
-                    placeholder="Find a user"
-                    onChange={(e) => handleSearch(e, "")}
-                    InputProps={{
-                      endAdornment: !search ? (
-                        <IconButton>
-                          <SearchOutlined />
-                        </IconButton>
-                      ) : (
-                        <IconButton onClick={(e) => handleSearch("", "reset")}>
-                          {" "}
-                          <CloseIcon />
-                        </IconButton>
-                      ),
-                    }}
-                  />
+                <TextField
+                  id="standard-search"
+                  value={search}
+                  variant="outlined"
+                  placeholder="Find a user"
+                  onChange={(e) => handleSearch(e, "")}
+                  InputProps={{
+                    endAdornment: !search ? (
+                      <IconButton>
+                        <SearchOutlined />
+                      </IconButton>
+                    ) : (
+                      <IconButton onClick={(e) => handleSearch("", "reset")}>
+                        {" "}
+                        <CloseIcon />
+                      </IconButton>
+                    ),
+                  }}
+                />
 
-                  {/* ---------------------------------  all  chats---------------------------------- */}
-                  < TableContainer sx={{ width: '275px' }}>
-                    <Table>
-                      <TableBody>
-                        {rows.map((row: any) => (
-                          <TableRow
-                            hover
-                            key={row?.id}
-                            onClick={() => { handleclick(row) }}
+                {/* ---------------------------------  all  chats---------------------------------- */}
+                < TableContainer sx={{ width: '275px' }}>
+                  <Table>
+                    <TableBody>
+                      {rows.map((row: any) => (
+                        <TableRow
+                          hover
+                          key={row?.id}
+                          onClick={() => { handleclick(row) }}
+                        >
+                          <TableCell sx={{ display: 'flex' }}
+                            onClick={changeTextColor}
                           >
-                            <TableCell sx={{ display: 'flex' }}
-                            >
-                              <Avatar
-                                src={
-                                  row?.profile_pic
-                                    ? `${BASE_URL}/${row.profile_pic}`
-                                    : "/profile.png"
-                                }
-                              />
-                              {row?.first_name}
-                              {row?.email == liveChatDetail?.userInfo?.email ? <Typography sx={{ color: 'red', padding:'5px' }}>{liveChatDetail?.lastMessage?.text}</Typography> : ''}
-                            </TableCell>
-                          </TableRow>
-                        ))}
-                      </TableBody>
-                    </Table>
-                  </TableContainer>
-                  {/* <Chats /> */}
-                </Box>
+                            <Avatar
+                              src={
+                                row?.profile_pic
+                                  ? `${BASE_URL}/${row.profile_pic}`
+                                  : "/profile.png"
+                              }
+                            />
+                            <span style={{ fontSize: '17px', fontWeight: ' 600' }}>{capitalizeFirstLetter(row?.first_name)}</span>
+                            {/* {capitalizeFirstLetter(chat[1].userInfo.displayName)} */}
+                            {row?.firebase_id === liveChatDetail?.userInfo?.uid ?
+
+                              <Typography
+                                sx={colorsLastMessage}
+                              >{(liveChatDetail?.lastMessage?.text).slice(0, 10).concat(' ...')}</Typography> : ''}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </TableContainer>
+                {/* <Chats /> */}
               </Box>
 
-              <Box sx={{ width: '890px' }}>
-                {/* <Input /> */}
-                {/* ---------------------- chat user ------------------------------------------- */}
-                {user && (
-                  <Box>
-                    <Box sx={{ float: "left" }}>
-                      <Avatar src={
-                        row?.profile_pic
-                          ? `${BASE_URL}/${row.profile_pic}`
-                          : "/profile.png"
-                      } />
-                      {row?.first_name}
-                    </Box>
-                    {/* ----------------- Messages component --------------------------- */}
+              {/* ---------------------- chat user ------------------------------------------- */}
+              {user && (
+                <Box sx={{ width: '100%', background: '#ffffffb0', height: '80vh' }}>
+                  <Box sx={{
+                    background: '#ffffffb0',
+                    padding: '10px',
+                    borderBottom: '1px solid lightgrey',
+                    marginBottom: '10px'
+                  }}>
+                    <Avatar src={
+                      row?.profile_pic
+                        ? `${BASE_URL}/${row.profile_pic}`
+                        : "/profile.png"
+                    } />
+                    <span style={{ fontSize: '17px', fontWeight: ' 600' }}>{capitalizeFirstLetter(row?.first_name)}</span>
+                  </Box>
+                  {/* ----------------- Messages component --------------------------- */}
+                  <Box className="messagebox" sx={{ height: '437px', overflow: 'auto' }} >
                     <Messages
                       data={{ combineIDD, row }}
                     />
-                    { /*---------------- input field for send messages ------------------ */}
-                    <Box sx={{
-                      position: 'fixed',
-                      top: '650px',
-                      right: '10px',
-                      padding: '6px',
-                      color: '#fff',
-                      width: '890px',
-                    }}>
-                      <TextField
-                        id="standard-search"
-                        value={text}
-                        variant="outlined"
-                        onChange={(e) => setText(e.target.value)}
-                        placeholder="Type something..."
-                        fullWidth
-                      />
-                      <Button
-                        // id={sidebarStyles.muibuttonBackgroundColor}
-                        onClick={handleSend}>Send
-                      </Button>
-                    </Box>
                   </Box>
-                )}
-              </Box>
+                  { /*---------------- input field for send messages ------------------ */}
+                  <Box sx={{
+                    position: 'fixed',
+                    top: '650px',
+                    right: '10px',
+                    padding: '6px',
+                    color: '#fff',
+                    width: '890px',
+                    display: 'flex',
+                  }}>
+                    <TextField
+                      id="standard-search"
+                      value={text}
+                      variant="outlined"
+                      onChange={(e) => setText(e.target.value)}
+                      onKeyDown={handleKeyPress}
+                      placeholder="Type something..."
+                      fullWidth
+                    />
+                    <Button
+                      // id={sidebarStyles.muibuttonBackgroundColor}
+                      onClick={handleSend}>Send
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+
             </Box>
           </ChatContext.Provider>
         </Box>

@@ -20,7 +20,7 @@ import { Avatar, Box, Button, Card, CardContent, Grid, IconButton, Table, TableB
 import CloseIcon from "@mui/icons-material/Close";
 import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
 import MessageIcon from '@mui/icons-material/Message';
-import { Margin, SearchOutlined } from "@mui/icons-material";
+import { Margin, Padding, SearchOutlined } from "@mui/icons-material";
 import List, { ListClassKey } from '@mui/material/List';
 import { createContext, useEffect, useReducer, useState } from "react";
 import SidebarStyles from "../../../styles/sidebar.module.css";
@@ -49,19 +49,23 @@ const Chat = () => {
   const [err, setErr] = useState<any>(false);
   const [combineIDD, setCombineIDD] = useState<any>(null);
   const [allchats, setChats] = useState<any>([]);
-  const [chatsUsers, setChatUsers] = useState<any>([]);
   const [liveChatDetail, setLiveChatDetail] = useState<any>();
-
   const [prevMessageDate, setPrevMessageDate] = useState(null);
-  const [colorsLastMessage, setcolorsLastMessage] = useState({ color: '#d32f2f', fontSize: '14px', padding: '5px' });
+  const [initailDates, setInitailDates] = useState(null);
 
-  // let allUser
+  // const datesArray = Object.values(allchats).map((entry:any) => 
+  // new Date(entry?.date?.seconds * 1000 + entry?.date?.nanoseconds / 1000000)
+  // );
+
+  //  console.log(datesArray);
+  //  console.log(initailDates);
+
+
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (getUser: any) => {
       setCurrentUser(getUser);
       getUsereData();
-      // getAllChatUsers();
     });
     return () => {
       unsub();
@@ -77,41 +81,59 @@ const Chat = () => {
       const LoginUser = JSON.parse(localData)
       if (LoginUser) {
         const dataUsers = users?.data?.filter((user: { id: any; }) => user.id !== LoginUser?.id)
+        dataUsers.sort((a: any, b: any) => a.first_name.localeCompare(b.first_name));
         setRows(dataUsers);
       }
     });
   };
+  // console.log('initailDates',initailDates)
+  // console.log('allchats', allchats)
+
 
   useEffect(() => {
+
     const getChats = () => {
-      // const chatsRef = doc(db, "userChats", currentUser.uid);
       const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc: any) => {
         setChats(doc.data());
-        // {Object.entries(chats)?.sort((a,b)=>b[1].date - a[1].date).map((chat)
-        Object.entries(doc.data())?.map((chat: any) => {
-          const isCurrentMessageGreater = handleMessage(chat[1]);
-          if (isCurrentMessageGreater) {
-            setLiveChatDetail(isCurrentMessageGreater)
-          }
-        });
+     
+       
+          Object.entries(doc.data())?.map((chat: any) => {
+            const datas:any = new Date(chat[1]?.date?.seconds * 1000 + chat[1]?.date?.nanoseconds / 1000000);
+            console.log('fregfre',datas)
+            setInitailDates(datas)
+            // const initalMessageDate: any = new Date(chat[1]?.date?.seconds * 1000 + chat[1]?.date?.nanoseconds / 1000000);
+            // setInitailDates(initalMessageDate)
+            // const isCurrentMessageGreater = handleMessage(chat[1]);
+            // if (isCurrentMessageGreater) {
+            //   setLiveChatDetail(isCurrentMessageGreater)
+            // }
+          });
+
+          const datesArray = Object.values(doc.data()).map((entry: any) =>
+          new Date(entry?.date?.seconds * 1000 + entry?.date?.nanoseconds / 1000000)
+        );
+        console.log('datesArray',datesArray)
+        console.log('initial',initailDates)
+
+        
       });
       return () => {
         unsub();
       };
     };
     currentUser.uid && getChats();
+
   }, [currentUser.uid, prevMessageDate]);
 
 
-  const handleMessage = (newMessage: any) => {
-    const currentMessageDate = newMessage?.date?.seconds;
-    setPrevMessageDate(currentMessageDate);
-    if (prevMessageDate && currentMessageDate > prevMessageDate) {
-      return newMessage;
-    }
-  };
-
-  // console.log('liveChatDetail', liveChatDetail)
+  // const handleMessage = (newMessage: any) => {
+  //   // const currentMessageDate: any = new Date(newMessage?.date?.seconds * 1000 + newMessage?.date?.nanoseconds / 1000000);
+  //   const currentMessageDate: any = newMessage?.date?.seconds * 1000 + newMessage?.date?.nanoseconds / 1000000;
+  //   setPrevMessageDate(currentMessageDate);
+  //   if (prevMessageDate && currentMessageDate > prevMessageDate) {
+  //     return newMessage;
+  //   }
+  // };
 
 
   const INITIAL_STATE = {
@@ -255,9 +277,6 @@ const Chat = () => {
     }
   };
 
-  const changeTextColor = () => {
-    setcolorsLastMessage({ ...colorsLastMessage, color: 'green' })
-  }
 
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user }}>
@@ -308,7 +327,7 @@ const Chat = () => {
                           onClick={() => { handleclick(row) }}
                         >
                           <TableCell sx={{ display: 'flex' }}
-                            onClick={changeTextColor}
+                          // onClick={changeTextColor}
                           >
                             <Avatar
                               src={
@@ -317,12 +336,12 @@ const Chat = () => {
                                   : "/profile.png"
                               }
                             />
-                            <span style={{ fontSize: '17px', fontWeight: ' 600' }}>{capitalizeFirstLetter(row?.first_name)}</span>
+                            <span style={{ fontSize: '17px', fontWeight: ' 600', padding: '5px' }}>{capitalizeFirstLetter(row?.first_name)}</span>
                             {/* {capitalizeFirstLetter(chat[1].userInfo.displayName)} */}
                             {row?.firebase_id === liveChatDetail?.userInfo?.uid ?
 
                               <Typography
-                                sx={colorsLastMessage}
+                                sx={{ color: '#d32f2f', fontSize: '14px', paddingTop: '10px' }}
                               >{(liveChatDetail?.lastMessage?.text).slice(0, 10).concat(' ...')}</Typography> : ''}
                           </TableCell>
                         </TableRow>
@@ -338,9 +357,10 @@ const Chat = () => {
                 <Box sx={{ width: '100%', background: '#ffffffb0', height: '80vh' }}>
                   <Box sx={{
                     background: '#ffffffb0',
-                    padding: '10px',
+                    paddingLeft: '25px',
+                    paddingBottom: '10px',
                     borderBottom: '1px solid lightgrey',
-                    marginBottom: '10px'
+
                   }}>
                     <Avatar src={
                       row?.profile_pic

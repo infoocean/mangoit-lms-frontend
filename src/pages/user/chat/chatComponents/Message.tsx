@@ -5,6 +5,7 @@ import { makeStyles } from "@mui/styles";
 import { BASE_URL } from "@/config/config";
 import { HandleUserGet } from "@/services/user";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
+import messageStyle from "../../../../styles/user.module.css";
 // const useStyles = makeStyles({
 //   table: {
 //     minWidth: 650,
@@ -51,12 +52,12 @@ const Message = ({ message }: any) => {
   }
 
   const manageData: any = (message?.m?.senderId === currentUser?.uid) ? { display: 'flex', flexDirection: 'row-reverse' } : { display: 'flex', justifyContent: "left" };
-  const manageBoxData: any = (message?.m?.senderId === currentUser?.uid) ? { maxWidth: 'auto', display: 'flex', marginRight: '25px' } : { maxWidth: 'auto', display: 'flex', marginRight: '25px', flexDirection: 'row-reverse' };
+  const manageBoxData: any = (message?.m?.senderId === currentUser?.uid) ? { maxWidth: 'auto', display: 'flex', marginRight: '25px', marginLeft: '25px' } : { maxWidth: 'auto', display: 'flex', marginRight: '25px',marginLeft: '25px', flexDirection: 'row-reverse' };
   return (
     <>
 
-      <p ref={ref} key="1">
-        <Grid container>
+      <p className={messageStyle.onHoverMessage} ref={ref} key="1" style={{paddingTop:"10px", paddingBottom:'10px',  }}>
+        <Grid container >
           <Grid item xs={12} sx={manageData}>
 
             <Box sx={manageBoxData}>

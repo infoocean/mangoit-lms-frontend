@@ -18,23 +18,16 @@ import { db } from "./firebase";
 import { v4 as uuid } from "uuid";
 import { Avatar, Box, Button, Card, CardContent, Grid, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import NotificationAddIcon from '@mui/icons-material/NotificationAdd';
-import MessageIcon from '@mui/icons-material/Message';
-import { Margin, Padding, SearchOutlined } from "@mui/icons-material";
-import List, { ListClassKey } from '@mui/material/List';
+import { SearchOutlined } from "@mui/icons-material";
 import { createContext, useEffect, useReducer, useState } from "react";
 import SidebarStyles from "../../../styles/sidebar.module.css";
 import { auth } from "./firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 import Messages from "./chatComponents/Messages";
-// import Input from "./chatComponents/Input";
-// import Chats from "./chatComponents/Chats";
 import { HandleUserGet } from "@/services/user";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { BASE_URL } from "@/config/config";
-import { getUserChats } from "./firebaseFunctions";
-import { red } from "@mui/material/colors";
 export const AuthContext: any = createContext('');
 export const ChatContext: any = createContext('');
 
@@ -48,12 +41,12 @@ const Chat = () => {
   const [err, setErr] = useState<any>(false);
   const [combineIDD, setCombineIDD] = useState<any>(null);
   const [allchats, setChats] = useState<any>([]);
-  const [prevMessageDate, setPrevMessageDate] = useState();
   const [liveChatDetail, setLiveChatDetail] = useState<any>([]);
+
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (getUser: any) => {
-      setCurrentUser(getUser); 
+      setCurrentUser(getUser);
       getUsereData();
     });
     return () => {
@@ -76,25 +69,6 @@ const Chat = () => {
     });
   };
 
-  // const chatss = async () => {
-  //   const colRef = collection(db, "userChats");
-  //   const docsSnap = await getDocs(colRef);
-  //   docsSnap.docChanges().forEach((change) => {
-  //     if (change.type === 'added') {
-  //       const newMessage = change.doc.data();
-  //       setLiveChatDetail(newMessage)
-  //     }
-  //   })
-  // }
-  // chatss()
-
-  // const datesArray = Object.values(allchats).map((entry:any) => 
-  // new Date(entry?.date?.seconds * 1000 + entry?.date?.nanoseconds / 1000000)
-  // );
-
-  //  console.log(datesArray);
-
-
 
   useEffect(() => {
     const getChats = () => {
@@ -102,23 +76,10 @@ const Chat = () => {
         return;
       }
       const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
-        const data:any = doc.data();
-        // const datesArray = Object.values(data).map((entry:any) => 
-        // new Date(entry?.date?.seconds * 1000 + entry?.date?.nanoseconds / 1000000)
-        // );
-      
-        //  const greatestDate = datesArray.reduce((greatest:any, current) => {
-        //   const currentDate = new Date(current);
-        //   if (!greatest || currentDate > greatest) {
-        //     return currentDate;
-        //   }
-        //   return greatest;
-        // }, null);
-
-        // console.log('greatestDate',greatestDate);
-
-        const chatEntries:any = Object.entries(data).map((chat) => chat[1]);
-        const greatestDateObject = chatEntries.reduce((greatest:any, current:any) => {
+        const data: any = doc.data();
+        setChats(data);
+        const chatEntries: any = Object.entries(data).map((chat) => chat[1]);
+        const greatestDateObject = chatEntries.reduce((greatest: any, current: any) => {
           if (current.date) {
             const currentDateTime = new Date(current.date.seconds * 1000 + current.date.nanoseconds / 1000000);
             if (!greatest || currentDateTime > new Date(greatest.date.seconds * 1000 + greatest.date.nanoseconds / 1000000)) {
@@ -133,11 +94,11 @@ const Chat = () => {
         unsub();
       };
     };
-
     getChats();
   }, [currentUser.uid]);
 
-  // console.log('liveChatDetail', liveChatDetail)
+
+  // console.log('notiflivecation', live)
 
   const INITIAL_STATE = {
     chatId: "null",
@@ -231,6 +192,7 @@ const Chat = () => {
         });
       }
     } catch (err) { }
+    setLiveChatDetail('')
   }
   const handleKeyPress = (event: any) => {
     if (event.key === 'Enter') {
@@ -283,20 +245,21 @@ const Chat = () => {
 
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user }}>
-      <Navbar />
-      <Box className={SidebarStyles.combineContentAndSidebar}>
-        <SideBar />
-        {/* main content */}
-        <Box className={SidebarStyles.siteBodyContainer}>
-          {/* breadcumbs */}
-          <BreadcrumbsHeading
-            First="Home"
-            Current="Chat"
-            Text="CHAT"
-            Link="/user/chat"
-          />
+      <ChatContext.Provider value={{ data: state, dispatch, chats: liveChatDetail, setLiveChatDetail }}>
+        <Navbar />
+        <Box className={SidebarStyles.combineContentAndSidebar}>
+          <SideBar />
           {/* main content */}
-          <ChatContext.Provider value={{ data: state, dispatch }}>
+          <Box className={SidebarStyles.siteBodyContainer}>
+            {/* breadcumbs */}
+            <BreadcrumbsHeading
+              First="Home"
+              Current="Chat"
+              Text="CHAT"
+              Link="/user/chat"
+            />
+            {/* main content */}
+
             <Box sx={{ maxWidth: 'auto', display: 'flex', }}>
               <Box sx={{ width: '300px' }}>
                 <TextField
@@ -404,9 +367,9 @@ const Chat = () => {
               )}
 
             </Box>
-          </ChatContext.Provider>
-        </Box>
-      </Box >
+          </Box>
+        </Box >
+      </ChatContext.Provider>
     </AuthContext.Provider >
   );
 }

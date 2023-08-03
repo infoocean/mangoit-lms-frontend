@@ -3,12 +3,13 @@ import AppBar from "@mui/material/AppBar";
 import Box from "@mui/material/Box";
 import Toolbar from "@mui/material/Toolbar";
 import IconButton from "@mui/material/IconButton";
+import NotificationsNoneIcon from '@mui/icons-material/NotificationsNone';
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { useProSidebar } from "react-pro-sidebar";
-import { Avatar, Typography } from "@mui/material";
+import { Avatar, Badge, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import styles from "../../styles/appbar.module.css";
@@ -17,6 +18,7 @@ import { capitalizeFirstLetter } from "../CapitalFirstLetter/capitalizeFirstLett
 import { BASE_URL } from "@/config/config";
 import Link from "next/link";
 import { HandleSiteGetByID } from "@/services/site";
+import { AuthContext, ChatContext } from "../../pages/user/chat/index";
 
 interface appbar {
   portalData?: any;
@@ -50,9 +52,16 @@ export default function Navbar({
   const { collapseSidebar, toggleSidebar, toggled } = useProSidebar();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const { chats,setLiveChatDetail }: any = React.useContext(ChatContext);
+  const { currentUser }: any = React.useContext(AuthContext);
+  const [notification, setNotification] = React.useState(false);
   const router = useRouter();
 
+
+
+
   React.useEffect(() => {
+    setLiveChatDetail({})
     let localData: any, parseLocalData: any;
     if (typeof window !== "undefined") {
       localData = window.localStorage.getItem("userData");
@@ -64,6 +73,11 @@ export default function Navbar({
 
     handleGetSiteOptionsDataById(parseLocalData.id);
   }, []);
+  // console.log('currentUser', currentUser?.uid);
+  // if (currentUser?.uid !== chats?.userInfo?.uid) {
+  //   // setNotification(true)
+  //   console.log('setNotification true')
+  // }
 
   const handleGetSiteOptionsDataById = async (userId: any) => {
     await HandleSiteGetByID(userId)
@@ -197,6 +211,10 @@ export default function Navbar({
       </MenuItem>
     </Menu>
   );
+
+  // console.log(chats)
+
+
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static" className={styles.appBarCss}>
@@ -208,8 +226,8 @@ export default function Navbar({
                 portalData
                   ? BASE_URL + "/" + portalData?.org_logo
                   : orgLogo
-                  ? BASE_URL + "/" + orgLogo
-                  : "/Images/pages_icon/company_logo.png"
+                    ? BASE_URL + "/" + orgLogo
+                    : "/Images/pages_icon/company_logo.png"
               }
               width={"180px"}
               height={"50px"}
@@ -219,6 +237,11 @@ export default function Navbar({
           </Link>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
+            <Box sx={{ margin: '10px' }}>
+              {chats?.lastMessage?.text ? <Badge color="secondary" variant="dot">
+                <NotificationsNoneIcon />
+              </Badge> : <NotificationsNoneIcon />}
+            </Box>
             <Box className={styles.createVrLine}></Box>
 
             <Avatar
@@ -226,8 +249,8 @@ export default function Navbar({
                 profilePic && profilePic
                   ? `${BASE_URL}/${profilePic}`
                   : userData && userData?.profile_pic !== null
-                  ? `${BASE_URL}/${userData?.profile_pic}`
-                  : "/"
+                    ? `${BASE_URL}/${userData?.profile_pic}`
+                    : "/"
               }
               {...stringAvatar(userData?.first_name, userData?.last_name)}
               alt={userData && userData?.first_name}

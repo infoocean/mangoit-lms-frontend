@@ -44,27 +44,16 @@ const Chat = () => {
   const [row, setRow] = useState<any>(null);
   const [search, setSearch] = useState("");
   const [currentUser, setCurrentUser] = useState<any>({});
-  // const [username, setUsername] = useState<any>("");
   const [user, setUser] = useState<any>(null);
   const [err, setErr] = useState<any>(false);
   const [combineIDD, setCombineIDD] = useState<any>(null);
   const [allchats, setChats] = useState<any>([]);
-  const [liveChatDetail, setLiveChatDetail] = useState<any>();
-  const [prevMessageDate, setPrevMessageDate] = useState(null);
-  const [initailDates, setInitailDates] = useState(null);
-
-  // const datesArray = Object.values(allchats).map((entry:any) => 
-  // new Date(entry?.date?.seconds * 1000 + entry?.date?.nanoseconds / 1000000)
-  // );
-
-  //  console.log(datesArray);
-  //  console.log(initailDates);
-
-
+  const [prevMessageDate, setPrevMessageDate] = useState();
+  const [liveChatDetail, setLiveChatDetail] = useState<any>([]);
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (getUser: any) => {
-      setCurrentUser(getUser);
+      setCurrentUser(getUser); 
       getUsereData();
     });
     return () => {
@@ -86,55 +75,69 @@ const Chat = () => {
       }
     });
   };
-  // console.log('initailDates',initailDates)
-  // console.log('allchats', allchats)
+
+  // const chatss = async () => {
+  //   const colRef = collection(db, "userChats");
+  //   const docsSnap = await getDocs(colRef);
+  //   docsSnap.docChanges().forEach((change) => {
+  //     if (change.type === 'added') {
+  //       const newMessage = change.doc.data();
+  //       setLiveChatDetail(newMessage)
+  //     }
+  //   })
+  // }
+  // chatss()
+
+  // const datesArray = Object.values(allchats).map((entry:any) => 
+  // new Date(entry?.date?.seconds * 1000 + entry?.date?.nanoseconds / 1000000)
+  // );
+
+  //  console.log(datesArray);
+
 
 
   useEffect(() => {
-
     const getChats = () => {
-      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc: any) => {
-        setChats(doc.data());
-     
-       
-          Object.entries(doc.data())?.map((chat: any) => {
-            const datas:any = new Date(chat[1]?.date?.seconds * 1000 + chat[1]?.date?.nanoseconds / 1000000);
-            console.log('fregfre',datas)
-            setInitailDates(datas)
-            // const initalMessageDate: any = new Date(chat[1]?.date?.seconds * 1000 + chat[1]?.date?.nanoseconds / 1000000);
-            // setInitailDates(initalMessageDate)
-            // const isCurrentMessageGreater = handleMessage(chat[1]);
-            // if (isCurrentMessageGreater) {
-            //   setLiveChatDetail(isCurrentMessageGreater)
-            // }
-          });
+      if (!currentUser.uid) {
+        return;
+      }
+      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+        const data:any = doc.data();
+        // const datesArray = Object.values(data).map((entry:any) => 
+        // new Date(entry?.date?.seconds * 1000 + entry?.date?.nanoseconds / 1000000)
+        // );
+      
+        //  const greatestDate = datesArray.reduce((greatest:any, current) => {
+        //   const currentDate = new Date(current);
+        //   if (!greatest || currentDate > greatest) {
+        //     return currentDate;
+        //   }
+        //   return greatest;
+        // }, null);
 
-          const datesArray = Object.values(doc.data()).map((entry: any) =>
-          new Date(entry?.date?.seconds * 1000 + entry?.date?.nanoseconds / 1000000)
-        );
-        console.log('datesArray',datesArray)
-        console.log('initial',initailDates)
+        // console.log('greatestDate',greatestDate);
 
-        
+        const chatEntries:any = Object.entries(data).map((chat) => chat[1]);
+        const greatestDateObject = chatEntries.reduce((greatest:any, current:any) => {
+          if (current.date) {
+            const currentDateTime = new Date(current.date.seconds * 1000 + current.date.nanoseconds / 1000000);
+            if (!greatest || currentDateTime > new Date(greatest.date.seconds * 1000 + greatest.date.nanoseconds / 1000000)) {
+              return current;
+            }
+          }
+          return greatest;
+        }, null);
+        setLiveChatDetail(greatestDateObject);
       });
       return () => {
         unsub();
       };
     };
-    currentUser.uid && getChats();
 
-  }, [currentUser.uid, prevMessageDate]);
+    getChats();
+  }, [currentUser.uid]);
 
-
-  // const handleMessage = (newMessage: any) => {
-  //   // const currentMessageDate: any = new Date(newMessage?.date?.seconds * 1000 + newMessage?.date?.nanoseconds / 1000000);
-  //   const currentMessageDate: any = newMessage?.date?.seconds * 1000 + newMessage?.date?.nanoseconds / 1000000;
-  //   setPrevMessageDate(currentMessageDate);
-  //   if (prevMessageDate && currentMessageDate > prevMessageDate) {
-  //     return newMessage;
-  //   }
-  // };
-
+  // console.log('liveChatDetail', liveChatDetail)
 
   const INITIAL_STATE = {
     chatId: "null",
@@ -337,9 +340,7 @@ const Chat = () => {
                               }
                             />
                             <span style={{ fontSize: '17px', fontWeight: ' 600', padding: '5px' }}>{capitalizeFirstLetter(row?.first_name)}</span>
-                            {/* {capitalizeFirstLetter(chat[1].userInfo.displayName)} */}
                             {row?.firebase_id === liveChatDetail?.userInfo?.uid ?
-
                               <Typography
                                 sx={{ color: '#d32f2f', fontSize: '14px', paddingTop: '10px' }}
                               >{(liveChatDetail?.lastMessage?.text).slice(0, 10).concat(' ...')}</Typography> : ''}

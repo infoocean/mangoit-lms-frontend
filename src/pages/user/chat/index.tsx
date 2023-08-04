@@ -18,6 +18,7 @@ import { db } from "./firebase";
 import { v4 as uuid } from "uuid";
 import { Avatar, Box, Button, Card, CardContent, Grid, IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import MessageIcon from '@mui/icons-material/Message';
 import { SearchOutlined } from "@mui/icons-material";
 import { createContext, useEffect, useReducer, useState } from "react";
 import SidebarStyles from "../../../styles/sidebar.module.css";
@@ -28,6 +29,7 @@ import Messages from "./chatComponents/Messages";
 import { HandleUserGet } from "@/services/user";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { BASE_URL } from "@/config/config";
+import { red } from "@mui/material/colors";
 export const AuthContext: any = createContext('');
 export const ChatContext: any = createContext('');
 
@@ -42,6 +44,7 @@ const Chat = () => {
   const [combineIDD, setCombineIDD] = useState<any>(null);
   const [allchats, setChats] = useState<any>([]);
   const [liveChatDetail, setLiveChatDetail] = useState<any>([]);
+  const [messages, setMessages] = useState([]);
 
 
   useEffect(() => {
@@ -96,9 +99,24 @@ const Chat = () => {
     };
     getChats();
   }, [currentUser.uid]);
+  // console.log('liveChatDetail',liveChatDetail);
 
+  const reorderUsers = () => {
+    const users = rows
+    const chatData = allchats
+    if (!chatData) return users;
 
-  // console.log('notiflivecation', live)
+   const currentChatUserId = liveChatDetail?.userInfo?.uid
+    const sortedUsers = users.sort((userA:any, userB:any) => {
+      if (userA.firebase_id === currentChatUserId) return -1;
+      if (userB.firebase_id === currentChatUserId) return 1;
+      return 0;
+    });
+
+    return sortedUsers;
+  };
+
+  const reorderedUsers = reorderUsers();
 
   const INITIAL_STATE = {
     chatId: "null",
@@ -125,17 +143,27 @@ const Chat = () => {
   const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
 
   const handleSearch = (e: any, identifier: any) => {
-
+       let localData: any;
+      if (typeof window !== "undefined") {
+        localData = window.localStorage.getItem("userData");
+      }
+      const LoginUser = JSON.parse(localData)
     if (identifier === "reset") {
       HandleUserGet("", "").then((itemSeached) => {
-        setRows(itemSeached.data);
+         const dataUsers = itemSeached?.data?.filter((user: { id: any; }) => user.id !== LoginUser?.id)
+        dataUsers.sort((a: any, b: any) => a.first_name.localeCompare(b.first_name));
+        setRows(dataUsers);
+        // setRows(itemSeached.data);
       });
       setSearch(e);
     } else {
       const search = e.target.value;
       setSearch(e.target.value);
       HandleUserGet(search, "").then((itemSeached) => {
-        setRows(itemSeached.data);
+         const dataUsers = itemSeached?.data?.filter((user: { id: any; }) => user.id !== LoginUser?.id)
+        dataUsers.sort((a: any, b: any) => a.first_name.localeCompare(b.first_name));
+        setRows(dataUsers);
+        // setRows(itemSeached.data);
       });
     }
   };
@@ -146,7 +174,7 @@ const Chat = () => {
     let user: any
     const q = query(
       collection(db, "users"),
-      where("email", "==", e?.email)
+      where("uid", "==", e?.firebase_id)
     );
 
     try {
@@ -212,14 +240,17 @@ const Chat = () => {
         }),
       });
 
-      const chats = await updateDoc(doc(db, "userChats", currentUser.uid), {
+      const chats = await updateDoc(doc(db, "userChats", currentUser?.uid), {
         [combineIDD + ".lastMessage"]: {
           text,
         },
         [combineIDD + ".userInfo"]: {
-          uid: user.uid,
-          displayName: user.displayName,
-          email: user.email,
+          uid: user?.uid,
+          displayName: user?.displayName,
+          email: user?.email,
+          messageSenderId: currentUser?.uid,
+          messageRecieverId:user?.uid,
+          combineId: combineIDD,
         },
         [combineIDD + ".date"]: serverTimestamp(),
       });
@@ -232,6 +263,8 @@ const Chat = () => {
           uid: currentUser.uid,
           displayName: currentUser.displayName,
           email: currentUser.email,
+          messageSenderId: currentUser?.uid,
+          messageRecieverId:user?.uid,
         },
         [combineIDD + ".date"]: serverTimestamp(),
       });
@@ -245,7 +278,7 @@ const Chat = () => {
 
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user }}>
-      <ChatContext.Provider value={{ data: state, dispatch, chats: liveChatDetail, setLiveChatDetail }}>
+      <ChatContext.Provider value={{ data: state, dispatch, }}>
         <Navbar />
         <Box className={SidebarStyles.combineContentAndSidebar}>
           <SideBar />
@@ -286,15 +319,13 @@ const Chat = () => {
                 < TableContainer sx={{ width: '275px' }}>
                   <Table>
                     <TableBody>
-                      {rows.map((row: any) => (
+                      {reorderedUsers.map((row: any) => (
                         <TableRow
                           hover
                           key={row?.id}
                           onClick={() => { handleclick(row) }}
                         >
-                          <TableCell sx={{ display: 'flex' }}
-                          // onClick={changeTextColor}
-                          >
+                          <TableCell sx={{ display: 'flex' }} >
                             <Avatar
                               src={
                                 row?.profile_pic
@@ -304,9 +335,7 @@ const Chat = () => {
                             />
                             <span style={{ fontSize: '17px', fontWeight: ' 600', padding: '5px' }}>{capitalizeFirstLetter(row?.first_name)}</span>
                             {row?.firebase_id === liveChatDetail?.userInfo?.uid ?
-                              <Typography
-                                sx={{ color: '#d32f2f', fontSize: '14px', paddingTop: '10px' }}
-                              >{(liveChatDetail?.lastMessage?.text).slice(0, 10).concat(' ...')}</Typography> : ''}
+                            <Box sx={{padding:'5px',color:"#d32f2f"}}><MessageIcon /></Box> : ''}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -359,7 +388,8 @@ const Chat = () => {
                       fullWidth
                     />
                     <Button
-                      // id={sidebarStyles.muibuttonBackgroundColor}
+                      id={SidebarStyles.muibuttonBackgroundColor}
+                      sx={{ color: "#fff", }}
                       onClick={handleSend}>Send
                     </Button>
                   </Box>

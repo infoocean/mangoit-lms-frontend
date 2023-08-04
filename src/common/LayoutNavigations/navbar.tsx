@@ -19,6 +19,8 @@ import { BASE_URL } from "@/config/config";
 import Link from "next/link";
 import { HandleSiteGetByID } from "@/services/site";
 import { AuthContext, ChatContext } from "../../pages/user/chat/index";
+import { doc, onSnapshot } from "firebase/firestore";
+import { db } from "@/pages/user/chat/firebase";
 
 interface appbar {
   portalData?: any;
@@ -52,16 +54,12 @@ export default function Navbar({
   const { collapseSidebar, toggleSidebar, toggled } = useProSidebar();
   const isMenuOpen = Boolean(anchorEl);
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
-  const { chats,setLiveChatDetail }: any = React.useContext(ChatContext);
-  const { currentUser }: any = React.useContext(AuthContext);
-  const [notification, setNotification] = React.useState(false);
+  const [allchats, setChats] = React.useState<any>([]);
+  const [liveChatDetail, setLiveChatDetail] = React.useState<any>([]);
+  const [notifications, setNotifications] = React.useState(false);
   const router = useRouter();
 
-
-
-
   React.useEffect(() => {
-    setLiveChatDetail({})
     let localData: any, parseLocalData: any;
     if (typeof window !== "undefined") {
       localData = window.localStorage.getItem("userData");
@@ -70,15 +68,45 @@ export default function Navbar({
       parseLocalData = JSON.parse(localData);
       setUserData(JSON.parse(localData));
     }
-
     handleGetSiteOptionsDataById(parseLocalData.id);
   }, []);
-  // console.log('currentUser', currentUser?.uid);
-  // if (currentUser?.uid !== chats?.userInfo?.uid) {
-  //   // setNotification(true)
-  //   console.log('setNotification true')
-  // }
 
+    // console.log('userData', userData)
+
+    React.useEffect(() => {
+      const getChats = () => {
+        if (!userData?.firebase_id) {
+          return;
+        }
+        const unsub = onSnapshot(doc(db, "userChats", userData?.firebase_id), (doc) => {
+          const data: any = doc.data();
+          setChats(data);
+          const chatEntries: any = Object.entries(data).map((chat) => chat[1]);
+          const greatestDateObject = chatEntries.reduce((greatest: any, current: any) => {
+            if (current.date) {
+              const currentDateTime = new Date(current.date.seconds * 1000 + current.date.nanoseconds / 1000000);
+              if (!greatest || currentDateTime > new Date(greatest.date.seconds * 1000 + greatest.date.nanoseconds / 1000000)) {
+                return current;
+              }
+            }
+            return greatest;
+          }, null);
+          setLiveChatDetail(greatestDateObject);
+        });
+        return () => {
+          unsub();
+        };
+      };
+      getChats();
+    }, [userData?.firebase_id]);
+ 
+    // liveChatDetail?.userInfo?.uid !== liveChatDetail?.userInfo?.messageSenderId 
+  
+
+  const handleChatNotifications = () => {
+      router.push("/user/chat/");
+    }  
+  
   const handleGetSiteOptionsDataById = async (userId: any) => {
     await HandleSiteGetByID(userId)
       .then((res) => {
@@ -237,10 +265,13 @@ export default function Navbar({
           </Link>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Box sx={{ margin: '10px' }}>
-              {chats?.lastMessage?.text ? <Badge color="secondary" variant="dot">
+            <Box 
+            sx={{ margin: '10px' }}
+            onClick={handleChatNotifications}
+            >
+              { liveChatDetail?.userInfo?.uid !== liveChatDetail?.userInfo?.messageSenderId  ? <NotificationsNoneIcon /> : <Badge color="error" variant="dot" >
                 <NotificationsNoneIcon />
-              </Badge> : <NotificationsNoneIcon />}
+              </Badge>   }
             </Box>
             <Box className={styles.createVrLine}></Box>
 

@@ -30,6 +30,7 @@ import { HandleUserGet } from "@/services/user";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { BASE_URL } from "@/config/config";
 import { red } from "@mui/material/colors";
+import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 export const AuthContext: any = createContext('');
 export const ChatContext: any = createContext('');
 
@@ -44,7 +45,7 @@ const Chat = () => {
   const [combineIDD, setCombineIDD] = useState<any>(null);
   const [allchats, setChats] = useState<any>([]);
   const [liveChatDetail, setLiveChatDetail] = useState<any>([]);
-  const [messages, setMessages] = useState([]);
+  const [isLoading, setLoading] = useState<boolean>(false);
 
 
   useEffect(() => {
@@ -58,7 +59,9 @@ const Chat = () => {
   }, []);
 
   const getUsereData = () => {
+    setLoading(true);
     HandleUserGet("", "").then((users) => {
+      setLoading(false);
       let localData: any;
       if (typeof window !== "undefined") {
         localData = window.localStorage.getItem("userData");
@@ -106,8 +109,8 @@ const Chat = () => {
     const chatData = allchats
     if (!chatData) return users;
 
-   const currentChatUserId = liveChatDetail?.userInfo?.uid
-    const sortedUsers = users.sort((userA:any, userB:any) => {
+    const currentChatUserId = liveChatDetail?.userInfo?.uid
+    const sortedUsers = users.sort((userA: any, userB: any) => {
       if (userA.firebase_id === currentChatUserId) return -1;
       if (userB.firebase_id === currentChatUserId) return 1;
       return 0;
@@ -118,39 +121,15 @@ const Chat = () => {
 
   const reorderedUsers = reorderUsers();
 
-  const INITIAL_STATE = {
-    chatId: "null",
-    user: {},
-  };
-
-  const chatReducer = (state: any, action: any) => {
-    switch (action.type) {
-      case "CHANGE_USER":
-        return {
-          user: action.payload,
-          chatId:
-            currentUser.uid > action.payload.uid
-              ? currentUser.uid + action.payload.uid
-              : action.payload.uid + currentUser.uid,
-        };
-
-      default:
-        return state;
-    }
-  };
-
-
-  const [state, dispatch] = useReducer(chatReducer, INITIAL_STATE);
-
   const handleSearch = (e: any, identifier: any) => {
-       let localData: any;
-      if (typeof window !== "undefined") {
-        localData = window.localStorage.getItem("userData");
-      }
-      const LoginUser = JSON.parse(localData)
+    let localData: any;
+    if (typeof window !== "undefined") {
+      localData = window.localStorage.getItem("userData");
+    }
+    const LoginUser = JSON.parse(localData)
     if (identifier === "reset") {
       HandleUserGet("", "").then((itemSeached) => {
-         const dataUsers = itemSeached?.data?.filter((user: { id: any; }) => user.id !== LoginUser?.id)
+        const dataUsers = itemSeached?.data?.filter((user: { id: any; }) => user.id !== LoginUser?.id)
         dataUsers.sort((a: any, b: any) => a.first_name.localeCompare(b.first_name));
         setRows(dataUsers);
         // setRows(itemSeached.data);
@@ -160,7 +139,7 @@ const Chat = () => {
       const search = e.target.value;
       setSearch(e.target.value);
       HandleUserGet(search, "").then((itemSeached) => {
-         const dataUsers = itemSeached?.data?.filter((user: { id: any; }) => user.id !== LoginUser?.id)
+        const dataUsers = itemSeached?.data?.filter((user: { id: any; }) => user.id !== LoginUser?.id)
         dataUsers.sort((a: any, b: any) => a.first_name.localeCompare(b.first_name));
         setRows(dataUsers);
         // setRows(itemSeached.data);
@@ -249,7 +228,7 @@ const Chat = () => {
           displayName: user?.displayName,
           email: user?.email,
           messageSenderId: currentUser?.uid,
-          messageRecieverId:user?.uid,
+          messageRecieverId: user?.uid,
           combineId: combineIDD,
         },
         [combineIDD + ".date"]: serverTimestamp(),
@@ -264,7 +243,7 @@ const Chat = () => {
           displayName: currentUser.displayName,
           email: currentUser.email,
           messageSenderId: currentUser?.uid,
-          messageRecieverId:user?.uid,
+          messageRecieverId: user?.uid,
         },
         [combineIDD + ".date"]: serverTimestamp(),
       });
@@ -278,11 +257,10 @@ const Chat = () => {
 
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user }}>
-      <ChatContext.Provider value={{ data: state, dispatch, }}>
         <Navbar />
         <Box className={SidebarStyles.combineContentAndSidebar}>
           <SideBar />
-          {/* main content */}
+
           <Box className={SidebarStyles.siteBodyContainer}>
             {/* breadcumbs */}
             <BreadcrumbsHeading
@@ -292,114 +270,118 @@ const Chat = () => {
               Link="/user/chat"
             />
             {/* main content */}
-
-            <Box sx={{ maxWidth: 'auto', display: 'flex', }}>
-              <Box sx={{ width: '300px' }}>
-                <TextField
-                  id="standard-search"
-                  value={search}
-                  variant="outlined"
-                  placeholder="Find a user"
-                  onChange={(e) => handleSearch(e, "")}
-                  InputProps={{
-                    endAdornment: !search ? (
-                      <IconButton>
-                        <SearchOutlined />
-                      </IconButton>
-                    ) : (
-                      <IconButton onClick={(e) => handleSearch("", "reset")}>
-                        {" "}
-                        <CloseIcon />
-                      </IconButton>
-                    ),
-                  }}
-                />
-
-                {/* ---------------------------------  all  chats---------------------------------- */}
-                < TableContainer sx={{ width: '275px' }}>
-                  <Table>
-                    <TableBody>
-                      {reorderedUsers.map((row: any) => (
-                        <TableRow
-                          hover
-                          key={row?.id}
-                          onClick={() => { handleclick(row) }}
-                        >
-                          <TableCell sx={{ display: 'flex' }} >
-                            <Avatar
-                              src={
-                                row?.profile_pic
-                                  ? `${BASE_URL}/${row.profile_pic}`
-                                  : "/profile.png"
-                              }
-                            />
-                            <span style={{ fontSize: '17px', fontWeight: ' 600', padding: '5px' }}>{capitalizeFirstLetter(row?.first_name)}</span>
-                            {row?.firebase_id === liveChatDetail?.userInfo?.uid ?
-                            <Box sx={{padding:'5px',color:"#d32f2f"}}><MessageIcon /></Box> : ''}
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-                {/* <Chats /> */}
-              </Box>
-
-              {/* ---------------------- chat user ------------------------------------------- */}
-              {user && (
-                <Box sx={{ width: '100%', background: '#ffffffb0', height: '80vh' }}>
-                  <Box sx={{
-                    background: '#ffffffb0',
-                    paddingLeft: '25px',
-                    paddingBottom: '10px',
-                    borderBottom: '1px solid lightgrey',
-
-                  }}>
-                    <Avatar src={
-                      row?.profile_pic
-                        ? `${BASE_URL}/${row.profile_pic}`
-                        : "/profile.png"
-                    } />
-                    <span style={{ fontSize: '17px', fontWeight: ' 600' }}>{capitalizeFirstLetter(row?.first_name)}</span>
-                  </Box>
-                  {/* ----------------- Messages component --------------------------- */}
-                  <Box className="messagebox" sx={{ height: '437px', overflow: 'auto' }} >
-                    <Messages
-                      data={{ combineIDD, row }}
-                    />
-                  </Box>
-                  { /*---------------- input field for send messages ------------------ */}
-                  <Box sx={{
-                    position: 'fixed',
-                    top: '650px',
-                    right: '10px',
-                    padding: '6px',
-                    color: '#fff',
-                    width: '890px',
-                    display: 'flex',
-                  }}>
+            {/* <Card>
+              <CardContent> */}
+                {!isLoading ? (<Box sx={{ maxWidth: 'auto', display: 'flex', }}>
+                  <Box sx={{ width: '300px' }}>
                     <TextField
                       id="standard-search"
-                      value={text}
+                      value={search}
                       variant="outlined"
-                      onChange={(e) => setText(e.target.value)}
-                      onKeyDown={handleKeyPress}
-                      placeholder="Type something..."
-                      fullWidth
+                      placeholder="Find a user"
+                      onChange={(e) => handleSearch(e, "")}
+                      InputProps={{
+                        endAdornment: !search ? (
+                          <IconButton>
+                            <SearchOutlined />
+                          </IconButton>
+                        ) : (
+                          <IconButton onClick={(e) => handleSearch("", "reset")}>
+                            {" "}
+                            <CloseIcon />
+                          </IconButton>
+                        ),
+                      }}
                     />
-                    <Button
-                      id={SidebarStyles.muibuttonBackgroundColor}
-                      sx={{ color: "#fff", }}
-                      onClick={handleSend}>Send
-                    </Button>
-                  </Box>
-                </Box>
-              )}
 
-            </Box>
+                    {/* ---------------------------------  all  chats---------------------------------- */}
+                    < TableContainer sx={{ width: '275px' }}>
+                      <Table>
+                        <TableBody>
+                          {reorderedUsers.map((row: any) => (
+                            <TableRow
+                              hover
+                              key={row?.id}
+                              onClick={() => { handleclick(row) }}
+                            >
+                              <TableCell sx={{ display: 'flex' }} >
+                                <Avatar
+                                  src={
+                                    row?.profile_pic
+                                      ? `${BASE_URL}/${row.profile_pic}`
+                                      : "/profile.png"
+                                  }
+                                />
+                                <span style={{ fontSize: '17px', fontWeight: ' 600', padding: '5px' }}>{capitalizeFirstLetter(row?.first_name)}</span>
+                                {row?.firebase_id === liveChatDetail?.userInfo?.uid ?
+                                  <Box sx={{ padding: '5px', color: "#d32f2f" }}><MessageIcon /></Box> : ''}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </TableContainer>
+                    {/* <Chats /> */}
+                  </Box>
+
+                  {/* ---------------------- chat user ------------------------------------------- */}
+                  {user && (
+                    <Box sx={{ width: '100%', background: '#ffffffb0', height: '80vh' }}>
+                      <Box sx={{
+                        background: '#ffffffb0',
+                        paddingLeft: '25px',
+                        paddingBottom: '10px',
+                        borderBottom: '1px solid lightgrey',
+
+                      }}>
+                        <Avatar src={
+                          row?.profile_pic
+                            ? `${BASE_URL}/${row.profile_pic}`
+                            : "/profile.png"
+                        } />
+                        <span style={{ fontSize: '17px', fontWeight: ' 600' }}>{capitalizeFirstLetter(row?.first_name)}</span>
+                      </Box>
+                      {/* ----------------- Messages component --------------------------- */}
+                      <Box className="messagebox" sx={{ height: '437px', overflow: 'auto' }} >
+                        <Messages
+                          data={{ combineIDD, row }}
+                        />
+                      </Box>
+                      { /*---------------- input field for send messages ------------------ */}
+                      <Box sx={{
+                        position: 'fixed',
+                        top: '650px',
+                        right: '10px',
+                        padding: '6px',
+                        color: '#fff',
+                        width: '890px',
+                        display: 'flex',
+                      }}>
+                        <TextField
+                          id="standard-search"
+                          value={text}
+                          variant="outlined"
+                          onChange={(e) => setText(e.target.value)}
+                          onKeyDown={handleKeyPress}
+                          placeholder="Type something..."
+                          fullWidth
+                        />
+                        <Button
+                          id={SidebarStyles.muibuttonBackgroundColor}
+                          sx={{ color: "#fff", }}
+                          onClick={handleSend}>Send
+                        </Button>
+                      </Box>
+                    </Box>
+                  )}
+
+                </Box>) : (
+                 <SpinnerProgress />
+                )}
+              {/* </CardContent>
+            </Card> */}
           </Box>
         </Box >
-      </ChatContext.Provider>
     </AuthContext.Provider >
   );
 }

@@ -14,6 +14,7 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import GradingOutlinedIcon from "@mui/icons-material/GradingOutlined";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
+import LiveTvIcon from '@mui/icons-material/LiveTv';
 
 export const VerticalMenuItems = () => {
   const [userData, setUserData] = React.useState<any>("");
@@ -94,6 +95,12 @@ export const VerticalMenuItems = () => {
             title: "All Sessions",
             icon: CalendarTodayOutlinedIcon,
             path: "/admin/courses/allsessions",
+            disable: false,
+          },
+          {
+            title: "Live Sessions",
+            icon: LiveTvIcon,
+            path: "/admin/courses/livesessions",
             disable: false,
           },
         ],

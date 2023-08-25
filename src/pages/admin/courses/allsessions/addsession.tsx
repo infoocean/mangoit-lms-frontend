@@ -1,5 +1,6 @@
 // ***** React Import
-import React, { useState, useEffect } from "react";
+import 'regenerator-runtime/runtime'
+import React, { useState, useEffect, createContext, useMemo, useContext } from "react";
 import { useRouter } from "next/router";
 // MUI Import
 import {
@@ -8,8 +9,11 @@ import {
   Button,
   Card,
   CardContent,
+  Checkbox,
   Divider,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
   InputLabel,
@@ -43,9 +47,25 @@ import { ToastContainer } from "react-toastify";
 import { HandleCourseGet } from "@/services/course";
 import { HandleModuleGet } from "@/services/module";
 import { HandleSessionCreate } from "@/services/session";
+
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { HandleAIText, aiBtnCss } from "@/services/text_AI";
 import { HandleSiteGetByID } from "@/services/site";
+
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import dayjs from 'dayjs';
+
+import SpeechRecogize from '@/common/SpeechRecognisation/speechRecogize';
+export const speechContext: any = createContext('');
+
+const today = dayjs();
+const yesterday = dayjs().subtract(1, 'day');
+const todayStartOfTheDay = today.startOf('day');
 
 export default function AddSession() {
   const router: any = useRouter();
@@ -61,6 +81,9 @@ export default function AddSession() {
   const [aiLoader, setAiLoader] = useState<any>(false);
   const [siteKey, setSiteKey] = useState(false);
   const [secretKey, setSecretKey] = useState<any>("");
+  // const [toogle, setToogle] = useState<boolean>(false)
+  const [transcript, setTranscript] = useState('');
+  const [isChecked, setIsChecked] = useState<boolean>(false);
 
   const {
     register,
@@ -73,6 +96,8 @@ export default function AddSession() {
   } = useForm<sessionType | any>({
     resolver: yupResolver(sessionValidations),
   });
+
+
 
   const handleContentChange = (value: any, identifier: string) => {
     if (value === "<p><br></p>") {
@@ -178,6 +203,7 @@ export default function AddSession() {
     }
   };
 
+
   const HandleSiteGetData = async (userId: any) => {
     await HandleSiteGetByID(userId)
       .then((res) => {
@@ -196,6 +222,13 @@ export default function AddSession() {
       });
   };
 
+  const handleChangeCheckBox = () => {
+    if (isChecked === false) { setIsChecked(true) }
+    if (isChecked === true) { setIsChecked(false) }
+  }
+
+
+  // console.log(transcript);
   return (
     <>
       <Navbar />
@@ -211,7 +244,8 @@ export default function AddSession() {
             Link="admin/courses/allsessions"
           />
           {/* main content */}
-          <Card>
+
+          <Card >
             <CardContent>
               <Box
                 component="form"
@@ -314,42 +348,78 @@ export default function AddSession() {
                     {file
                       ? ""
                       : errors && errors.file
-                      ? ErrorShowing(errors?.file?.message)
-                      : ""}
+                        ? ErrorShowing(errors?.file?.message)
+                        : ""}
                   </Grid>
-                  <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <Box className={styles.aiCss}>
-                      <InputLabel className={Sessions.InputLabelFont}>
-                        Description
-                      </InputLabel>
-                      {title && title !== null && siteKey === true ? (
-                        <Button
-                          variant="text"
-                          className={styles.aiButton}
-                          onClick={generateShortDescription}
-                        >
-                          {aiLoader ? (
-                            <AutorenewIcon sx={aiBtnCss} />
-                          ) : (
-                            <AutorenewIcon />
-                          )}{" "}
-                          &nbsp;Auto Generate
-                        </Button>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                    <RichEditor
-                      {...register("description")}
-                      value={despcriptionContent}
-                      onChange={(e) => handleContentChange(e, "description")}
-                      className={Sessions.quillDescription}
+                  <speechContext.Provider value={{ setTranscript }}>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                      <Box className={styles.aiCss}>
+                        <InputLabel className={Sessions.InputLabelFont}>
+                          Description
+                        </InputLabel>
+                        {title && title !== null && siteKey === true ? (
+                          <Button
+                            variant="text"
+                            className={styles.aiButton}
+                            onClick={generateShortDescription}
+                          >
+                            {aiLoader ? (
+                              <AutorenewIcon sx={aiBtnCss} />
+                            ) : (
+                              <AutorenewIcon />
+                            )}{" "}
+                            &nbsp;Auto Generate
+                          </Button>
+
+                        ) : (
+                          ""
+                        )}
+
+                        {title && title !== null && siteKey === true ? (
+                          <SpeechRecogize />
+
+                        ) : (
+                          ""
+                        )}
+                      </Box>
+                      <RichEditor
+                        {...register("description")}
+                        value={transcript ? transcript : despcriptionContent}
+                        onChange={(e) => handleContentChange(e, "description")}
+                        className={Sessions.quillDescription}
+                      />
+                      {errors && errors.description
+                        ? ErrorShowing(errors?.description?.message)
+                        : ""}
+                      {/* {despcriptionContent ? '' : errors && errors.description ? ErrorShowing(errors?.description?.message) : ""} */}
+                    </Grid>
+                  </speechContext.Provider>
+
+
+                  <Grid item xs={12} sm={12} md={6} lg={6}>
+                    <FormControlLabel
+                      control={<Checkbox
+                        onChange={handleChangeCheckBox}
+                      />}
+                      label="Is this is live stream session"
                     />
-                    {errors && errors.description
-                      ? ErrorShowing(errors?.description?.message)
-                      : ""}
-                    {/* {despcriptionContent ? '' : errors && errors.description ? ErrorShowing(errors?.description?.message) : ""} */}
                   </Grid>
+
+                  {isChecked ?
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                      <Grid item xs={12} sm={12} md={6} lg={6}>
+                      <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <DemoItem label="Set streaming Date">
+                          <DateTimePicker
+                            defaultValue={yesterday}
+                            disablePast
+                            views={['year', 'month', 'day', 'hours', 'minutes']}
+                          />
+                        </DemoItem>
+                      </LocalizationProvider>
+                      </Grid>
+                    </Grid>
+                    : ''}
 
                   <Grid
                     item
@@ -393,9 +463,10 @@ export default function AddSession() {
                 </Grid>
               </Box>
             </CardContent>
-          </Card>
-        </Box>
-      </Box>
+          </Card >
+
+        </Box >
+      </Box >
       <Footer />
       <ToastContainer />
     </>

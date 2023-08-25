@@ -7,23 +7,37 @@ function LiveSteram() {
     // Dynamic import using a Promise
     import('@zegocloud/zego-uikit-prebuilt')
       .then(module => {
-        // console.log(module.ZegoUIKitPrebuilt)
-        function getUrlParams(url: string) {
-          let urlStr = url.split('?')[1];
-          const urlSearchParams = new URLSearchParams(urlStr);
-          const result = Object.fromEntries(urlSearchParams.entries());
-          return result;
-        }
-        const roomID = getUrlParams(window.location.href)['roomID'] || (Math.floor(Math.random() * 10000) + "");
-        console.log('rrrrrrrrrrrrr',roomID)
+
         setZegoUIKitPrebuilt(module.ZegoUIKitPrebuilt);
         const ZegoUIKitPrebuiltData = module.ZegoUIKitPrebuilt
         const appID = 1495782046;
         const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
-        // const roomID = 'ABC123';
+        const roomID = 'ABC123';
         const randomID = Date.now().toString();
         const userName = 'Test1'
         const streamTokenData = ZegoUIKitPrebuiltData.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+
+        // get token
+        function generateToken(tokenServerUrl:string, userID:string,roomID:string) {
+          // Obtain the token interface provided by the App Server
+          return fetch(
+            `${tokenServerUrl}/access_token?userID=${userID}&roomID=${roomID}&expired_ts=7200`,
+            {
+              method: 'GET',
+            }
+          ).then((res) => res.json());
+        }
+
+        // generate token
+        generateToken(
+          'https://nextjs-token-7berndqqr-choui666.vercel.app/api',
+          'AdminUser',
+          'ABC123'
+        ).then((res) => {
+          console.log('generated', res.token)
+        });
+
+
 
         if (streamTokenData) {
           const zp = ZegoUIKitPrebuiltData.create(streamTokenData)

@@ -61,6 +61,7 @@ import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import dayjs from 'dayjs';
 
 import SpeechRecogize from '@/common/SpeechRecognisation/speechRecogize';
+import moment from 'moment';
 export const speechContext: any = createContext('');
 
 const today = dayjs();
@@ -84,6 +85,7 @@ export default function AddSession() {
   // const [toogle, setToogle] = useState<boolean>(false)
   const [transcript, setTranscript] = useState('');
   const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [liveDate, setLiveDate] = useState('');
 
   const {
     register,
@@ -118,6 +120,7 @@ export default function AddSession() {
         course_id: getCourseId,
         title: event.title,
         attachment: file,
+        live_date: moment(liveDate).format("YYYY-MM-DD HH:mm:ss"),
       };
       const formData = new FormData();
       for (var key in reqData) {
@@ -227,7 +230,11 @@ export default function AddSession() {
     if (isChecked === true) { setIsChecked(false) }
   }
 
+  const handleDateSelect = (e: any) => {
+    setLiveDate(e?.$d)
+    // console.log(e?.$d);
 
+  }
   // console.log(transcript);
   return (
     <>
@@ -408,15 +415,17 @@ export default function AddSession() {
                   {isChecked ?
                     <Grid item xs={12} sm={12} md={12} lg={12}>
                       <Grid item xs={12} sm={12} md={6} lg={6}>
-                      <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DemoItem label="Set streaming Date">
-                          <DateTimePicker
-                            defaultValue={yesterday}
-                            disablePast
-                            views={['year', 'month', 'day', 'hours', 'minutes']}
-                          />
-                        </DemoItem>
-                      </LocalizationProvider>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoItem label="Set streaming Date">
+                            <DateTimePicker
+                              {...register("live_date")}
+                              defaultValue={today}
+                              onChange={(e) => handleDateSelect(e)}                       
+                              disablePast
+                              views={['year', 'month', 'day', 'hours', 'minutes']}
+                            />
+                          </DemoItem>
+                        </LocalizationProvider>
                       </Grid>
                     </Grid>
                     : ''}

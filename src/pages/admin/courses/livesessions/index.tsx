@@ -55,7 +55,7 @@ import styles from "../../../../styles/sidebar.module.css";
 import Sessions from "../../../../styles/session.module.css";
 import { ToastContainer } from "react-toastify";
 // API Service
-import { HandleSessionDelete, HandleSessionGet } from "@/services/session";
+import { HandleSessionDelete, HandleLiveSessionGet } from "@/services/session";
 import { HandleCourseGet } from "@/services/course";
 import { HandleModuleGet } from "@/services/module";
 import { AlertDialog } from "@/common/DeleteListRow/deleteRow";
@@ -127,7 +127,7 @@ const AllLiveSessions = () => {
   }, []);
 
   const getSessionData = () => {
-    HandleSessionGet("", "").then((sessions) => {
+    HandleLiveSessionGet("", "").then((sessions) => {
       setLoading(false);
       setRows(sessions.data);
     });
@@ -160,14 +160,14 @@ const AllLiveSessions = () => {
       DATA.jump(1);
     }
     if (identifier === "reset") {
-      HandleSessionGet("", "").then((itemSeached) => {
+      HandleLiveSessionGet("", "").then((itemSeached) => {
         setRows(itemSeached.data);
       });
       setSearch(e);
     } else {
       const search = e.target.value;
       setSearch(e.target.value);
-      HandleSessionGet(search, "").then((itemSeached) => {
+      HandleLiveSessionGet(search, "").then((itemSeached) => {
         setRows(itemSeached.data);
       });
     }
@@ -180,7 +180,7 @@ const AllLiveSessions = () => {
   // to delete a row
   const handleDeletesRow = () => {
     HandleSessionDelete(deleteRow.id, deleteRow.title).then((deletedRow) => {
-      HandleSessionGet("", "").then((newRows) => {
+      HandleLiveSessionGet("", "").then((newRows) => {
         setRows(newRows.data);
       });
     });
@@ -193,7 +193,7 @@ const AllLiveSessions = () => {
       course_id: value.id,
       status: event.status,
     };
-    HandleSessionGet("", filterData).then((itemFiltered) => {
+    HandleLiveSessionGet("", filterData).then((itemFiltered) => {
       setRows(itemFiltered.data);
     });
   };

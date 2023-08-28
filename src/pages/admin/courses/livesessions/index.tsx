@@ -531,29 +531,29 @@ const AllLiveSessions = () => {
                                   )}
                                 </TableCell>
                                 <TableCell className={statusColor}>
-                                  {capitalizeFirstLetter(row.status)}
+                                  {row?.live_date}
                                 </TableCell>
                                 <TableCell>
                                   <Button
                                     onClick={() =>
                                       router.push(
-                                        `/admin/courses/allsessions/updatesession/${row.id}`
+                                        `/admin/courses/livesessions/${row.id}`
                                       )
                                     }
                                     variant="outlined"
                                     color="success"
                                     className={Sessions.editDeleteButton}
                                   >
-                                    <ModeEditOutlineIcon />
+                                    live
                                   </Button>
-                                  <Button
+                                  {/* <Button
                                     className={Sessions.editDeleteButton}
                                     variant="outlined"
                                     color="error"
                                     onClick={() => handleClickOpen(row)}
                                   >
                                     <DeleteOutlineIcon />
-                                  </Button>
+                                  </Button> */}
                                 </TableCell>
                               </TableRow>
                             );

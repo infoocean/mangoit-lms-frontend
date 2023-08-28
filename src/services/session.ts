@@ -54,8 +54,8 @@ export const HandleSessionGet = async (searchData: any, filterData: any) => {
 export const HandleLiveSessionGet = async (searchData: any, filterData: any) => {
   // console.log("sercDaTa",searchData)
   const API_URL = searchData
-    ? `${API.getSessions}/${searchData}`
-    : `${API.getSessions}`;
+    ? `${API.getLiveSessions}/${searchData}`
+    : `${API.getLiveSessions}`;
   return await axios({
     method: "POST",
     url: API_URL,

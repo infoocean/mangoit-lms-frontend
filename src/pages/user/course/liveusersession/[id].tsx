@@ -16,14 +16,15 @@ function Live() {
   let myMeeting = async (element: HTMLDivElement) => {
 
     let liveStreamerRole: any;
+    let loginToken: any;
     if (typeof window !== "undefined") {
       liveStreamerRole = window.localStorage.getItem("liveStreamerRole");
+      loginToken = window.localStorage.getItem("loginToken");
     }
 
-    if(liveStreamerRole === 'Host'){
+    if (liveStreamerRole === 'Host') {
       router.push(`/admin/courses/livesessions/${id}`)
-    }
-
+    } else if (loginToken && router?.query?.role === 'Audience') {
       import('@zegocloud/zego-uikit-prebuilt')
         .then(module => {
           const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
@@ -57,7 +58,6 @@ function Live() {
               '&role=Audience',
           });
 
-
           if (streamTokenData) {
 
             const zp = ZegoUIKitPrebuilt.create(streamTokenData)
@@ -73,17 +73,16 @@ function Live() {
             }
 
             zp.joinRoom(createRoomConfig);
-            // localStorage.setItem('liveSteamerRole', 'Audience');
+            localStorage.setItem('liveSteamerRole', 'Audience');
           }
         })
         .catch(error => {
           console.error(error);
         });
-    
-
+    } else {
+      router.push('/login');
+    }
   }
-
-
 
   return (
     <>

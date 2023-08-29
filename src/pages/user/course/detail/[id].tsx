@@ -39,12 +39,14 @@ import Paper from "@mui/material/Paper";
 import { useRouter } from "next/router";
 import { HandleCourseByCourseId } from "@/services/course";
 import { HandlePDF } from "@/services/pdfdownload";
+import moment from 'moment';
 
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 
 // CSS Import
+import LiveTvIcon from '@mui/icons-material/LiveTv';
 import styles from "../../../../styles/sidebar.module.css";
 import subs from "../../../../styles/subscription.module.css";
 import courseStyle from "../../../../styles/course.module.css";
@@ -81,6 +83,11 @@ export default function Couseview() {
 
   var fileViewComplete: any = 0;
   var viewhistoryLength: any = [];
+
+  // const currentDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
+  // if(sessionData?.live_date > currentDate){
+  //   console.log('will started' )
+  // }
 
   useEffect(() => {
     let localData: any;
@@ -146,25 +153,25 @@ export default function Couseview() {
         imagename: files,
         identifier: "image",
       };
-      HandlePDF(reqData).then((itemSeached: any) => {});
+      HandlePDF(reqData).then((itemSeached: any) => { });
     } else if (identifier === "pdf") {
       let reqData = {
         imagename: files,
         identifier: "pdf",
       };
-      HandlePDF(reqData).then((itemSeached: any) => {});
+      HandlePDF(reqData).then((itemSeached: any) => { });
     } else if (identifier === "txt") {
       let reqData = {
         imagename: files,
         identifier: "txt",
       };
-      HandlePDF(reqData).then((itemSeached: any) => {});
+      HandlePDF(reqData).then((itemSeached: any) => { });
     } else if (identifier === "mp4") {
       let reqData = {
         imagename: files,
         identifier: "mp4",
       };
-      HandlePDF(reqData).then((itemSeached: any) => {});
+      HandlePDF(reqData).then((itemSeached: any) => { });
     } else {
       toast.warn("Something went wrong");
     }
@@ -253,7 +260,7 @@ export default function Couseview() {
             session_id: sessionData.id,
             status: couseData.is_chargeable,
           };
-          UpdateMarkAsComplete(reqData).then((data: any) => {});
+          UpdateMarkAsComplete(reqData).then((data: any) => { });
         }
       }
     });
@@ -349,8 +356,8 @@ export default function Couseview() {
                     <Grid item xs={9}>
                       <Item className={subs.shadoww}>
                         {(files && files?.includes("mp4")) ||
-                        files?.includes("3gp") ||
-                        files?.includes("webm") ? (
+                          files?.includes("3gp") ||
+                          files?.includes("webm") ? (
                           <Fragment>
                             <Grid item xs={12}>
                               <Item className={subs.videodisplay}>
@@ -383,10 +390,10 @@ export default function Couseview() {
                                 >
                                   {capitalizeFirstLetter(
                                     sessionData &&
-                                      sessionData?.description?.replace(
-                                        /(<([^>]+)>)/gi,
-                                        ""
-                                      )
+                                    sessionData?.description?.replace(
+                                      /(<([^>]+)>)/gi,
+                                      ""
+                                    )
                                   )}
                                 </Typography>
                               </Item>
@@ -419,10 +426,10 @@ export default function Couseview() {
                               >
                                 {capitalizeFirstLetter(
                                   sessionData &&
-                                    sessionData?.description?.replace(
-                                      /(<([^>]+)>)/gi,
-                                      ""
-                                    )
+                                  sessionData?.description?.replace(
+                                    /(<([^>]+)>)/gi,
+                                    ""
+                                  )
                                 )}
                               </Typography>
                             </Item>
@@ -454,10 +461,10 @@ export default function Couseview() {
                               >
                                 {capitalizeFirstLetter(
                                   sessionData &&
-                                    sessionData?.description?.replace(
-                                      /(<([^>]+)>)/gi,
-                                      ""
-                                    )
+                                  sessionData?.description?.replace(
+                                    /(<([^>]+)>)/gi,
+                                    ""
+                                  )
                                 )}
                               </Typography>
                             </Item>
@@ -480,9 +487,14 @@ export default function Couseview() {
                                   variant="h5"
                                   className={subs.useNameFront1}
                                 >
-                                  {capitalizeFirstLetter(
+                                  {(
                                     sessionData && sessionData?.title
                                   )}
+                                </Typography>
+                                <Typography sx={{color: "#d32f2f"}} variant="h5">
+                                  {sessionData?.is_live_session == 1 ? <LiveTvIcon />  : ''}
+                                  {sessionData?.live_date}
+                                  {/* {currentDate} */}
                                 </Typography>
                                 &nbsp;
                                 <LightTooltip title="Download Image">
@@ -502,10 +514,10 @@ export default function Couseview() {
                               >
                                 {capitalizeFirstLetter(
                                   sessionData &&
-                                    sessionData?.description?.replace(
-                                      /(<([^>]+)>)/gi,
-                                      ""
-                                    )
+                                  sessionData?.description?.replace(
+                                    /(<([^>]+)>)/gi,
+                                    ""
+                                  )
                                 )}
                               </Typography>
                             </Item>
@@ -531,11 +543,11 @@ export default function Couseview() {
                                     /(<([^>]+)>)/gi,
                                     ""
                                   )) ||
-                                  (couseData &&
-                                    couseData?.short_description?.replace(
-                                      /(<([^>]+)>)/gi,
-                                      ""
-                                    ))
+                                (couseData &&
+                                  couseData?.short_description?.replace(
+                                    /(<([^>]+)>)/gi,
+                                    ""
+                                  ))
                               )}
                             </Typography>
                           </Fragment>
@@ -588,7 +600,7 @@ export default function Couseview() {
                             (item: any, index: number) => {
                               const numberConversion: any =
                                 viewhistoryLengthManage[index]?.module_id ===
-                                item.id
+                                  item.id
                                   ? viewhistoryLengthManage[index]?.viewPercent
                                   : viewhistoryLengthManage[index]?.viewPercent;
 
@@ -615,12 +627,12 @@ export default function Couseview() {
                                         <LinearProgressWithLabel1
                                           value={
                                             moduleCheckIdManage &&
-                                            moduleCheckIdManage.includes(
-                                              item.id
-                                            )
+                                              moduleCheckIdManage.includes(
+                                                item.id
+                                              )
                                               ? (numberConversion /
-                                                  item?.sessions?.length) *
-                                                100
+                                                item?.sessions?.length) *
+                                              100
                                               : 0
                                           }
                                         />
@@ -668,9 +680,10 @@ export default function Couseview() {
                                                       }
                                                     >
                                                       &nbsp;
-                                                      {capitalizeFirstLetter(
-                                                        itemData?.title
-                                                      )}
+                                                      {capitalizeFirstLetter(itemData?.title)}
+                                                    </Typography>
+                                                    <Typography sx={{color:'#d32f2f'}} variant="subtitle2">
+                                                      {itemData?.is_live_session == 1 ? <LiveTvIcon /> : ''}
                                                     </Typography>
                                                   </ListItemButton>
                                                 </ListItem>

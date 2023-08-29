@@ -86,7 +86,7 @@ export default function AddSession() {
   const [transcript, setTranscript] = useState('');
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [liveDate, setLiveDate] = useState('');
-
+  const [isLive, setIsLive] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
@@ -98,8 +98,6 @@ export default function AddSession() {
   } = useForm<sessionType | any>({
     resolver: yupResolver(sessionValidations),
   });
-
-
 
   const handleContentChange = (value: any, identifier: string) => {
     if (value === "<p><br></p>") {
@@ -121,6 +119,7 @@ export default function AddSession() {
         title: event.title,
         attachment: file,
         live_date: moment(liveDate).format("YYYY-MM-DD HH:mm:ss"),
+        is_live_session: isLive,
       };
       const formData = new FormData();
       for (var key in reqData) {
@@ -232,8 +231,8 @@ export default function AddSession() {
 
   const handleDateSelect = (e: any) => {
     setLiveDate(e?.$d)
+    setIsLive(true);
     // console.log(e?.$d);
-
   }
   // console.log(transcript);
   return (
@@ -420,13 +419,14 @@ export default function AddSession() {
                             <DateTimePicker
                               {...register("live_date")}
                               defaultValue={today}
-                              onChange={(e) => handleDateSelect(e)}                       
+                              onChange={(e) => handleDateSelect(e)}
                               disablePast
                               views={['year', 'month', 'day', 'hours', 'minutes']}
                             />
                           </DemoItem>
                         </LocalizationProvider>
                       </Grid>
+                  
                     </Grid>
                     : ''}
 

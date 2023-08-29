@@ -248,7 +248,7 @@ const AllLiveSessions = () => {
           {/* main content */}
           <Card>
             <CardContent>
-              <TextField
+              {/* <TextField
                 id="standard-search"
                 value={search}
                 variant="outlined"
@@ -266,8 +266,8 @@ const AllLiveSessions = () => {
                     </IconButton>
                   ),
                 }}
-              />
-              <Box className={Sessions.mainFilterBox}>
+              /> */}
+              {/* <Box className={Sessions.mainFilterBox}>
                 <PopupState variant="popover" popupId="demo-popup-popover">
                   {(popupState) => (
                     <Box>
@@ -466,7 +466,7 @@ const AllLiveSessions = () => {
                   {" "}
                   + Add Session
                 </Button>
-              </Box>
+              </Box> */}
               <Paper className={Sessions.papperForTable}>
                 <TableContainer className={Sessions.tableContainer}>
                   <Table stickyHeader aria-label="sticky table">

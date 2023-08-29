@@ -11,6 +11,7 @@ import { NextPageContext } from "next";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { GenerateToken } from "@/services/auth";
 import { HandleGetAllSiteGet } from "@/services/site";
+import { HandleLogin } from "@/services/auth";
 interface MyAppProps {
   siteConfigData: any; // Replace with the actual type of your site config data
 }
@@ -21,7 +22,7 @@ export default function App({
   siteConfigData,
 }: AppProps | any) {
   const router = useRouter();
-
+  
   const [orgFavicon, setorgFavicon] = useState<any>("");
   const [orgTitle, setorgTitle] = useState<any>("");
 
@@ -66,33 +67,6 @@ export default function App({
 
   return (
     <>
-      {/* <Head>
-        <link
-          rel="icon"
-          href={
-            siteConfigData
-              ? BASE_URL + "/" + siteConfigData?.org_favicon
-              : orgFavicon
-              ? BASE_URL + "/" + orgFavicon
-              : "/favicon.svg"
-          }
-        />
-        <title>
-          {siteConfigData
-            ? `${siteConfigData.title} ${
-                lastSegment
-                  ? "-" + " " + capitalizeFirstLetter(lastSegment)
-                  : ""
-              }`
-            : orgTitle
-            ? `${orgTitle} ${
-                lastSegment
-                  ? "-" + " " + capitalizeFirstLetter(lastSegment)
-                  : ""
-              }`
-            : `LMS`}
-        </title>
-      </Head> */}
       <Head>
         <link
           rel="icon"
@@ -100,28 +74,26 @@ export default function App({
             siteConfigData
               ? BASE_URL + "/" + siteConfigData?.org_favicon
               : orgFavicon
-              ? BASE_URL + "/" + orgFavicon
-              : "/favicon.svg"
+                ? BASE_URL + "/" + orgFavicon
+                : "/favicon.svg"
           }
         />
         <title>
           {siteConfigData
-            ? ` ${
-                lastSegment
-                  ? capitalizeFirstLetter(lastSegment) +
-                    " " +
-                    "-" +
-                    " " +
-                    siteConfigData?.title
-                  : ""
-              }`
+            ? ` ${lastSegment
+              ? capitalizeFirstLetter(lastSegment) +
+              " " +
+              "-" +
+              " " +
+              siteConfigData?.title
+              : ""
+            }`
             : orgTitle
-            ? `${
-                siteTitle
-                  ? capitalizeFirstLetter(siteTitle) + " " + "-" + " "
-                  : ""
+              ? `${siteTitle
+                ? capitalizeFirstLetter(siteTitle) + " " + "-" + " "
+                : ""
               } ${orgTitle} `
-            : `LMS`}
+              : `LMS`}
         </title>
       </Head>
       <GoogleOAuthProvider

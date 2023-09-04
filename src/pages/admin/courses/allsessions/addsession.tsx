@@ -87,6 +87,7 @@ export default function AddSession() {
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [liveDate, setLiveDate] = useState('');
   const [isLive, setIsLive] = useState<boolean>(false);
+  const [streamUrl, setStreamUrl] = useState<string | any>("");
   const {
     register,
     handleSubmit,
@@ -120,6 +121,7 @@ export default function AddSession() {
         attachment: file,
         live_date: moment(liveDate).format("YYYY-MM-DD HH:mm:ss"),
         is_live_session: isLive,
+        stream_url: streamUrl,
       };
       const formData = new FormData();
       for (var key in reqData) {
@@ -230,11 +232,34 @@ export default function AddSession() {
   }
 
   const handleDateSelect = (e: any) => {
+    const roomID = (Math.floor(Math.random() * 10000) + "");
     setLiveDate(e?.$d)
     setIsLive(true);
-    // console.log(e?.$d);
+
+    const userUrlcreated = `/user/course/liveusersession/id`
+    let sharedLinks = [];
+    // if (role === ZegoUIKitPrebuilt.Host || role === ZegoUIKitPrebuilt.Cohost) {
+    //   sharedLinks.push({
+    //     name: 'Join as co-host',
+    //     url:
+    //       window.location.origin +
+    //       window.location.pathname +
+    //       '?roomID=' +
+    //       roomID +
+    //       '&role=Cohost',
+    //   });
+    // }
+    sharedLinks.push({
+      url:
+        window.location.origin +
+        userUrlcreated +
+        '?roomID=' +
+        roomID +
+        '&role=Audience',
+    });
+    setStreamUrl(sharedLinks[0]?.url)
   }
-  // console.log(transcript);
+
   return (
     <>
       <Navbar />

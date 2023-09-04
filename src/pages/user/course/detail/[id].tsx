@@ -80,6 +80,7 @@ export default function Couseview() {
   const [allData, setAllData] = useState<any>([]);
   const [userId, setUserId] = useState<any>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [days, setDays] = useState<string>();
 
   var fileViewComplete: any = 0;
   var viewhistoryLength: any = [];
@@ -88,6 +89,49 @@ export default function Couseview() {
   // if(sessionData?.live_date > currentDate){
   //   console.log('will started' )
   // }
+
+  var timer;
+
+timer = setInterval(function() {
+  getRemainingDays();
+}, 1000);
+
+// function timeBetweenDates() {
+// if(sessionData?.live_date) {
+//     const givenDateString = sessionData?.live_date;
+//       const givenDate: any = new Date(givenDateString);
+//       const currentDate: any = new Date();
+
+//       const timeDifference = givenDate - currentDate;
+
+//       const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+//       const remainingHours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+//       const remainingMinutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+//       const remainingSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+//       return <h5>Remaining Time: ${remainingDays} days, ${remainingHours} hours, ${remainingMinutes} minutes, ${remainingSeconds} seconds</h5>
+//       // Output the remaining time
+ 
+//   }
+// }
+  
+  function getRemainingDays() {
+    if (sessionData?.live_date) {
+      const givenDateString = sessionData?.live_date;
+      const givenDate: any = new Date(givenDateString);
+      const currentDate: any = new Date();
+
+      const timeDifference = givenDate - currentDate;
+
+      const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+      const remainingHours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const remainingMinutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+      const remainingSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+      return <h5>Remaining Time: ${remainingDays} days, ${remainingHours} hours, ${remainingMinutes} minutes, ${remainingSeconds} seconds</h5>
+     
+
+    }
+
+  }
 
   useEffect(() => {
     let localData: any;
@@ -145,6 +189,13 @@ export default function Couseview() {
     } else {
     }
   };
+
+  const handleLiveSession = () => {
+    const sessionIDD = sessionData?.id
+    const sessionUrl = sessionData?.stream_url
+    const updatedURL = sessionUrl.replace('/id?', `/${sessionIDD}?`);
+    router.push(updatedURL)
+  }
 
   const download = async (identifier: any) => {
     // let imagename = files && files?.slice(8);
@@ -351,7 +402,7 @@ export default function Couseview() {
           <Box className={subs.corseDetaildiv}>
             <Card className={subs.mediaque}>
               <CardContent>
-                <Box sx={{ flexGrow: 1 }}>
+                <Box sx={{ flexGrow: 1 }}>         
                   <Grid container spacing={2}>
                     <Grid item xs={9}>
                       <Item className={subs.shadoww}>
@@ -475,6 +526,23 @@ export default function Couseview() {
                           (files && files?.includes("gif")) ? (
                           <Grid item xs={12}>
                             <Item>
+                              <Typography
+                                variant="h5"
+                                className={subs.useNameFront1}
+                              >
+                                {(
+                                  sessionData && sessionData?.title
+                                )}
+                              </Typography>
+                              <Typography sx={{ color: "#d32f2f" }} variant="h5"
+                                onClick={handleLiveSession}
+                              >
+                                {sessionData?.is_live_session == 1 ? getRemainingDays() : ''}
+                                {/* {sessionData?.live_date} */}
+                                {/* {getRemainingDays() } */}
+                                
+
+                              </Typography>
                               <Image
                                 className={courseStyle.imgwidth}
                                 alt="image"
@@ -483,19 +551,7 @@ export default function Couseview() {
                                 height={500}
                               />
                               <Box className={subs.maindisplay}>
-                                <Typography
-                                  variant="h5"
-                                  className={subs.useNameFront1}
-                                >
-                                  {(
-                                    sessionData && sessionData?.title
-                                  )}
-                                </Typography>
-                                <Typography sx={{color: "#d32f2f"}} variant="h5">
-                                  {sessionData?.is_live_session == 1 ? <LiveTvIcon />  : ''}
-                                  {sessionData?.live_date}
-                                  {/* {currentDate} */}
-                                </Typography>
+
                                 &nbsp;
                                 <LightTooltip title="Download Image">
                                   <Button
@@ -682,7 +738,7 @@ export default function Couseview() {
                                                       &nbsp;
                                                       {capitalizeFirstLetter(itemData?.title)}
                                                     </Typography>
-                                                    <Typography sx={{color:'#d32f2f'}} variant="subtitle2">
+                                                    <Typography sx={{ color: '#d32f2f' }} variant="subtitle2">
                                                       {itemData?.is_live_session == 1 ? <LiveTvIcon /> : ''}
                                                     </Typography>
                                                   </ListItemButton>

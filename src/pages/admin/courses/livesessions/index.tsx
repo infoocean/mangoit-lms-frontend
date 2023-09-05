@@ -79,6 +79,7 @@ const columns: Column[] = [
 ];
 
 const AllLiveSessions = () => {
+  // const [getTimer, setTimer] = useState<any>()
   const [getCourse, setCourse] = React.useState<courseType | any>([]);
   const [getModule, setModule] = React.useState<moduleType | any>([]);
   const [rows, setRows] = React.useState<sessionType | any>([]);
@@ -229,6 +230,43 @@ const AllLiveSessions = () => {
         title: data?.module?.title,
       });
     });
+
+    // var timer: any;
+    // timer = setInterval(function () {
+    //   getRemainingDays();
+    // }, 1000);
+  
+  
+    // function getRemainingDays(live_date:any) {
+    //   if (live_date) {
+  
+    //     const givenDateString = live_date;
+    //     const givenDate: any = new Date(givenDateString);
+    //     const currentDate: any = new Date();
+  
+    //     const timeDifference = givenDate - currentDate;
+    //     // console.log('difference: ' , timeDifference)
+  
+    //     if (timeDifference <= 0) {
+    //       clearInterval(timer);
+    //       setTimer(0)
+    //     } else {
+    //       const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+    //       const remainingHours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    //       const remainingMinutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+    //       const remainingSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+    //       setTimer(
+    //         (remainingDays) + 'd ' +
+    //         (remainingHours) + 'h '
+    //         + (remainingMinutes) + 'm ' + remainingSeconds + 's '
+    //       )
+    //       //  return<h5>{remainingDays} days, {remainingHours} hours, {remainingMinutes} minutes, {remainingSeconds} seconds</h5>
+    //     }
+    //   }
+    // }
+
+console.log(rows)
+
   return (
     <>
       <Navbar />
@@ -531,7 +569,7 @@ const AllLiveSessions = () => {
                                   )}
                                 </TableCell>
                                 <TableCell className={statusColor}>
-                                  {row?.live_date}
+                                  {/* {getRemainingDays(row?.live_date)} */}
                                 </TableCell>
                                 <TableCell>
                                   <Button

@@ -1,5 +1,6 @@
 // React Import
 import React, { useState, useEffect, Fragment } from "react";
+import Countdown from 'react-countdown';
 
 // MUI Import
 import {
@@ -23,6 +24,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import Divider from "@mui/material/Divider";
 import ReactPlayer from "react-player/lazy";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 
 // Helper Import
 import { ToastContainer, toast } from "react-toastify";
@@ -80,59 +83,28 @@ export default function Couseview() {
   const [allData, setAllData] = useState<any>([]);
   const [userId, setUserId] = useState<any>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [days, setDays] = useState<string>();
+  const [iscomplete, setComplete] = useState<boolean>(false)
 
   var fileViewComplete: any = 0;
   var viewhistoryLength: any = [];
 
-  // const currentDate = moment(new Date()).format("YYYY-MM-DD HH:mm:ss")
-  // if(sessionData?.live_date > currentDate){
-  //   console.log('will started' )
-  // }
+  // const Completionist = () => <span>Live Now</span>;
 
-  var timer;
+  const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
 
-timer = setInterval(function() {
-  getRemainingDays();
-}, 1000);
+    if (completed) {
+      setComplete(true)
+      // return <Completionist />;
 
-// function timeBetweenDates() {
-// if(sessionData?.live_date) {
-//     const givenDateString = sessionData?.live_date;
-//       const givenDate: any = new Date(givenDateString);
-//       const currentDate: any = new Date();
-
-//       const timeDifference = givenDate - currentDate;
-
-//       const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-//       const remainingHours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-//       const remainingMinutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-//       const remainingSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-//       return <h5>Remaining Time: ${remainingDays} days, ${remainingHours} hours, ${remainingMinutes} minutes, ${remainingSeconds} seconds</h5>
-//       // Output the remaining time
- 
-//   }
-// }
-  
-  function getRemainingDays() {
-    if (sessionData?.live_date) {
-      const givenDateString = sessionData?.live_date;
-      const givenDate: any = new Date(givenDateString);
-      const currentDate: any = new Date();
-
-      const timeDifference = givenDate - currentDate;
-
-      const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-      const remainingHours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const remainingMinutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-      const remainingSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-      return <h5>Remaining Time: ${remainingDays} days, ${remainingHours} hours, ${remainingMinutes} minutes, ${remainingSeconds} seconds</h5>
-     
-
+    } else {
+      setComplete(false)
+      return (
+        <Box>
+          {days}d {hours}h {minutes}m {seconds}s
+        </Box>
+      );
     }
-
-  }
-
+  };
   useEffect(() => {
     let localData: any;
     let getId: any;
@@ -148,6 +120,7 @@ timer = setInterval(function() {
     setProgress((prevProgress: any) =>
       prevProgress >= 100 ? 10 : prevProgress + 10
     );
+
   }, [userId]);
 
   const router = useRouter();
@@ -182,6 +155,8 @@ timer = setInterval(function() {
   }));
 
   const handlebtnClick = (rowData: any) => {
+    console.log(rowData)
+    setSessionData([]);
     setActiveToggle(rowData.id);
     setSessionData(rowData);
     if (rowData.attachment !== null) {
@@ -194,6 +169,8 @@ timer = setInterval(function() {
     const sessionIDD = sessionData?.id
     const sessionUrl = sessionData?.stream_url
     const updatedURL = sessionUrl.replace('/id?', `/${sessionIDD}?`);
+    // setShowIframe(true);
+    // <iframe src={updatedURL} height="500" width="500" title="Iframe Example"></iframe>
     router.push(updatedURL)
   }
 
@@ -367,7 +344,7 @@ timer = setInterval(function() {
   }
   var moduleCheckIdManage = Array.from(new Set(moduleCheckId));
   var viewhistoryLengthManage: any = Array.from(new Set(viewhistoryLength));
-
+  console.log(sessionData?.live_date, moment(sessionData?.live_date).format('hh:mm:ss A'))
   return (
     <>
       <Navbar />
@@ -402,7 +379,7 @@ timer = setInterval(function() {
           <Box className={subs.corseDetaildiv}>
             <Card className={subs.mediaque}>
               <CardContent>
-                <Box sx={{ flexGrow: 1 }}>         
+                <Box sx={{ flexGrow: 1 }}>
                   <Grid container spacing={2}>
                     <Grid item xs={9}>
                       <Item className={subs.shadoww}>
@@ -435,6 +412,7 @@ timer = setInterval(function() {
                                     )}
                                   </Typography>
                                 </Box>
+
                                 <Typography
                                   variant="subtitle2"
                                   className={courseStyle.fontCS}
@@ -526,23 +504,8 @@ timer = setInterval(function() {
                           (files && files?.includes("gif")) ? (
                           <Grid item xs={12}>
                             <Item>
-                              <Typography
-                                variant="h5"
-                                className={subs.useNameFront1}
-                              >
-                                {(
-                                  sessionData && sessionData?.title
-                                )}
-                              </Typography>
-                              <Typography sx={{ color: "#d32f2f" }} variant="h5"
-                                onClick={handleLiveSession}
-                              >
-                                {sessionData?.is_live_session == 1 ? getRemainingDays() : ''}
-                                {/* {sessionData?.live_date} */}
-                                {/* {getRemainingDays() } */}
-                                
 
-                              </Typography>
+
                               <Image
                                 className={courseStyle.imgwidth}
                                 alt="image"
@@ -550,6 +513,44 @@ timer = setInterval(function() {
                                 width={350}
                                 height={500}
                               />
+                              <Typography
+                                variant="h5"
+                                className={subs.useNameFront1}
+                              >
+                                {(
+                                  sessionData && capitalizeFirstLetter(sessionData?.title)
+                                )}
+                              </Typography>
+                              {sessionData?.is_live_session == 1 ?
+                                <Card>
+                                  <CardContent>
+                                    <Typography sx={{ color: "#d32f2f", fontSize: "large", margin: '5px' }} variant="body1" >
+                                      Live Streaming
+                                    </Typography>
+
+                                    <Box className='hjgfyh'>
+                                      <Box sx={{ display: "flex" }}>
+                                        <Box>
+                                          <Typography>
+                                            <CalendarMonthIcon />
+                                          </Typography>
+                                          <QueryBuilderIcon />
+                                        </Box>
+                                        <Box sx={{ marginLeft: "20px" }}>
+                                          <Typography variant="body2" fontSize="large">
+                                            {moment(sessionData?.live_date).format('LLL')}
+                                          </Typography>
+                                          <Typography variant="body2" fontSize="large">
+                                            {moment(sessionData?.live_date).format('hh:mm:ss A') !== '11:16:29 AM' && moment(sessionData?.live_date).format('hh:mm:ss A') !== 'Invalid date' && <Countdown date={sessionData?.live_date} renderer={renderer} />}
+                                          </Typography>
+                                        </Box>
+                                      </Box>
+                                      <Box>
+                                        {iscomplete ? <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button> : <Button variant="outlined" size="large" disabled>Join</Button>}
+                                      </Box>
+                                    </Box>
+                                  </CardContent>
+                                </Card> : ''}
                               <Box className={subs.maindisplay}>
 
                                 &nbsp;
@@ -695,6 +696,16 @@ timer = setInterval(function() {
                                       </Box>
                                     </Box>
                                   </AccordionSummary>
+                                  {/* 
+                                  {showIframe ?
+                                    <iframe
+                                      src={sessionData?.stream_url}
+                                      width="800"
+                                      height="600"
+                                      title="Meeting"
+                                    /> */}
+
+
                                   <AccordionDetails>
                                     {item?.sessions.map((itemData: any) => {
                                       const togglee =
@@ -702,6 +713,7 @@ timer = setInterval(function() {
                                           ? "active"
                                           : "";
                                       return (
+
                                         <Fragment key={itemData?.id}>
                                           <Box
                                             sx={{
@@ -764,7 +776,7 @@ timer = setInterval(function() {
             </Card>
           </Box>
         </Box>
-      </Box>
+      </Box >
       <ToastContainer />
       <Footer />
     </>

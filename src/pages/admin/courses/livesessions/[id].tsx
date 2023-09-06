@@ -1,5 +1,6 @@
+import { HandleSessionGetByID } from '@/services/session';
 import { useRouter } from 'next/router';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 export function getUrlParams(
   url: string = window.location.href
@@ -9,8 +10,29 @@ export function getUrlParams(
 }
 
 function Live() {
+  const[room,setRoomIDD] = useState<any>('')
   const router = useRouter();
   const { id } = router?.query;
+
+  // useEffect(() => {
+  //   getSessionDataById(id)
+  // },[room]);
+
+  // const getSessionDataById = async (id:any) => {
+  //   if(id) {
+  //     try{
+  //     const sessionDetails =  await HandleSessionGetByID(id)
+  //     const url = new URL(sessionDetails?.data?.stream_url);
+  //     // const url = sessionDetails?.data?.stream_url
+  //     const roomID = url.searchParams.get("roomID");
+  //     setRoomIDD(roomID)
+  //     }catch(e){
+  //       console.log(e)
+  //     }
+
+  //   }
+  // }
+
   let myMeeting =  (element: HTMLDivElement) => {
     let loginToken: any;
     if (typeof window !== "undefined") {
@@ -22,7 +44,7 @@ function Live() {
           const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
           const appID = 1495782046;
           const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
-          const roomID = (Math.floor(Math.random() * 10000) + "");
+          const roomID = 'ABC123';
           const randomID = Date.now().toString();
           const userName = 'User';
           const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)

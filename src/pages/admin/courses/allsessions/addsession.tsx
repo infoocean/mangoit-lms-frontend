@@ -86,6 +86,7 @@ export default function AddSession() {
   const [transcript, setTranscript] = useState('');
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [liveDate, setLiveDate] = useState('');
+  const [endDate, setEndDate] = useState('');
   const [isLive, setIsLive] = useState<boolean>(false);
   const [streamUrl, setStreamUrl] = useState<string | any>("");
   const {
@@ -112,7 +113,14 @@ export default function AddSession() {
   };
 
   const onSubmit = async (event: any) => {
-    if (errors.description?.message === "") {
+
+    if (errors.description?.message === "" && isLive === true) {
+      // const liveDateFormatted = moment(liveDate).format("YYYY-MM-DD HH:mm:ss");
+      // const endDateFormatted = moment(endDate).format("YYYY-MM-DD HH:mm:ss");
+
+      // const isLiveDateValid = moment(liveDateFormatted, "YYYY-MM-DD HH:mm:ss", true).isValid();
+      // const isEndDateValid = moment(endDateFormatted, "YYYY-MM-DD HH:mm:ss", true).isValid();
+
       const reqData: any = {
         description: event.description,
         module_id: getModuleId,
@@ -120,6 +128,7 @@ export default function AddSession() {
         title: event.title,
         attachment: file,
         live_date: moment(liveDate).format("YYYY-MM-DD HH:mm:ss"),
+        live_end_date: moment(endDate).format("YYYY-MM-DD HH:mm:ss"),
         is_live_session: isLive,
         stream_url: streamUrl,
       };
@@ -139,7 +148,39 @@ export default function AddSession() {
         console.log(e);
         setLoadingButton(true);
       }
-    } else {
+    }
+    else if (errors.description?.message === "") {
+      // const liveDateFormatted = moment(liveDate).format("YYYY-MM-DD HH:mm:ss");
+      // const endDateFormatted = moment(endDate).format("YYYY-MM-DD HH:mm:ss");
+
+      // const isLiveDateValid = moment(liveDateFormatted, "YYYY-MM-DD HH:mm:ss", true).isValid();
+      // const isEndDateValid = moment(endDateFormatted, "YYYY-MM-DD HH:mm:ss", true).isValid();
+
+      const reqData: any = {
+        description: event.description,
+        module_id: getModuleId,
+        course_id: getCourseId,
+        title: event.title,
+        attachment: file,
+      };
+      const formData = new FormData();
+      for (var key in reqData) {
+        formData.append(key, reqData[key]);
+      }
+      setLoadingButton(true);
+      try {
+        const res = await HandleSessionCreate(formData);
+        setSession(res.data);
+        setTimeout(() => {
+          router.push("/admin/courses/allsessions/");
+        }, 1000);
+        setLoadingButton(true);
+      } catch (e) {
+        console.log(e);
+        setLoadingButton(true);
+      }
+    }
+    else {
       setError("description", { message: "Description is a required field" });
     }
   };
@@ -231,8 +272,13 @@ export default function AddSession() {
     if (isChecked === true) { setIsChecked(false) }
   }
 
+  const handleEndDateSelected = (e: any) => {
+    setEndDate(e?.$d)
+  }
+
   const handleDateSelect = (e: any) => {
-    const roomID = (Math.floor(Math.random() * 10000) + "");
+    // const roomID = (Math.floor(Math.random() * 10000) + "");
+    const roomID = 'ABC123';
     setLiveDate(e?.$d)
     setIsLive(true);
 
@@ -440,7 +486,7 @@ export default function AddSession() {
                     <Grid item xs={12} sm={12} md={12} lg={12}>
                       <Grid item xs={12} sm={12} md={6} lg={6}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoItem label="Set streaming Date">
+                          <DemoItem label="Set streaming start Date">
                             <DateTimePicker
                               {...register("live_date")}
                               defaultValue={today}
@@ -452,10 +498,20 @@ export default function AddSession() {
                         </LocalizationProvider>
                       </Grid>
 
-                      {/* <Grid item xs={12} sm={12} md={6} lg={6}>
-                      <TextField  type="number"></TextField>
-                      </Grid> */}
-                   
+                      <Grid item xs={12} sm={12} md={6} lg={6}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <DemoItem label="Set streaming End Date">
+                            <DateTimePicker
+                              {...register("live_end_date")}
+                              defaultValue={today}
+                              onChange={(e) => handleEndDateSelected(e)}
+                              disablePast
+                              views={['year', 'month', 'day', 'hours', 'minutes']}
+                            />
+                          </DemoItem>
+                        </LocalizationProvider>
+                      </Grid>
+
                     </Grid>
                     : ''}
 

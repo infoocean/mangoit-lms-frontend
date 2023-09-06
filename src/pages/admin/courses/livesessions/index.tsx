@@ -111,7 +111,7 @@ const AllLiveSessions = () => {
     set_row_per_page(e.target.value);
   }
   const PER_PAGE = row_per_page;
-  const count = Math.ceil(rows.length / PER_PAGE);
+  const count = Math.ceil(rows?.length / PER_PAGE);
   const startIndex = (page - 1) * row_per_page;
   const endIndex = Math.min(startIndex + row_per_page, rows && rows.length);
   const DATA = usePagination(rows, PER_PAGE);
@@ -130,7 +130,7 @@ const AllLiveSessions = () => {
   const getSessionData = () => {
     HandleLiveSessionGet("", "").then((sessions) => {
       setLoading(false);
-      setRows(sessions.data);
+      setRows(sessions?.data);
     });
   };
 
@@ -570,6 +570,7 @@ console.log(rows)
                                 </TableCell>
                                 <TableCell className={statusColor}>
                                   {/* {getRemainingDays(row?.live_date)} */}
+                                  {row?.live_date}
                                 </TableCell>
                                 <TableCell>
                                   <Button

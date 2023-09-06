@@ -174,6 +174,15 @@ export default function Couseview() {
     router.push(updatedURL)
   }
 
+  const currentDate = new Date();
+  const givenDateTime = new Date(sessionData?.live_date);
+
+  if (givenDateTime > currentDate) {
+    console.log('You can live');
+  } else {
+    console.log('Time expired');
+  }
+
   const download = async (identifier: any) => {
     // let imagename = files && files?.slice(8);
     if (identifier === "image") {
@@ -344,7 +353,7 @@ export default function Couseview() {
   }
   var moduleCheckIdManage = Array.from(new Set(moduleCheckId));
   var viewhistoryLengthManage: any = Array.from(new Set(viewhistoryLength));
-  console.log(sessionData?.live_date, moment(sessionData?.live_date).format('hh:mm:ss A'))
+  // console.log(sessionData?.live_date, moment(sessionData?.live_date).format('hh:mm:ss A'))
   return (
     <>
       <Navbar />
@@ -546,6 +555,7 @@ export default function Couseview() {
                                         </Box>
                                       </Box>
                                       <Box>
+                                      <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button> 
                                         {iscomplete ? <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button> : <Button variant="outlined" size="large" disabled>Join</Button>}
                                       </Box>
                                     </Box>
@@ -712,6 +722,7 @@ export default function Couseview() {
                                         itemData?.id === activeToggle
                                           ? "active"
                                           : "";
+                                          
                                       return (
 
                                         <Fragment key={itemData?.id}>
@@ -751,7 +762,8 @@ export default function Couseview() {
                                                       {capitalizeFirstLetter(itemData?.title)}
                                                     </Typography>
                                                     <Typography sx={{ color: '#d32f2f' }} variant="subtitle2">
-                                                      {itemData?.is_live_session == 1 ? <LiveTvIcon /> : ''}
+                                                      {(itemData?.is_live_session == 1 && itemData?.live_end_date > new Date().toISOString()) ? <LiveTvIcon /> : ''}
+                                                      {/* {(itemData?.is_live_session == 1 && itemData?.live_end_date > new Date().toISOString()) ? 'live' : 'unavailable'} */}
                                                     </Typography>
                                                   </ListItemButton>
                                                 </ListItem>

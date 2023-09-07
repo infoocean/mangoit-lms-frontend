@@ -576,7 +576,7 @@ console.log(rows)
                                   <Button
                                     onClick={() =>
                                       router.push(
-                                        `/admin/courses/livesessions/${row.id}`
+                                        `/admin/courses/livesessions/${row?.id}`
                                       )
                                     }
                                     variant="outlined"

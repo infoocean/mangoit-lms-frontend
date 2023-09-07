@@ -167,21 +167,20 @@ export default function Couseview() {
 
   const handleLiveSession = () => {
     const sessionIDD = sessionData?.id
-    const sessionUrl = sessionData?.stream_url
-    const updatedURL = sessionUrl.replace('/id?', `/${sessionIDD}?`);
-    // setShowIframe(true);
-    // <iframe src={updatedURL} height="500" width="500" title="Iframe Example"></iframe>
-    router.push(updatedURL)
+    // const sessionUrl = sessionData?.stream_url
+    // const updatedURL = sessionUrl.replace('/id?', `/${sessionIDD}?`);
+    // router.push(updatedURL)
+    router.push(`/user/course/liveusersession/${sessionIDD}`)
   }
 
   const currentDate = new Date();
   const givenDateTime = new Date(sessionData?.live_date);
 
-  if (givenDateTime > currentDate) {
-    console.log('You can live');
-  } else {
-    console.log('Time expired');
-  }
+  // if (givenDateTime > currentDate) {
+  //   console.log('You can live');
+  // } else {
+  //   console.log('Time expired');
+  // }
 
   const download = async (identifier: any) => {
     // let imagename = files && files?.slice(8);

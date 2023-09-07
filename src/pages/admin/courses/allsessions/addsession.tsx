@@ -115,12 +115,15 @@ export default function AddSession() {
   const onSubmit = async (event: any) => {
 
     if (errors.description?.message === "" && isLive === true) {
-      // const liveDateFormatted = moment(liveDate).format("YYYY-MM-DD HH:mm:ss");
-      // const endDateFormatted = moment(endDate).format("YYYY-MM-DD HH:mm:ss");
-
-      // const isLiveDateValid = moment(liveDateFormatted, "YYYY-MM-DD HH:mm:ss", true).isValid();
-      // const isEndDateValid = moment(endDateFormatted, "YYYY-MM-DD HH:mm:ss", true).isValid();
-
+      const module = await import('@zegocloud/zego-uikit-prebuilt')
+      const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
+      const appID = 1495782046;
+      const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
+      const roomID = (Math.floor(Math.random() * 10000) + "");
+      const randomID = Date.now().toString();
+      const userName = 'User';
+      const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+      console.log(streamTokenData, 'tttttttttttttttttt')
       const reqData: any = {
         description: event.description,
         module_id: getModuleId,
@@ -131,6 +134,8 @@ export default function AddSession() {
         live_end_date: moment(endDate).format("YYYY-MM-DD HH:mm:ss"),
         is_live_session: isLive,
         stream_url: streamUrl,
+        stream_token: streamTokenData,
+        room_id: roomID,
       };
       const formData = new FormData();
       for (var key in reqData) {

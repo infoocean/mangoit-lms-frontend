@@ -1,15 +1,8 @@
+import { capitalizeFirstLetter } from '@/common/CapitalFirstLetter/capitalizeFirstLetter';
 import { HandleSessionGetByID } from '@/services/session';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
-let room:any
-
-export function getUrlParams(
-  url: string = window.location.href
-): URLSearchParams {
-  let urlStr = url.split('?')[1];
-  return new URLSearchParams(urlStr);
-}
-
+let room: any
 
 function Live() {
   const router = useRouter();
@@ -18,33 +11,34 @@ function Live() {
 
   useEffect(() => {
     getSessionDataById(id)
-  },[]);
+  }, []);
 
-  const getSessionDataById = async (id:any) => {
-    if(id) {
-      try{
-      const sessionDetails =  await HandleSessionGetByID(id)
-      room = sessionDetails?.data?.room_id
-     
-      }catch(e){
+  const getSessionDataById = async (id: any) => {
+    if (id) {
+      try {
+        const sessionDetails = await HandleSessionGetByID(id)
+        room = sessionDetails?.data?.room_id
+
+      } catch (e) {
         console.log(e)
       }
     }
   }
 
   let myMeeting = async (element: HTMLDivElement) => {
-
+    let loginUser:any
     let liveStreamerRole: any;
     let loginToken: any;
     if (typeof window !== "undefined") {
       liveStreamerRole = window.localStorage.getItem("liveStreamerRole");
       loginToken = window.localStorage.getItem("loginToken");
+      loginUser = window.localStorage.getItem("userData");
     }
 
     if (liveStreamerRole === 'Host') {
       router.push(`/admin/courses/livesessions/${id}`)
     } else if (loginToken) {
- 
+
       import('@zegocloud/zego-uikit-prebuilt')
         .then(module => {
           const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
@@ -52,34 +46,11 @@ function Live() {
           const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
           const roomID = room;
           const randomID = Date.now().toString();
-          const userName = 'User';
+          const userName = capitalizeFirstLetter (JSON.parse(loginUser).first_name);
           const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
           const role = ZegoUIKitPrebuilt.Audience
-          // let role_str = getUrlParams(window.location.href).get('role') || 'Host';
-          // const role =
-          //   role_str === 'Host'
-          //     ? ZegoUIKitPrebuilt.Host
-          //     : role_str === 'Cohost'
-          //       ? ZegoUIKitPrebuilt.Cohost
-          //       : ZegoUIKitPrebuilt.Audience;
-
-
-          // const userUrlcreated = `/user/course/liveusersession/${id}`
-
-          // let sharedLinks = [];
-
-          // sharedLinks.push({
-          //   name: 'Join as audience',
-          //   url:
-          //     window.location.origin +
-          //     userUrlcreated +
-          //     '?roomID=' +
-          //     roomID +
-          //     '&role=Audience',
-          // });
 
           if (streamTokenData) {
-
             const zp = ZegoUIKitPrebuilt.create(streamTokenData)
             const createRoomConfig: any = {
               container: element,
@@ -89,7 +60,6 @@ function Live() {
                   role,
                 },
               },
-              // sharedLinks,
             }
 
             zp.joinRoom(createRoomConfig);

@@ -130,6 +130,52 @@ export default function Couseview() {
     const idd = router?.query?.id;
     if (idd) {
       HandleCourseByCourseId(idd).then((data) => {
+        const modules = data?.data?.modules || [];
+
+        const sessionsWithNullEndDate = [];
+        for (const course of modules) {
+          for (const session of course.sessions) {
+            if (session.live_end_date === null) {
+              sessionsWithNullEndDate.push(session);
+            }
+          }
+        }
+
+        const sessionsWithNonNullEndDate = [];
+        for (const course of modules) {
+          for (const session of course.sessions) {
+            if (session.live_end_date !== null) {
+              sessionsWithNonNullEndDate.push(session);
+            }
+          }
+        }
+
+        const currentDate = new Date();
+        const sessionsWithFutureEndDate = sessionsWithNonNullEndDate.filter(session => {
+          const liveEndDate = new Date(session.live_end_date);
+          return liveEndDate > currentDate;
+        });
+
+        const sessionWithGreaterDateAndOtherSessions = sessionsWithNullEndDate.concat(sessionsWithFutureEndDate)
+        console.log(sessionWithGreaterDateAndOtherSessions,'cccccccccccccccccccccccc')
+
+        // const currectObject:any = {};
+        // for (const item of sessionWithGreaterDateAndOtherSessions) {
+        //   currectObject[item.id] = item;
+        // }
+        
+        // const sessionsWithGreaterEndDate = [];
+        // modules.forEach((module: any) => {
+        //   const sessions = module.sessions || [];
+        //   sessions.forEach((session: any) => {
+        //     const liveEndDate = session.live_end_date;
+        //     if (liveEndDate && liveEndDate > targetDate) {
+        //         sessionsWithGreaterEndDate.push(session);
+        //     }
+        //   });
+        // });
+
+          console.log(data?.data,'dddddddddddddddddddddddddd')
         setCousedata(data?.data);
       });
       if (userId && userId) {
@@ -554,7 +600,7 @@ export default function Couseview() {
                                         </Box>
                                       </Box>
                                       <Box>
-                                      <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button> 
+                                        <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button>
                                         {iscomplete ? <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button> : <Button variant="outlined" size="large" disabled>Join</Button>}
                                       </Box>
                                     </Box>
@@ -721,7 +767,7 @@ export default function Couseview() {
                                         itemData?.id === activeToggle
                                           ? "active"
                                           : "";
-                                          
+
                                       return (
 
                                         <Fragment key={itemData?.id}>

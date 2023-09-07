@@ -123,7 +123,7 @@ export default function AddSession() {
       const randomID = Date.now().toString();
       const userName = 'User';
       const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
-      console.log(streamTokenData, 'tttttttttttttttttt')
+     
       const reqData: any = {
         description: event.description,
         module_id: getModuleId,

@@ -478,17 +478,18 @@ export default function AddSession() {
                   </speechContext.Provider>
 
 
-                  <Grid item xs={12} sm={12} md={6} lg={6}>
+                  <Grid item xs={12} sm={12} md={12} lg={12}>
                     <FormControlLabel
                       control={<Checkbox
                         onChange={handleChangeCheckBox}
+                        style={{ color: "orange" }}
                       />}
                       label="Is this is live stream session"
                     />
                   </Grid>
 
                   {isChecked ?
-                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                    <>
                       <Grid item xs={12} sm={12} md={6} lg={6}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <DemoItem label="Set streaming start Date">
@@ -517,7 +518,7 @@ export default function AddSession() {
                         </LocalizationProvider>
                       </Grid>
 
-                    </Grid>
+                     </>
                     : ''}
 
                   <Grid

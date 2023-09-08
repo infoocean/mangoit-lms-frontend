@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
+import Countdown from 'react-countdown';
 // MUI Import
 import {
   Autocomplete,
@@ -101,6 +102,7 @@ const AllLiveSessions = () => {
   const [mdinputValue, setmdInputValue] = React.useState<any>([]);
   const router = useRouter();
   const { register, handleSubmit, control, reset } = useForm();
+  const [iscomplete, setComplete] = React.useState<boolean>(false)
 
   //pagination
   const [row_per_page, set_row_per_page] = React.useState(10);
@@ -230,42 +232,57 @@ const AllLiveSessions = () => {
         title: data?.module?.title,
       });
     });
+  // render function for 
+  const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
 
-    // var timer: any;
-    // timer = setInterval(function () {
-    //   getRemainingDays();
-    // }, 1000);
-  
-  
-    // function getRemainingDays(live_date:any) {
-    //   if (live_date) {
-  
-    //     const givenDateString = live_date;
-    //     const givenDate: any = new Date(givenDateString);
-    //     const currentDate: any = new Date();
-  
-    //     const timeDifference = givenDate - currentDate;
-    //     // console.log('difference: ' , timeDifference)
-  
-    //     if (timeDifference <= 0) {
-    //       clearInterval(timer);
-    //       setTimer(0)
-    //     } else {
-    //       const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-    //       const remainingHours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-    //       const remainingMinutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-    //       const remainingSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-    //       setTimer(
-    //         (remainingDays) + 'd ' +
-    //         (remainingHours) + 'h '
-    //         + (remainingMinutes) + 'm ' + remainingSeconds + 's '
-    //       )
-    //       //  return<h5>{remainingDays} days, {remainingHours} hours, {remainingMinutes} minutes, {remainingSeconds} seconds</h5>
-    //     }
-    //   }
-    // }
+    if (completed) {
+      setComplete(true)
+      // return <Completionist />;
 
-console.log(rows)
+    } else {
+      setComplete(false)
+      return (
+        <Box>
+          {days}d {hours}h {minutes}m {seconds}s
+        </Box>
+      );
+    }
+  };
+  // var timer: any;
+  // timer = setInterval(function () {
+  //   getRemainingDays();
+  // }, 1000);
+
+
+  // function getRemainingDays(live_date:any) {
+  //   if (live_date) {
+
+  //     const givenDateString = live_date;
+  //     const givenDate: any = new Date(givenDateString);
+  //     const currentDate: any = new Date();
+
+  //     const timeDifference = givenDate - currentDate;
+  //     // console.log('difference: ' , timeDifference)
+
+  //     if (timeDifference <= 0) {
+  //       clearInterval(timer);
+  //       setTimer(0)
+  //     } else {
+  //       const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+  //       const remainingHours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  //       const remainingMinutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+  //       const remainingSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+  //       setTimer(
+  //         (remainingDays) + 'd ' +
+  //         (remainingHours) + 'h '
+  //         + (remainingMinutes) + 'm ' + remainingSeconds + 's '
+  //       )
+  //       //  return<h5>{remainingDays} days, {remainingHours} hours, {remainingMinutes} minutes, {remainingSeconds} seconds</h5>
+  //     }
+  //   }
+  // }
+
+  console.log(rows)
 
   return (
     <>
@@ -545,8 +562,8 @@ console.log(rows)
                               row.status === "active"
                                 ? Sessions.activeClassColor
                                 : row.status === "inactive"
-                                ? Sessions.inactiveClassColor
-                                : Sessions.draftClassColor;
+                                  ? Sessions.inactiveClassColor
+                                  : Sessions.draftClassColor;
                             return (
                               <TableRow
                                 hover
@@ -570,29 +587,36 @@ console.log(rows)
                                 </TableCell>
                                 <TableCell className={statusColor}>
                                   {/* {getRemainingDays(row?.live_date)} */}
-                                  {row?.live_date}
+                                  {/* {  const currentDate = new Date();
+                                  const givenDateTime = new Date(sessionData?.live_date);
+
+                                    // if (givenDateTime > currentDate) {
+                                    //   console.log('You can live');
+                                    // } else {
+                                    //   console.log('Time expired');
+                                    // }
+                                  } */}
+
+                                  {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : 'Session Started'}
                                 </TableCell>
                                 <TableCell>
-                                  <Button
-                                    onClick={() =>
-                                      router.push(
-                                        `/admin/courses/livesessions/${row?.id}`
-                                      )
-                                    }
-                                    variant="outlined"
-                                    color="success"
-                                    className={Sessions.editDeleteButton}
-                                  >
-                                    live
-                                  </Button>
-                                  {/* <Button
-                                    className={Sessions.editDeleteButton}
-                                    variant="outlined"
-                                    color="error"
-                                    onClick={() => handleClickOpen(row)}
-                                  >
-                                    <DeleteOutlineIcon />
-                                  </Button> */}
+                                  {new Date(row?.live_date) > new Date() ?
+                                    <Button variant="outlined" disabled>Live</Button>
+                                    :
+                                    <Button
+                                      onClick={() =>
+                                        router.push(
+                                          `/admin/courses/livesessions/${row?.id}`
+                                        )
+                                      }
+                                      variant="outlined"
+                                      color="success"
+                                      className={Sessions.editDeleteButton}
+                                    >
+                                      Live
+                                    </Button>
+                                  }
+
                                 </TableCell>
                               </TableRow>
                             );

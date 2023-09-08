@@ -89,6 +89,15 @@ export default function Couseview() {
   var viewhistoryLength: any = [];
 
   // const Completionist = () => <span>Live Now</span>;
+  const currentDate = new Date(); // Get the current date and time
+  const year = currentDate.getFullYear(); // Get the year
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Get the month (zero-based)
+  const day = String(currentDate.getDate()).padStart(2, '0'); // Get the day
+  const hours = String(currentDate.getHours()).padStart(2, '0'); // Get the hours
+  const minutes = String(currentDate.getMinutes()).padStart(2, '0'); // Get the minutes
+  const seconds = String(currentDate.getSeconds()).padStart(2, '0'); // Get the seconds
+
+  const formattedCurrentDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
   const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
 
@@ -129,7 +138,7 @@ export default function Couseview() {
   const getCourseData = async () => {
     const idd = router?.query?.id;
     if (idd) {
-      HandleCourseByCourseId(idd).then((data) => {
+      HandleCourseByCourseId(idd).then((data: any) => {
         const modules = data?.data?.modules || [];
 
         const sessionsWithNullEndDate = [];
@@ -157,27 +166,21 @@ export default function Couseview() {
         });
 
         const sessionWithGreaterDateAndOtherSessions = sessionsWithNullEndDate.concat(sessionsWithFutureEndDate)
-        console.log(sessionWithGreaterDateAndOtherSessions,'cccccccccccccccccccccccc')
 
-        // const currectObject:any = {};
-        // for (const item of sessionWithGreaterDateAndOtherSessions) {
-        //   currectObject[item.id] = item;
-        // }
-        
-        // const sessionsWithGreaterEndDate = [];
-        // modules.forEach((module: any) => {
-        //   const sessions = module.sessions || [];
-        //   sessions.forEach((session: any) => {
-        //     const liveEndDate = session.live_end_date;
-        //     if (liveEndDate && liveEndDate > targetDate) {
-        //         sessionsWithGreaterEndDate.push(session);
-        //     }
-        //   });
-        // });
-
-          console.log(data?.data,'dddddddddddddddddddddddddd')
-        setCousedata(data?.data);
+        if (data?.data && data?.data.modules && data?.data?.modules[0]) {
+          setCousedata(() => ({
+            ...data.data,
+            modules: [
+              {
+                ...data?.data?.modules[0],
+                sessions: sessionWithGreaterDateAndOtherSessions,
+              },
+              ...data.data.modules.slice(1),
+            ],
+          }));
+        }
       });
+
       if (userId && userId) {
         HandleCourseGetByUserId(userId).then((data1) => {
           setAllData(data1.data);
@@ -187,7 +190,7 @@ export default function Couseview() {
       setIsLoading(false);
     }
   };
-
+  console.log(couseData)
   //tooltip
   const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -213,20 +216,9 @@ export default function Couseview() {
 
   const handleLiveSession = () => {
     const sessionIDD = sessionData?.id
-    // const sessionUrl = sessionData?.stream_url
-    // const updatedURL = sessionUrl.replace('/id?', `/${sessionIDD}?`);
-    // router.push(updatedURL)
     router.push(`/user/course/liveusersession/${sessionIDD}`)
   }
 
-  const currentDate = new Date();
-  const givenDateTime = new Date(sessionData?.live_date);
-
-  // if (givenDateTime > currentDate) {
-  //   console.log('You can live');
-  // } else {
-  //   console.log('Time expired');
-  // }
 
   const download = async (identifier: any) => {
     // let imagename = files && files?.slice(8);
@@ -595,13 +587,17 @@ export default function Couseview() {
                                             {moment(sessionData?.live_date).format('LLL')}
                                           </Typography>
                                           <Typography variant="body2" fontSize="large">
-                                            {moment(sessionData?.live_date).format('hh:mm:ss A') !== '11:16:29 AM' && moment(sessionData?.live_date).format('hh:mm:ss A') !== 'Invalid date' && <Countdown date={sessionData?.live_date} renderer={renderer} />}
+                                            {/* {moment(sessionData?.live_date).format('hh:mm:ss A') !== '11:16:29 AM' && moment(sessionData?.live_date).format('hh:mm:ss A') !== 'Invalid date' && <Countdown date={sessionData?.live_date} renderer={renderer} />} */}
+                                            {new Date(sessionData?.live_date) > new Date() ?
+                                              <Countdown date={sessionData?.live_date} renderer={renderer} /> : 'live'}
                                           </Typography>
                                         </Box>
                                       </Box>
                                       <Box>
-                                        <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button>
-                                        {iscomplete ? <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button> : <Button variant="outlined" size="large" disabled>Join</Button>}
+                                        {/* <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button> */}
+                                        {new Date(sessionData?.live_date) > new Date() ?
+                                          <Button variant="outlined" size="large" disabled>Join</Button> :
+                                          <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button>}
                                       </Box>
                                     </Box>
                                   </CardContent>
@@ -763,6 +759,7 @@ export default function Couseview() {
 
                                   <AccordionDetails>
                                     {item?.sessions.map((itemData: any) => {
+                                      // console.log(itemData,'iiiiiiiiiiiiiii')
                                       const togglee =
                                         itemData?.id === activeToggle
                                           ? "active"
@@ -806,10 +803,13 @@ export default function Couseview() {
                                                       &nbsp;
                                                       {capitalizeFirstLetter(itemData?.title)}
                                                     </Typography>
-                                                    <Typography sx={{ color: '#d32f2f' }} variant="subtitle2">
-                                                      {(itemData?.is_live_session == 1 && itemData?.live_end_date > new Date().toISOString()) ? <LiveTvIcon /> : ''}
-                                                      {/* {(itemData?.is_live_session == 1 && itemData?.live_end_date > new Date().toISOString()) ? 'live' : 'unavailable'} */}
-                                                    </Typography>
+                                                    <Box sx={{ color: '#d32f2f', marginLeft: 'auto' }} >
+                                                      {(itemData?.is_live_session == 1 && itemData?.live_end_date > formattedCurrentDate) ? <LiveTvIcon /> : ''}
+
+                                                  {/* {itemData?.is_live_session == true ? "data" : "not"} */}
+                                                  
+                                                      {/* {(itemData?.is_live_session == 1 && itemData?.live_end_date > new Date().toISOString()) ? 'live' : ''} */}
+                                                    </Box>
                                                   </ListItemButton>
                                                 </ListItem>
                                               </List>

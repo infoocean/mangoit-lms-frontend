@@ -9,7 +9,7 @@ import Menu from "@mui/material/Menu";
 import MenuIcon from "@mui/icons-material/Menu";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import { useProSidebar } from "react-pro-sidebar";
-import { Avatar, Badge, Typography } from "@mui/material";
+import { Avatar, Badge, Tooltip, Typography } from "@mui/material";
 import { useRouter } from "next/navigation";
 import KeyboardArrowDownOutlinedIcon from "@mui/icons-material/KeyboardArrowDownOutlined";
 import styles from "../../styles/appbar.module.css";
@@ -21,6 +21,11 @@ import { HandleSiteGetByID } from "@/services/site";
 import { AuthContext, ChatContext } from "../../pages/user/chat/index";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/pages/user/chat/firebase";
+import MarkUnreadChatAltOutlinedIcon from '@mui/icons-material/MarkUnreadChatAltOutlined';
+import moment from "moment";
+import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
+import CircleNotificationsOutlinedIcon from '@mui/icons-material/CircleNotificationsOutlined';
+import NotificationImportantOutlinedIcon from '@mui/icons-material/NotificationImportantOutlined';
 
 interface appbar {
   portalData?: any;
@@ -31,9 +36,6 @@ interface appbar {
 
 function stringAvatar(first_name: string, last_name: string) {
   return {
-    sx: {
-      bgcolor: "#e8661b",
-    },
     children: `${capitalizeFirstLetter(
       first_name?.split(" ")[0][0]
     )}${capitalizeFirstLetter(last_name?.split(" ")[0][0])}`,
@@ -58,6 +60,21 @@ export default function Navbar({
   const [liveChatDetail, setLiveChatDetail] = React.useState<any>([]);
   const [notifications, setNotifications] = React.useState(false);
   const router = useRouter();
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
+  const [open, setOpen] = React.useState(false);
+  const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
+    setAnchorElUser(event.currentTarget);
+    setOpen(true)
+    if (!open) {
+      handleCloseUserMenu();
+    }
+    if (open) {
+      setOpen(false)
+    }
+  };
+  const handleCloseUserMenu = () => {
+    setAnchorElUser(null);
+  };
 
   React.useEffect(() => {
     let localData: any, parseLocalData: any;
@@ -71,42 +88,34 @@ export default function Navbar({
     handleGetSiteOptionsDataById(parseLocalData.id);
   }, []);
 
-    // console.log('userData', userData)
-
-    React.useEffect(() => {
-      const getChats = () => {
-        if (!userData?.firebase_id) {
-          return;
-        }
-        const unsub = onSnapshot(doc(db, "userChats", userData?.firebase_id), (doc) => {
-          const data: any = doc.data();
-          setChats(data);
-          const chatEntries: any = Object.entries(data).map((chat) => chat[1]);
-          const greatestDateObject = chatEntries.reduce((greatest: any, current: any) => {
-            if (current.date) {
-              const currentDateTime = new Date(current.date.seconds * 1000 + current.date.nanoseconds / 1000000);
-              if (!greatest || currentDateTime > new Date(greatest.date.seconds * 1000 + greatest.date.nanoseconds / 1000000)) {
-                return current;
-              }
+  React.useEffect(() => {
+    const getChats = () => {
+      if (!userData?.firebase_id) {
+        return;
+      }
+      const unsub = onSnapshot(doc(db, "userChats", userData?.firebase_id), (doc) => {
+        const data: any = doc.data();
+        setChats(data);
+        const chatEntries: any = data && Object?.entries(data).map((chat) => chat[1]);
+        const greatestDateObject = chatEntries?.reduce((greatest: any, current: any) => {
+          if (current.date) {
+            const currentDateTime = new Date(current.date.seconds * 1000 + current.date.nanoseconds / 1000000);
+            if (!greatest || currentDateTime > new Date(greatest.date.seconds * 1000 + greatest.date.nanoseconds / 1000000)) {
+              return current;
             }
-            return greatest;
-          }, null);
-          setLiveChatDetail(greatestDateObject);
-        });
-        return () => {
-          unsub();
-        };
+          }
+          return greatest;
+        }, null);
+        setLiveChatDetail(greatestDateObject)
+      });
+      return () => {
+        unsub();
       };
-      getChats();
-    }, [userData?.firebase_id]);
- 
-    // liveChatDetail?.userInfo?.uid !== liveChatDetail?.userInfo?.messageSenderId 
-  
+    };
+    getChats();
+  }, [userData?.firebase_id]);
 
-  const handleChatNotifications = () => {
-      router.push("/user/chat/");
-    }  
-  
+
   const handleGetSiteOptionsDataById = async (userId: any) => {
     await HandleSiteGetByID(userId)
       .then((res) => {
@@ -240,8 +249,8 @@ export default function Navbar({
     </Menu>
   );
 
-  // console.log(chats)
-
+  const chatEntries: any = allchats && Object.entries(allchats).map((chat) => chat[1]);
+  const chatFinder = chatEntries?.filter((chat:any) => chat.userInfo.messageRecieverId === userData.firebase_id && chat.userInfo.isRead === 0)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -265,16 +274,68 @@ export default function Navbar({
           </Link>
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
-            <Box 
-            sx={{ margin: '10px' }}
-            onClick={handleChatNotifications}
+            <Box
+              sx={{ margin: '10px',cursor: "pointer"}}
+              onClick={handleOpenUserMenu}
             >
-              { liveChatDetail?.userInfo?.uid !== liveChatDetail?.userInfo?.messageSenderId  ? <NotificationsNoneIcon /> : <Badge color="error" variant="dot" >
+              {chatFinder?.length > 0 ?  <Badge color="error" variant="dot" >
                 <NotificationsNoneIcon />
-              </Badge>   }
-            </Box>
-            <Box className={styles.createVrLine}></Box>
+              </Badge>:<NotificationsNoneIcon /> }
+              {/* <Box> */}
+              <Menu
+                sx={{ mt: '30px',height:'277px'}}
+                id="menu-appbar"
+                anchorEl={anchorElUser}
+                anchorOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                keepMounted
+                transformOrigin={{
+                  vertical: 'top',
+                  horizontal: 'right',
+                }}
+                open={Boolean(anchorElUser)}
+              >
+                {chatFinder?.length > 0 ? chatFinder.map((chat: any) =>{
+                  const timestampSeconds = chat?.date?.seconds;
+                  const timestampNanoseconds = chat?.date?.nanoseconds;
+                  
+                  // Convert nanoseconds to milliseconds (1 second = 1000 milliseconds)
+                  const timestampMilliseconds = timestampSeconds * 1000 + Math.floor(timestampNanoseconds / 1e6);
 
+                  // Create a Date object from the timestamp in milliseconds
+                  const date = moment(new Date(timestampMilliseconds)).format("DD MMM YY");            
+                  return (
+                  
+                  <MenuItem sx={{ borderBottom: '1px solid #e1e1e1' }} onClick={() => router.replace('/user/chat')}>
+                    <Box sx={{ display: "flex" }}>
+                      <Box sx={{
+                        background: '#ffeee5',
+                        borderRadius: "50%",
+                        textAlign: "center",
+                        padding: "3px 12px"
+                      }}>
+                        <MarkUnreadChatAltOutlinedIcon sx={{ margin: "-12px 0px" ,fill:'#6a5f5f',fontSize: "20px"}} />
+                      </Box>
+                      <Box sx={{ margin: "0px 20px" }}>
+                        <Box display={"flex"}><Typography variant="body1" sx={{fontSize: "small"}}>{capitalizeFirstLetter(chat?.userInfo?.displayName)}</Typography><CircleRoundedIcon sx={{fontSize: "3px", margin: "auto 7px"}}/><Typography component={'span'} variant="caption">{date}</Typography></Box>
+                        <Typography variant="caption" sx={{    fontWeight: 600,fontSize: "14px"}}>{chat?.lastMessage?.text}</Typography>
+                      </Box>
+                    </Box>
+                  </MenuItem>
+               
+                   )
+                  }
+                ):<Box sx={{ padding:"10px 40px",textAlign: "center"}}>
+                  <NotificationImportantOutlinedIcon sx={{fontSize: "30px"}}/>
+                  <Typography sx={{fontSize: "16px"}}>No Notification Yet</Typography>
+                  </Box>
+                  }
+              </Menu>
+            </Box>
+            <Box className={styles.createVrLine}>
+            </Box>
             <Avatar
               src={
                 profilePic && profilePic

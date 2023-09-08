@@ -26,10 +26,7 @@ import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Link from "next/link";
 import { CreateFirebase } from "../user/chat/firebaseFunctions";
 import { HandleUpdateFirebaseId, HandleUpdateProfile } from "@/services/user";
-
-
 const theme = createTheme();
-
 export default function Register() {
   const {
     register,
@@ -40,22 +37,21 @@ export default function Register() {
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword((show) => !show);
-
   const onSubmit = async (event: any) => {
     setLoading(true);
     try {
       const res = await HandleRegister(event)
-
+      console.log(res,"34343")
       if (res.status === 201) {
         const db_id = res?.data?.id;
         const email = res?.data?.email;
         const password = event?.password;
-
         const getFirebaseUser = await CreateFirebase(event, db_id)
+
+        console.log("getFirebaseUser",getFirebaseUser);
         
         const firebase_id = getFirebaseUser?.user?.uid
         const loginData = { email, password }

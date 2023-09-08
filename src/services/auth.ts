@@ -96,10 +96,12 @@ export const HandleForgotPassword = async(reqData:any) =>{
   }).then((request) => {
     if(request.status === 200){
       toast.success("Check your mail");
+      console.log(typeof request.data,"2343243 data")
       localStorage.setItem('forgotPasswordToken',request.data)
     }
       return request;
     }).catch((error) => {
+      console.log(error,"23232")
       if(error.response.status === 400){
         toast.error(error.response.data)
       }else if(error.response.status === 404){

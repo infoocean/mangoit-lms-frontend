@@ -51,6 +51,15 @@ const Message = ({ message }: any) => {
     });
   }
 
+  function stringAvatar(first_name: string, last_name: string) {
+    return {
+   
+      children: `${capitalizeFirstLetter(
+        first_name?.split(" ")[0][0]
+      )}${capitalizeFirstLetter(last_name?.split(" ")[0][0])}`,
+    };
+  }
+
   const manageData: any = (message?.m?.senderId === currentUser?.uid) ? { display: 'flex', flexDirection: 'row-reverse' } : { display: 'flex', justifyContent: "left" };
   const manageBoxData: any = (message?.m?.senderId === currentUser?.uid) ? { maxWidth: 'auto', display: 'flex', marginRight: '25px', marginLeft: '25px' } : { maxWidth: 'auto', display: 'flex', marginRight: '25px',marginLeft: '25px', flexDirection: 'row-reverse' };
   return (
@@ -61,17 +70,20 @@ const Message = ({ message }: any) => {
           <Grid item xs={12} sx={manageData}>
 
             <Box sx={manageBoxData}>
-              <Box sx={{ padding: '15px' }}>
-                <span >{message?.m?.text}</span>
+              <Box sx={{ padding: '15px 10px' }}>
+                <span style={{fontSize:'14px'}} >{message?.m?.text}</span>
               </Box>
 
               <Box>
+       
                 <Avatar
                   src={
                     message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
-                  }
+                  } 
+                  {...stringAvatar(loginUser?.first_name,loginUser?.last_name)}
+              sx={{width: "35px",height:" 35px",fontSize: "smaller"}}
                 />
-                <span style={{ fontSize: '17px', fontWeight: ' 600' }}>{message?.m?.senderId === currentUser?.uid ? capitalizeFirstLetter(loginUser?.first_name) : capitalizeFirstLetter(message?.props?.data?.row?.first_name)} </span>
+                {/* <span style={{ fontSize: '12px', fontWeight: ' 600' }}>{message?.m?.senderId === currentUser?.uid ? capitalizeFirstLetter(loginUser?.first_name) : capitalizeFirstLetter(message?.props?.data?.row?.first_name)} </span> */}
               </Box>
             </Box>
           </Grid>

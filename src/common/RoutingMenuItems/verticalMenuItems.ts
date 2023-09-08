@@ -14,7 +14,7 @@ import LanguageOutlinedIcon from "@mui/icons-material/LanguageOutlined";
 import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import GradingOutlinedIcon from "@mui/icons-material/GradingOutlined";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
-import ChatIcon from '@mui/icons-material/Chat';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 
 export const VerticalMenuItems = () => {
   const [userData, setUserData] = React.useState<any>("");
@@ -57,7 +57,7 @@ export const VerticalMenuItems = () => {
       },
       {
         title: "Chat",
-        icon: ChatIcon,
+        icon: ChatOutlinedIcon,
         path: "/user/chat",
         disable: false,
       },
@@ -155,7 +155,7 @@ export const VerticalMenuItems = () => {
       },
       {
         title: "Chat",
-        icon: ChatIcon,
+        icon: ChatOutlinedIcon,
         path: "/user/chat",
         disable: false,
       },

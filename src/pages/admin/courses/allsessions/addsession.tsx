@@ -65,6 +65,7 @@ import moment from 'moment';
 export const speechContext: any = createContext('');
 
 const today = dayjs();
+const endDateCek = dayjs(today).add(30, 'minute')
 const yesterday = dayjs().subtract(1, 'day');
 const todayStartOfTheDay = today.startOf('day');
 
@@ -86,9 +87,11 @@ export default function AddSession() {
   const [transcript, setTranscript] = useState('');
   const [isChecked, setIsChecked] = useState<boolean>(false);
   const [liveDate, setLiveDate] = useState('');
-  const [endDate, setEndDate] = useState('');
+  const [endDate, setEndDate] = useState<any>('');
   const [isLive, setIsLive] = useState<boolean>(false);
   const [streamUrl, setStreamUrl] = useState<string | any>("");
+
+
   const {
     register,
     handleSubmit,
@@ -115,6 +118,8 @@ export default function AddSession() {
   const onSubmit = async (event: any) => {
 
     if (errors.description?.message === "" && isLive === true) {
+
+      console.log(liveDate, 'llllllllllllllll')
       const module = await import('@zegocloud/zego-uikit-prebuilt')
       const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
       const appID = 1495782046;
@@ -123,7 +128,7 @@ export default function AddSession() {
       const randomID = Date.now().toString();
       const userName = 'User';
       const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
-     
+
       const reqData: any = {
         description: event.description,
         module_id: getModuleId,
@@ -131,7 +136,7 @@ export default function AddSession() {
         title: event.title,
         attachment: file,
         live_date: moment(liveDate).format("YYYY-MM-DD HH:mm:ss"),
-        live_end_date: moment(endDate).format("YYYY-MM-DD HH:mm:ss"),
+        live_end_date: moment((new Date(liveDate)).setMinutes((new Date(liveDate)).getMinutes() + 30)).format("YYYY-MM-DD HH:mm:ss"),
         is_live_session: isLive,
         stream_url: streamUrl,
         stream_token: streamTokenData,
@@ -277,29 +282,40 @@ export default function AddSession() {
     if (isChecked === true) { setIsChecked(false) }
   }
 
-  const handleEndDateSelected = (e: any) => {
-    setEndDate(e?.$d)
-  }
-
   const handleDateSelect = (e: any) => {
-    // const roomID = (Math.floor(Math.random() * 10000) + "");
-    const roomID = 'ABC123';
-    setLiveDate(e?.$d)
-    setIsLive(true);
+    // const selectedDate = e?.$d;
+    // const endDate = dayjs(selectedDate).add(30, 'minute'); // Add 30 minutes to the selected date
+    // setEndDate(endDate)
+    // // console.log(endDate?.$d,'dddddddddddddddddddddddd')
+    // // Update the state or value for live_date and live_end_date
+    // setValue("live_date", selectedDate); // Update live_date
+    // setValue("live_end_date", moment(endDate?.$d).format('YYYY-MM-DD HH:mm:ss')); // Update live_end_date
 
+    console.log(e?.$d, 'dddddddddddddddd')
+
+    // Original date string
+    const originalDateString = "Sat Sep 09 2023 22:05:25 GMT+0530 (India Standard Time)";
+
+    // Create a new Date object from the original date string
+    const originalDate = new Date(e?.$d);
+
+    // Convert to UTC by subtracting the timezone offset
+    const utcDate = new Date(originalDate.getTime() - (originalDate.getTimezoneOffset() * 60000));
+
+    // Format the result as a string in ISO 8601 format
+    const formattedTimestamp = utcDate.toISOString();
+
+    console.log(formattedTimestamp);
+
+
+
+    setLiveDate(e?.$d)
+    setEndDate(formattedTimestamp)
+    setIsLive(true);
+    const roomID = 'ABC123';
     const userUrlcreated = `/user/course/liveusersession/id`
     let sharedLinks = [];
-    // if (role === ZegoUIKitPrebuilt.Host || role === ZegoUIKitPrebuilt.Cohost) {
-    //   sharedLinks.push({
-    //     name: 'Join as co-host',
-    //     url:
-    //       window.location.origin +
-    //       window.location.pathname +
-    //       '?roomID=' +
-    //       roomID +
-    //       '&role=Cohost',
-    //   });
-    // }
+
     sharedLinks.push({
       url:
         window.location.origin +
@@ -310,6 +326,17 @@ export default function AddSession() {
     });
     setStreamUrl(sharedLinks[0]?.url)
   }
+
+  const handleEndDateSelected = (e: any) => {
+    moment((new Date(liveDate)).setMinutes((new Date(liveDate)).getMinutes() + 30)).format("YYYY-MM-DD HH:mm:ss")
+    setEndDate(e?.$d)
+  }
+
+
+
+  console.log(endDate, 'eeeeeeeeeeeeeee', today)
+
+
 
   return (
     <>
@@ -404,6 +431,7 @@ export default function AddSession() {
                       onChange={(event, newValue) => {
                         setModuleId(newValue?.module?.id);
                       }}
+                      disabled={!getModules || getModules.length === 0}
                     />
                     {errors && errors.module_id
                       ? ErrorShowing(errors?.module_id?.message)
@@ -492,33 +520,47 @@ export default function AddSession() {
                     <>
                       <Grid item xs={12} sm={12} md={6} lg={6}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoItem label="Set streaming start Date">
-                            <DateTimePicker
-                              {...register("live_date")}
-                              defaultValue={today}
-                              onChange={(e) => handleDateSelect(e)}
-                              disablePast
-                              views={['year', 'month', 'day', 'hours', 'minutes']}
-                            />
-                          </DemoItem>
+                          <Typography>Set streaming Date</Typography>
+                          <DateTimePicker
+                            {...register("live_date")}
+                            defaultValue={today}
+                            onChange={(e) => handleDateSelect(e)}
+                            disablePast
+                            views={['year', 'month', 'day', 'hours', 'minutes']}
+                          />
+
                         </LocalizationProvider>
                       </Grid>
 
                       <Grid item xs={12} sm={12} md={6} lg={6}>
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <DemoItem label="Set streaming End Date">
+                        {/* {endDate === '' ? 'blank' : "endDate"} */}
+                        {endDate === '' ?
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Typography>Set streaming End Date</Typography>
                             <DateTimePicker
                               {...register("live_end_date")}
-                              defaultValue={today}
+                              defaultValue={dayjs(today).add(30, 'minute')}
                               onChange={(e) => handleEndDateSelected(e)}
                               disablePast
                               views={['year', 'month', 'day', 'hours', 'minutes']}
                             />
-                          </DemoItem>
-                        </LocalizationProvider>
+                          </LocalizationProvider> :
+                          <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Typography>Set streaming End Date</Typography>
+                            <DateTimePicker
+                              {...register("live_end_date")}
+                              defaultValue={endDate}
+                              // value={endDate}
+                              onChange={(e) => handleEndDateSelected(e)}
+                              disablePast
+                              views={['year', 'month', 'day', 'hours', 'minutes']}
+                            />
+                          </LocalizationProvider>
+                        }
+
                       </Grid>
 
-                     </>
+                    </>
                     : ''}
 
                   <Grid
@@ -572,3 +614,4 @@ export default function AddSession() {
     </>
   );
 }
+

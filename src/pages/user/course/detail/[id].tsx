@@ -139,46 +139,48 @@ export default function Couseview() {
     const idd = router?.query?.id;
     if (idd) {
       HandleCourseByCourseId(idd).then((data: any) => {
-        const modules = data?.data?.modules || [];
+        setCousedata(data?.data);
+        // const modules = data?.data?.modules || [];
 
-        const sessionsWithNullEndDate = [];
-        for (const course of modules) {
-          for (const session of course.sessions) {
-            if (session.live_end_date === null) {
-              sessionsWithNullEndDate.push(session);
-            }
-          }
-        }
+        // const sessionsWithNullEndDate = [];
+        // for (const course of modules) {
+        //   for (const session of course.sessions) {
+        //     if (session.live_end_date === null) {
+        //       sessionsWithNullEndDate.push(session);
+        //     }
+        //   }
+        // }
 
-        const sessionsWithNonNullEndDate = [];
-        for (const course of modules) {
-          for (const session of course.sessions) {
-            if (session.live_end_date !== null) {
-              sessionsWithNonNullEndDate.push(session);
-            }
-          }
-        }
+        // const sessionsWithNonNullEndDate = [];
+        // for (const course of modules) {
+        //   for (const session of course.sessions) {
+        //     if (session.live_end_date !== null) {
+        //       sessionsWithNonNullEndDate.push(session);
+        //     }
+        //   }
+        // }
 
-        const currentDate = new Date();
-        const sessionsWithFutureEndDate = sessionsWithNonNullEndDate.filter(session => {
-          const liveEndDate = new Date(session.live_end_date);
-          return liveEndDate > currentDate;
-        });
+        // const currentDate = new Date();
+        // const sessionsWithFutureEndDate = sessionsWithNonNullEndDate.filter(session => {
+        //   const liveEndDate = new Date(session.live_end_date);
+        //   return liveEndDate > currentDate;
+        // });
 
-        const sessionWithGreaterDateAndOtherSessions = sessionsWithNullEndDate.concat(sessionsWithFutureEndDate)
+        // const sessionWithGreaterDateAndOtherSessions = sessionsWithNullEndDate.concat(sessionsWithFutureEndDate)
 
-        if (data?.data && data?.data.modules && data?.data?.modules[0]) {
-          setCousedata(() => ({
-            ...data.data,
-            modules: [
-              {
-                ...data?.data?.modules[0],
-                sessions: sessionWithGreaterDateAndOtherSessions,
-              },
-              ...data.data.modules.slice(1),
-            ],
-          }));
-        }
+        // if (data?.data && data?.data.modules && data?.data?.modules[0]) {
+        //   setCousedata(() => ({
+        //     ...data.data,
+        //     modules: [
+        //       {
+        //         ...data?.data?.modules[0],
+        //         sessions: sessionWithGreaterDateAndOtherSessions,
+        //       },
+        //       ...data.data.modules.slice(1),
+        //     ],
+        //   }));
+        // }
+
       });
 
       if (userId && userId) {

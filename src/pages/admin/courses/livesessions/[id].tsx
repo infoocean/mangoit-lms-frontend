@@ -2,7 +2,7 @@ import { capitalizeFirstLetter } from '@/common/CapitalFirstLetter/capitalizeFir
 import { HandleSessionGetByID } from '@/services/session';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-let room:any
+let room: any
 
 function Live() {
   const router = useRouter();
@@ -10,21 +10,21 @@ function Live() {
 
   useEffect(() => {
     getSessionDataById(id)
-  },[]);
+  }, []);
 
-  const getSessionDataById = async (id:any) => {
-    if(id) {
-      try{
-      const sessionDetails =  await HandleSessionGetByID(id)
-      room = sessionDetails?.data?.room_id    
-      }catch(e){
+  const getSessionDataById = async (id: any) => {
+    if (id) {
+      try {
+        const sessionDetails = await HandleSessionGetByID(id)
+        room = sessionDetails?.data?.room_id
+      } catch (e) {
         console.log(e)
       }
     }
   }
 
-  let myMeeting =  (element: HTMLDivElement) => {
-    let loginUser:any
+  let myMeeting = (element: HTMLDivElement) => {
+    let loginUser: any
     let loginToken: any;
     if (typeof window !== "undefined") {
       loginToken = window.localStorage.getItem("loginToken");
@@ -32,11 +32,23 @@ function Live() {
     }
     // const user = JSON.parse(loginUser)
     // console.log(user?.first_name,'lllllllllllll')
-    if(loginToken){
+    if (loginToken) {
+
+      // const module = await import('@zegocloud/zego-uikit-prebuilt')
+      // const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
+      // const appID = 1495782046;
+      // const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
+      // const roomID = (Math.floor(Math.random() * 10000) + "");
+      // const randomID = Date.now().toString();
+      // const userName = 'User';
+      // const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+
+
+
       import('@zegocloud/zego-uikit-prebuilt')
         .then(module => {
+
           const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
-         
           const appID = 1495782046;
           const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
           const roomID = room;
@@ -45,7 +57,9 @@ function Live() {
           const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
           const role = ZegoUIKitPrebuilt.Host
 
+
           if (streamTokenData) {
+
             const zp = ZegoUIKitPrebuilt.create(streamTokenData)
             const createRoomConfig: any = {
               container: element,
@@ -57,14 +71,22 @@ function Live() {
               },
             }
             zp.joinRoom(createRoomConfig);
-            
-            localStorage.setItem("liveStreamerRole",'Host')
+            // zp.stopPlayingStream(streamID)
+
+            //  zp.createStream()
+
+            // Assuming the library provides a `stopStreaming` method
+
+            // console.log(joinedRoom, 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjj')
+            // const stream = zp.destroy()
+            // zg.stopPlayingStream(streamID)
+            localStorage.setItem("liveStreamerRole", 'Host')
           }
         })
         .catch(error => {
           console.error(error);
         });
-    }else {
+    } else {
       router.push('/login');
     }
   };

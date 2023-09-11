@@ -20,7 +20,7 @@ import Link from "next/link";
 import { HandleSiteGetByID } from "@/services/site";
 import { AuthContext, ChatContext } from "../../pages/user/chat/index";
 import { doc, onSnapshot } from "firebase/firestore";
-import { db } from "@/pages/user/chat/firebase";
+import { db } from "@/firebase/firebase";
 import MarkUnreadChatAltOutlinedIcon from '@mui/icons-material/MarkUnreadChatAltOutlined';
 import moment from "moment";
 import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
@@ -297,7 +297,7 @@ export default function Navbar({
                 }}
                 open={Boolean(anchorElUser)}
               >
-                {chatFinder?.length > 0 ? chatFinder.map((chat: any) =>{
+                {chatFinder?.length > 0 ? chatFinder.map((chat: any,index:number) =>{
                   const timestampSeconds = chat?.date?.seconds;
                   const timestampNanoseconds = chat?.date?.nanoseconds;
                   
@@ -308,7 +308,7 @@ export default function Navbar({
                   const date = moment(new Date(timestampMilliseconds)).format("DD MMM YY");            
                   return (
                   
-                  <MenuItem sx={{ borderBottom: '1px solid #e1e1e1' }} onClick={() => router.replace('/user/chat')}>
+                  <MenuItem key={index} sx={{ borderBottom: '1px solid #e1e1e1' }} onClick={() => router.replace('/user/chat')}>
                     <Box sx={{ display: "flex" }}>
                       <Box sx={{
                         background: '#ffeee5',

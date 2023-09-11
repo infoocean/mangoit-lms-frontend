@@ -26,7 +26,7 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useGoogleLogin } from "@react-oauth/google";
 import Link from "next/link";
-import { LoginFirestore } from "../user/chat/firebaseFunctions";
+import { LoginFirestore } from "../../firebase/firebaseFunctions";
 
 const theme = createTheme();
 

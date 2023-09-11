@@ -1,6 +1,6 @@
 import { doc, onSnapshot } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
-import { db } from "../firebase";
+import { db } from "../../../../firebase/firebase";
 import Message from "./Message";
 import { AuthContext, ChatContext} from "../index";
 

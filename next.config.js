@@ -4,8 +4,12 @@ const nextConfig = {
   trailingSlash: true,
   images: {
     unoptimized: true,
-    domains: [ "localhost", ]
+    domains: ["localhost"],
   },
-}
+};
 
-module.exports = nextConfig
+module.exports = {
+  pageExtensions: ["mdx", "md", "jsx", "js", "tsx", "ts"],
+};
+
+module.exports = nextConfig;

@@ -39,9 +39,9 @@ import { HandleProfile } from "@/services/user";
 import { HandleUpdateProfile } from "@/services/user";
 import { BASE_URL } from "@/config/config";
 import Footer from "@/common/LayoutNavigations/footer";
-import { CurrentUser, UpdateFireStoreData } from "../chat/firebaseFunctions";
+import { CurrentUser, UpdateFireStoreData } from "../../../firebase/firebaseFunctions";
 //firebase functions
-import { auth, storage } from "../../../pages/user/chat/firebase";
+import { auth, storage } from "../../../firebase/firebase";
 import { getIdToken, onAuthStateChanged, signInWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 // const auth = firebase.auth();

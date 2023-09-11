@@ -20,7 +20,7 @@ export const CurrentUser = async () => {
 };
 
 export const CreateFirebase = async (event: any, db_id: any) => {
-  const displayName = (event?.first_name + " " + event.last_name);
+  const displayName = event?.first_name + " " + event.last_name;
   const email = event?.email;
   const password = event?.password;
   const res = await createUserWithEmailAndPassword(auth, email, password);

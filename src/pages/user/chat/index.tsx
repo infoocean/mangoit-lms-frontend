@@ -14,14 +14,14 @@ import {
   Timestamp,
   onSnapshot,
 } from "firebase/firestore";
-import { db } from "./firebase";
+import { db } from "../../../firebase/firebase";
 import { v4 as uuid } from "uuid";
 import { Avatar, Badge, Box, Button, IconButton, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { SearchOutlined } from "@mui/icons-material";
 import { createContext, useEffect, useReducer, useState } from "react";
 import SidebarStyles from "../../../styles/sidebar.module.css";
-import { auth } from "./firebase";
+import { auth } from "../../../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 import Messages from "./chatComponents/Messages";

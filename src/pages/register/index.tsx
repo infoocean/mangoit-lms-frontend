@@ -24,7 +24,7 @@ import CircularProgressBar from "@/common/CircularProcess/circularProgressBar";
 import AuthSidebar from "../../common/LayoutNavigations/authSideLayout";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Link from "next/link";
-import { CreateFirebase } from "../user/chat/firebaseFunctions";
+import { CreateFirebase } from "../../firebase/firebaseFunctions";
 import { HandleUpdateFirebaseId, HandleUpdateProfile } from "@/services/user";
 const theme = createTheme();
 export default function Register() {

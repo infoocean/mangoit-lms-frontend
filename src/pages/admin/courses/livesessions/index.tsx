@@ -4,6 +4,7 @@ import * as React from "react";
 import { Controller, useForm } from "react-hook-form";
 import { useRouter } from "next/router";
 import Countdown from 'react-countdown';
+import moment from 'moment';
 // MUI Import
 import {
   Autocomplete,
@@ -63,7 +64,7 @@ import { AlertDialog } from "@/common/DeleteListRow/deleteRow";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 
 interface Column {
-  id: "id" | "title" | "course_id" | "module_id" | "is_deleted" | "action";
+  id: "id" | "title" | "course_id" | "module_id" | "is_deleted" | "end_date" | "remaining" |"action";
   label: string;
   minWidth?: number;
   align?: "right";
@@ -75,7 +76,9 @@ const columns: Column[] = [
   { id: "title", label: "SESSION NAME", minWidth: 170 },
   { id: "course_id", label: "COURSE NAME", minWidth: 100 },
   { id: "module_id", label: "MODULE NAME", minWidth: 100 },
-  { id: "is_deleted", label: "STREAMING DATE", minWidth: 100 },
+  { id: "is_deleted", label: "START DATE", minWidth: 100 },
+  { id: "end_date", label: "END DATE", minWidth: 100 },
+  { id: "remaining", label: "STREAMING TIME", minWidth: 100},
   { id: "action", label: "ACTION", minWidth: 100 },
 ];
 
@@ -242,9 +245,10 @@ const AllLiveSessions = () => {
     } else {
       setComplete(false)
       return (
-        <Box>
-          {days}d {hours}h {minutes}m {seconds}s
-        </Box>
+        <>
+          {days == 0 ? `${hours}h ${minutes}m ${seconds}s` : `Session will start soon`}
+          {/* {days}d {hours}h {minutes}m {seconds}s */}
+        </>
       );
     }
   };
@@ -597,10 +601,29 @@ const AllLiveSessions = () => {
                                     // }
                                   } */}
 
-                                  {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : 'Session Started'}
+                                  {/* {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : 'Session Started'} */}
+                                  {moment(row?.live_date).format("DD-MMM-YYYY HH:mm A")}
+                                </TableCell>
+                                <TableCell className={statusColor}>
+                                  {moment(row?.live_end_date).format("DD-MMM-YYYY HH:mm A")}
+                                </TableCell>
+                                <TableCell className={statusColor}>
+                                {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : 'Session Started'}
                                 </TableCell>
                                 <TableCell>
-                                  {new Date(row?.live_date) > new Date() ?
+                                <Button
+                                      onClick={() =>
+                                        router.push(
+                                          `/admin/courses/livesessions/${row?.id}`
+                                        )
+                                      }
+                                      variant="outlined"
+                                      color="success"
+                                      className={Sessions.editDeleteButton}
+                                    >
+                                      Live
+                                    </Button>
+                                  {/* {new Date(row?.live_date) > new Date() ?
                                     <Button variant="outlined" disabled>Live</Button>
                                     :
                                     <Button
@@ -615,7 +638,7 @@ const AllLiveSessions = () => {
                                     >
                                       Live
                                     </Button>
-                                  }
+                                  } */}
 
                                 </TableCell>
                               </TableRow>

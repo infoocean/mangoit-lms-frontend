@@ -83,14 +83,14 @@ export default function AddSession() {
   const [aiLoader, setAiLoader] = useState<any>(false);
   const [siteKey, setSiteKey] = useState(false);
   const [secretKey, setSecretKey] = useState<any>("");
-  // const [toogle, setToogle] = useState<boolean>(false)
+  const [toogle, setToogle] = useState<boolean>(false)
   const [transcript, setTranscript] = useState('');
-  const [isChecked, setIsChecked] = useState<boolean>(false);
-  const [liveDate, setLiveDate] = useState('');
-  const [endDate, setEndDate] = useState<any>('');
+  // const [isChecked, setIsChecked] = useState<boolean>(false);
   const [isLive, setIsLive] = useState<boolean>(false);
+  const [liveDate, setLiveDate] = useState(new Date());
+  const [endDate, setEndDate] = useState<any>('');
   const [streamUrl, setStreamUrl] = useState<string | any>("");
-
+  // const currentDate = new Date();
 
   const {
     register,
@@ -118,8 +118,6 @@ export default function AddSession() {
   const onSubmit = async (event: any) => {
 
     if (errors.description?.message === "" && isLive === true) {
-
-      console.log(liveDate, 'llllllllllllllll')
       const module = await import('@zegocloud/zego-uikit-prebuilt')
       const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
       const appID = 1495782046;
@@ -135,9 +133,11 @@ export default function AddSession() {
         course_id: getCourseId,
         title: event.title,
         attachment: file,
-        live_date: moment(liveDate).format("YYYY-MM-DD HH:mm:ss"),
-        live_end_date: moment((new Date(liveDate)).setMinutes((new Date(liveDate)).getMinutes() + 30)).format("YYYY-MM-DD HH:mm:ss"),
         is_live_session: isLive,
+        // live_date: liveDate && new Date(liveDate),
+        // live_end_date: endDate && new Date(endDate),
+        live_date: liveDate && moment(new Date(liveDate)).format("YYYY-MM-DD HH:mm:ss"),
+        live_end_date: endDate && moment(new Date(endDate)).format("YYYY-MM-DD HH:mm:ss"),
         stream_url: streamUrl,
         stream_token: streamTokenData,
         room_id: roomID,
@@ -160,12 +160,6 @@ export default function AddSession() {
       }
     }
     else if (errors.description?.message === "") {
-      // const liveDateFormatted = moment(liveDate).format("YYYY-MM-DD HH:mm:ss");
-      // const endDateFormatted = moment(endDate).format("YYYY-MM-DD HH:mm:ss");
-
-      // const isLiveDateValid = moment(liveDateFormatted, "YYYY-MM-DD HH:mm:ss", true).isValid();
-      // const isEndDateValid = moment(endDateFormatted, "YYYY-MM-DD HH:mm:ss", true).isValid();
-
       const reqData: any = {
         description: event.description,
         module_id: getModuleId,
@@ -278,40 +272,19 @@ export default function AddSession() {
   };
 
   const handleChangeCheckBox = () => {
-    if (isChecked === false) { setIsChecked(true) }
-    if (isChecked === true) { setIsChecked(false) }
+    setToogle(!toogle);
+    setIsLive(true)
+    setLiveDate(new Date())
+    setEndDate(dayjs(new Date()).add(30, 'minute'))
+
   }
 
   const handleDateSelect = (e: any) => {
-    // const selectedDate = e?.$d;
-    // const endDate = dayjs(selectedDate).add(30, 'minute'); // Add 30 minutes to the selected date
-    // setEndDate(endDate)
-    // // console.log(endDate?.$d,'dddddddddddddddddddddddd')
-    // // Update the state or value for live_date and live_end_date
-    // setValue("live_date", selectedDate); // Update live_date
-    // setValue("live_end_date", moment(endDate?.$d).format('YYYY-MM-DD HH:mm:ss')); // Update live_end_date
-
-    console.log(e?.$d, 'dddddddddddddddd')
-
-    // Original date string
-    const originalDateString = "Sat Sep 09 2023 22:05:25 GMT+0530 (India Standard Time)";
-
-    // Create a new Date object from the original date string
-    const originalDate = new Date(e?.$d);
-
-    // Convert to UTC by subtracting the timezone offset
-    const utcDate = new Date(originalDate.getTime() - (originalDate.getTimezoneOffset() * 60000));
-
-    // Format the result as a string in ISO 8601 format
-    const formattedTimestamp = utcDate.toISOString();
-
-    console.log(formattedTimestamp);
-
-
-
-    setLiveDate(e?.$d)
-    setEndDate(formattedTimestamp)
     setIsLive(true);
+    setLiveDate(e)
+    setEndDate(dayjs(e).add(30, 'minute'))
+
+
     const roomID = 'ABC123';
     const userUrlcreated = `/user/course/liveusersession/id`
     let sharedLinks = [];
@@ -328,16 +301,12 @@ export default function AddSession() {
   }
 
   const handleEndDateSelected = (e: any) => {
-    moment((new Date(liveDate)).setMinutes((new Date(liveDate)).getMinutes() + 30)).format("YYYY-MM-DD HH:mm:ss")
-    setEndDate(e?.$d)
+    // moment((new Date(liveDate)).setMinutes((new Date(liveDate)).getMinutes() + 30)).format("YYYY-MM-DD HH:mm:ss")
+    setEndDate(e)
   }
 
 
-
-  console.log(endDate, 'eeeeeeeeeeeeeee', today)
-
-
-
+  // console.log(endDate,"kkihjih")
   return (
     <>
       <Navbar />
@@ -516,14 +485,15 @@ export default function AddSession() {
                     />
                   </Grid>
 
-                  {isChecked ?
+                  {toogle ?
                     <>
                       <Grid item xs={12} sm={12} md={6} lg={6}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                           <Typography>Set streaming Date</Typography>
                           <DateTimePicker
                             {...register("live_date")}
-                            defaultValue={today}
+                            // defaultValue={dayjs(today).add(30, 'seconds')}
+                            value={today}
                             onChange={(e) => handleDateSelect(e)}
                             disablePast
                             views={['year', 'month', 'day', 'hours', 'minutes']}
@@ -533,30 +503,18 @@ export default function AddSession() {
                       </Grid>
 
                       <Grid item xs={12} sm={12} md={6} lg={6}>
-                        {/* {endDate === '' ? 'blank' : "endDate"} */}
-                        {endDate === '' ?
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <Typography>Set streaming End Date</Typography>
-                            <DateTimePicker
-                              {...register("live_end_date")}
-                              defaultValue={dayjs(today).add(30, 'minute')}
-                              onChange={(e) => handleEndDateSelected(e)}
-                              disablePast
-                              views={['year', 'month', 'day', 'hours', 'minutes']}
-                            />
-                          </LocalizationProvider> :
-                          <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <Typography>Set streaming End Date</Typography>
-                            <DateTimePicker
-                              {...register("live_end_date")}
-                              defaultValue={endDate}
-                              // value={endDate}
-                              onChange={(e) => handleEndDateSelected(e)}
-                              disablePast
-                              views={['year', 'month', 'day', 'hours', 'minutes']}
-                            />
-                          </LocalizationProvider>
-                        }
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <Typography>Set streaming End Date</Typography>
+                          <DateTimePicker
+                            {...register("live_end_date")}
+
+                            value={dayjs(liveDate).add(30, 'minute')}
+                            onChange={(e) => handleEndDateSelected(e)}
+                            disablePast
+                            views={['year', 'month', 'day', 'hours', 'minutes']}
+                          />
+                        </LocalizationProvider>
+
 
                       </Grid>
 
@@ -591,6 +549,7 @@ export default function AddSession() {
                       </Button>
                     ) : (
                       <LoadingButton
+                        sx={{ padding: '10px', width: '118px' }}
                         loading={isLoadingButton}
                         className={Sessions.updateLoadingButton}
                         size="large"

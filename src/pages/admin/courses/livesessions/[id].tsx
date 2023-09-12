@@ -2,7 +2,9 @@ import { capitalizeFirstLetter } from '@/common/CapitalFirstLetter/capitalizeFir
 import { HandleSessionGetByID } from '@/services/session';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
+import Countdown from 'react-countdown';
 let room: any
+let liveEndDate: any
 
 function Live() {
   const router = useRouter();
@@ -17,13 +19,14 @@ function Live() {
       try {
         const sessionDetails = await HandleSessionGetByID(id)
         room = sessionDetails?.data?.room_id
+        liveEndDate = sessionDetails?.data?.live_end_date
       } catch (e) {
         console.log(e)
       }
     }
   }
 
-  let myMeeting = (element: HTMLDivElement) => {
+  let myMeeting = async (element: HTMLDivElement) => {
     let loginUser: any
     let loginToken: any;
     if (typeof window !== "undefined") {
@@ -34,58 +37,102 @@ function Live() {
     // console.log(user?.first_name,'lllllllllllll')
     if (loginToken) {
 
-      // const module = await import('@zegocloud/zego-uikit-prebuilt')
-      // const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
-      // const appID = 1495782046;
-      // const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
-      // const roomID = (Math.floor(Math.random() * 10000) + "");
-      // const randomID = Date.now().toString();
-      // const userName = 'User';
-      // const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+      const module = await import('@zegocloud/zego-uikit-prebuilt')
+      const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
+      const appID = 1495782046;
+      const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
+      const roomID = room;
+      const randomID = Date.now().toString();
+      const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
+      const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+      const role = ZegoUIKitPrebuilt.Host
+
+      if (streamTokenData) {
+
+        const zp = ZegoUIKitPrebuilt.create(streamTokenData)
+        const createRoomConfig: any = {
+          container: element,
+          scenario: {
+            mode: ZegoUIKitPrebuilt.LiveStreamingMode,
+            config: {
+              role,
+            },
+          },
+        }
+
+        zp.joinRoom(createRoomConfig);
+
+
+        const currentTime: any = new Date();
+        const getEndADate: any = new Date(liveEndDate)
+        const timeRemaining = getEndADate - currentTime;
+
+        if (timeRemaining > 0) {
+          // Set a timeout to leave the room when the specific end date is reached
+          setTimeout(() => {
+            zp.destroy();
+          }, timeRemaining);
+        } else {
+          // The specified end date is in the past, so you can handle it accordingly
+          console.log("The specified end date has already passed.");
+        }
+
+        localStorage.setItem("liveStreamerRole", 'Host')
+      }
 
 
 
-      import('@zegocloud/zego-uikit-prebuilt')
-        .then(module => {
 
-          const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
-          const appID = 1495782046;
-          const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
-          const roomID = room;
-          const randomID = Date.now().toString();
-          const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
-          const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
-          const role = ZegoUIKitPrebuilt.Host
+      // import('@zegocloud/zego-uikit-prebuilt')
+      //   .then(module => {
+
+      //     const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
+      //     const appID = 1495782046;
+      //     const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
+      //     const roomID = room;
+      //     const randomID = Date.now().toString();
+      //     const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
+      //     const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+      //     const role = ZegoUIKitPrebuilt.Host
 
 
-          if (streamTokenData) {
+      //     if (streamTokenData) {
 
-            const zp = ZegoUIKitPrebuilt.create(streamTokenData)
-            const createRoomConfig: any = {
-              container: element,
-              scenario: {
-                mode: ZegoUIKitPrebuilt.LiveStreaming,
-                config: {
-                  role,
-                },
-              },
-            }
-            zp.joinRoom(createRoomConfig);
-            // zp.stopPlayingStream(streamID)
+      //       const zp = ZegoUIKitPrebuilt.create(streamTokenData)
+      //       const createRoomConfig: any = {
+      //         container: element,
+      //         scenario: {
+      //           mode: ZegoUIKitPrebuilt.LiveStreamingMode,
+      //           config: {
+      //             role,
+      //           },
+      //         },
+      //       }
 
-            //  zp.createStream()
+      //       zp.joinRoom(createRoomConfig);
 
-            // Assuming the library provides a `stopStreaming` method
 
-            // console.log(joinedRoom, 'jjjjjjjjjjjjjjjjjjjjjjjjjjjjj')
-            // const stream = zp.destroy()
-            // zg.stopPlayingStream(streamID)
-            localStorage.setItem("liveStreamerRole", 'Host')
-          }
-        })
-        .catch(error => {
-          console.error(error);
-        });
+      //       const currentTime: any = new Date();
+      //       const getEndADate: any = new Date(liveEndDate)
+      //       const timeRemaining = getEndADate - currentTime;
+      //       // console.log(liveEndDate, 'lllllllllllllllllllll', currentTime, timeRemaining)
+
+      //       if (timeRemaining > 0) {
+      //         // Set a timeout to leave the room when the specific end date is reached
+      //         setTimeout(() => {
+      //           zp.destroy();
+      //         }, timeRemaining);
+      //       } else {
+      //         // The specified end date is in the past, so you can handle it accordingly
+      //         console.log("The specified end date has already passed.");
+      //       }
+
+      //       localStorage.setItem("liveStreamerRole", 'Host')
+      //     }
+      //   })
+      //   .catch(error => {
+      //     console.error(error);
+      //   });
     } else {
       router.push('/login');
     }

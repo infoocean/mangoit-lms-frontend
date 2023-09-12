@@ -49,7 +49,7 @@ export const API = {
   createSite: `${BASE_URL}/createsiteconfig`,
   updateSite: `${BASE_URL}/updatesiteconfigs`,
   deleteSite: `${BASE_URL}/deletesiteconfigs`,
-  updateContentSecret:`${BASE_URL}/updateContentSecretKey`,
+  updateContentSecret: `${BASE_URL}/updateContentSecretKey`,
 
   //subscription
   getAllSubscription: `${BASE_URL}/getsubscription`, //admin only

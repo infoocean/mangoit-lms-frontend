@@ -11,6 +11,7 @@ import { NextPageContext } from "next";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { GenerateToken } from "@/services/auth";
 import { HandleGetAllSiteGet } from "@/services/site";
+import { MyChatContext, MyChatIdContext } from "@/GlobalStore/MyContext";
 interface MyAppProps {
   siteConfigData: any; // Replace with the actual type of your site config data
 }
@@ -21,9 +22,10 @@ export default function App({
   siteConfigData,
 }: AppProps | any) {
   const router = useRouter();
-
+  const [textuid, setTextuid] = useState<any>("");
   const [orgFavicon, setorgFavicon] = useState<any>("");
   const [orgTitle, setorgTitle] = useState<any>("");
+  const [userChatId, setuserChatId] = useState<any>("");
 
   const handleGetSiteOptionsDataById = async () => {
     await HandleGetAllSiteGet()
@@ -100,37 +102,37 @@ export default function App({
             siteConfigData
               ? BASE_URL + "/" + siteConfigData?.org_favicon
               : orgFavicon
-              ? BASE_URL + "/" + orgFavicon
-              : "/favicon.svg"
+                ? BASE_URL + "/" + orgFavicon
+                : "/favicon.svg"
           }
         />
         <title>
           {siteConfigData
-            ? ` ${
-                lastSegment
-                  ? capitalizeFirstLetter(lastSegment) +
-                    " " +
-                    "-" +
-                    " " +
-                    siteConfigData?.title
-                  : ""
-              }`
+            ? ` ${lastSegment
+              ? capitalizeFirstLetter(lastSegment) +
+              " " +
+              "-" +
+              " " +
+              siteConfigData?.title
+              : ""
+            }`
             : orgTitle
-            ? `${
-                siteTitle
-                  ? capitalizeFirstLetter(siteTitle) + " " + "-" + " "
-                  : ""
+              ? `${siteTitle
+                ? capitalizeFirstLetter(siteTitle) + " " + "-" + " "
+                : ""
               } ${orgTitle} `
-            : `LMS`}
+              : `LMS`}
         </title>
       </Head>
-      <GoogleOAuthProvider
-        clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}
-      >
-        <ProSidebarProvider>
-          <Component {...pageProps} siteConfigData={siteConfigData} />
-        </ProSidebarProvider>
-      </GoogleOAuthProvider>
+        <MyChatContext.Provider value={{ textuid, setTextuid }}>
+          <GoogleOAuthProvider
+            clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}
+          >
+            <ProSidebarProvider>
+              <Component {...pageProps} siteConfigData={siteConfigData} />
+            </ProSidebarProvider>
+          </GoogleOAuthProvider>
+        </MyChatContext.Provider>
     </>
   );
 }

@@ -1,4 +1,4 @@
-import Navbar from "@/common/LayoutNavigations/navbar";
+import Navbar, { ChatIdContext } from "@/common/LayoutNavigations/navbar";
 import SideBar from "@/common/LayoutNavigations/sideBar";
 import {
   collection,
@@ -20,7 +20,7 @@ import { v4 as uuid } from "uuid";
 import { Avatar, Badge, Box, Button, IconButton, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { SearchOutlined } from "@mui/icons-material";
-import { createContext, useEffect, useReducer, useState } from "react";
+import { createContext, useContext, useEffect, useReducer, useState } from "react";
 import SidebarStyles from "../../../styles/sidebar.module.css";
 import { auth } from "../../../firebase/firebase";
 import { onAuthStateChanged } from "firebase/auth";
@@ -31,6 +31,7 @@ import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFir
 import { BASE_URL } from "@/config/config";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
+import { MyChatContext } from "@/GlobalStore/MyContext";
 
 export const AuthContext: any = createContext('');
 export const ChatContext: any = createContext('');
@@ -38,6 +39,7 @@ export const ChatContext: any = createContext('');
 const Chat = () => {
   const [text, setText] = useState("");
   const [rows, setRows] = useState<any>([]);
+  const [chatId, setchatId] = useState<any>("");
   const [row, setRow] = useState<any>(null);
   const [search, setSearch] = useState("");
   const [currentUser, setCurrentUser] = useState<any>({});
@@ -49,8 +51,7 @@ const Chat = () => {
   const [liveChatDetail, setLiveChatDetail] = useState<any>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [userDataFromLocalStorage, setUserDataFromLocalStorage] = useState<any>('')
-
-
+  const { textuid }: any = useContext<any>(MyChatContext);
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (getUser: any) => {
       setCurrentUser(getUser);
@@ -107,8 +108,6 @@ const Chat = () => {
     getChats();
   }, [currentUser?.uid]);
 
-  console.log('liveChatDetail', allchats);
-
   const reorderUsers = () => {
     const users = rows
     const chatData = allchats
@@ -150,15 +149,13 @@ const Chat = () => {
   };
 
   const handleclick = async (e: any) => {
-
+    setchatId(e);
     setRow(e)
     let user: any
     const q = query(
       collection(db, "users"),
       where("uid", "==", e?.firebase_id)
     );
-
-
     try {
       const querySnapshot = await getDocs(q);
       querySnapshot.forEach((doc) => {
@@ -168,7 +165,6 @@ const Chat = () => {
     } catch (err) {
       setErr(true);
     }
-
     const combinedId =
       currentUser?.uid > user?.uid
         ? currentUser?.uid + user?.uid
@@ -214,8 +210,9 @@ const Chat = () => {
 
       }
     } catch (err) { }
-    setLiveChatDetail('')
+    setLiveChatDetail([])
   }
+
   const handleKeyPress = (event: any) => {
     if (event.key === 'Enter') {
       handleSend();
@@ -277,21 +274,18 @@ const Chat = () => {
     try {
       const chatCollection = collection(db, 'chats');
       const chatSnapshot = await getDocs(chatCollection);
-      console.log(chatSnapshot,"chatSnapshot")
-  
-      // chatSnapshot.forEach((doc) => {
-      //   // Extract the data from each document and add it to the array
-      //   const chatData = doc.data();
-      //   allChats.push({ id: doc.id, ...chatData });
-      // });
-  
+      chatSnapshot.forEach((doc) => {
+        // Extract the data from each document and add it to the array
+        const chatData = doc.data();
+        allchats.push({ id: doc.id, ...chatData });
+      });
+
     } catch (error) {
       console.error('Error fetching chats:', error);
       return [];
     }
   };
-  
-
+  const keys = Object.keys(allchats);
   function stringAvatar(first_name: string, last_name: string) {
     return {
       children: `${capitalizeFirstLetter(
@@ -300,12 +294,22 @@ const Chat = () => {
     };
   }
 
+  useEffect(() => {
+    const chatuserdata = reorderedUsers?.length > 0 && reorderedUsers.filter(function (arrdata: any) {
+      return arrdata.firebase_id == textuid?.userInfo?.uid
+    });
+    if (chatuserdata.length > 0) {
+      handleclick(chatuserdata[0]);
+    }
+  }, [textuid]);
   const chatEntries: any = allchats && Object.entries(allchats).map((chat) => chat[1]);
   const chatFinder = chatEntries?.filter((chat: any) => chat.userInfo.messageRecieverId === userDataFromLocalStorage.firebase_id && chat.userInfo.isRead === 0)
   // console.log(chatFinder, "userDataFromLocalStorage")
 
+  
+
   return (
-    <AuthContext.Provider value={{ currentUser, combineIDD, user }}>
+    <AuthContext.Provider value={{ currentUser, combineIDD, user, chatId }}>
       <Navbar />
       <Box className={SidebarStyles.combineContentAndSidebar}>
         <SideBar />
@@ -351,15 +355,12 @@ const Chat = () => {
                           background: "#d3d3d3c7 !important",
                         }, background: "#d3d3d3c7"
                       } : {};
-
                       return (
-
                         <TableRow
                           hover
                           key={maprow?.id}
                           onClick={() => { handleclick(maprow) }}
                           sx={styleOfSelectedRow}
-
                         >
                           <TableCell sx={{ display: 'flex', cursor: "pointer" }} >
                             <Avatar
@@ -375,10 +376,20 @@ const Chat = () => {
                               <span style={{ fontSize: '14px', fontWeight: ' 600', padding: '5px' }}>{capitalizeFirstLetter(maprow?.first_name + " " + maprow?.last_name)}</span>
                               <Typography sx={{ fontSize: '11px', paddingLeft: '5px' }}>{maprow?.role_id === 2 ? "User" : "Admin"}</Typography>
                             </Box>
+                            {keys.map((key) => {
+                              if (allchats[key]?.userInfo?.uid === maprow?.firebase_id && allchats[key]?.userInfo?.isRead === 0) {
+                                if (chatFinder?.length > 0)
+                                  return (
+                                    <Box sx={{ float: 'right' }}>
+                                      <Badge badgeContent={"1+"} color="warning" style={{ marginTop: "20px", marginLeft: "85px" }}>
+                                      </Badge></Box>
+                                  )
+                              }
+                            })}
                             {/* Show all the count of unread messages */}
-                            {/* {chatFinder?.length > 0 ?
-                              <Badge badgeContent={"new"} color="warning" style={{ marginTop: "20px", marginLeft: "85px" }}>
-                              </Badge> : ''} */}
+                            {/* {chatFinder?.length > 0 ? */}
+
+                            {/* : ''} */}
                           </TableCell>
                         </TableRow>
                       )

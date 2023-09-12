@@ -18,7 +18,6 @@ import { capitalizeFirstLetter } from "../CapitalFirstLetter/capitalizeFirstLett
 import { BASE_URL } from "@/config/config";
 import Link from "next/link";
 import { HandleSiteGetByID } from "@/services/site";
-import { AuthContext, ChatContext } from "../../pages/user/chat/index";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import MarkUnreadChatAltOutlinedIcon from '@mui/icons-material/MarkUnreadChatAltOutlined';
@@ -26,7 +25,7 @@ import moment from "moment";
 import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
 import CircleNotificationsOutlinedIcon from '@mui/icons-material/CircleNotificationsOutlined';
 import NotificationImportantOutlinedIcon from '@mui/icons-material/NotificationImportantOutlined';
-
+import { MyChatContext } from "@/GlobalStore/MyContext";
 interface appbar {
   portalData?: any;
   profilePic?: any;
@@ -41,13 +40,14 @@ function stringAvatar(first_name: string, last_name: string) {
     )}${capitalizeFirstLetter(last_name?.split(" ")[0][0])}`,
   };
 }
-
+export const ChatIdContext: any = React.createContext('');
 export default function Navbar({
   portalData,
   profilePic,
   firstName,
   lastName,
 }: appbar) {
+  const { textuid, setTextuid } = React.useContext<any>(MyChatContext);
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [orgLogo, setOrgLogo] = React.useState<string>("");
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
@@ -72,6 +72,7 @@ export default function Navbar({
       setOpen(false)
     }
   };
+
   const handleCloseUserMenu = () => {
     setAnchorElUser(null);
   };
@@ -155,6 +156,11 @@ export default function Navbar({
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
+
+  const OpenChat = (chat: any) => {
+    setTextuid(chat);
+    router.replace(`/user/chat/`);
+  }
 
   const menuId = "primary-search-account-menu";
   const renderMenu = (
@@ -250,7 +256,7 @@ export default function Navbar({
   );
 
   const chatEntries: any = allchats && Object.entries(allchats).map((chat) => chat[1]);
-  const chatFinder = chatEntries?.filter((chat:any) => chat.userInfo.messageRecieverId === userData.firebase_id && chat.userInfo.isRead === 0)
+  const chatFinder = chatEntries?.filter((chat: any) => chat.userInfo.messageRecieverId === userData.firebase_id && chat.userInfo.isRead === 0)
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -275,15 +281,15 @@ export default function Navbar({
           <Box sx={{ flexGrow: 1 }} />
           <Box sx={{ display: { xs: "none", md: "flex" } }}>
             <Box
-              sx={{ margin: '10px',cursor: "pointer"}}
+              sx={{ margin: '10px', cursor: "pointer" }}
               onClick={handleOpenUserMenu}
             >
-              {chatFinder?.length > 0 ?  <Badge color="error" variant="dot" >
+              {chatFinder?.length > 0 ? <Badge color="error" variant="dot" >
                 <NotificationsNoneIcon />
-              </Badge>:<NotificationsNoneIcon /> }
+              </Badge> : <NotificationsNoneIcon />}
               {/* <Box> */}
               <Menu
-                sx={{ mt: '30px',height:'277px'}}
+                sx={{ mt: '30px', height: '277px' }}
                 id="menu-appbar"
                 anchorEl={anchorElUser}
                 anchorOrigin={{
@@ -297,41 +303,40 @@ export default function Navbar({
                 }}
                 open={Boolean(anchorElUser)}
               >
-                {chatFinder?.length > 0 ? chatFinder.map((chat: any,index:number) =>{
+                {chatFinder?.length > 0 ? chatFinder.map((chat: any, index: number) => {
                   const timestampSeconds = chat?.date?.seconds;
                   const timestampNanoseconds = chat?.date?.nanoseconds;
-                  
                   // Convert nanoseconds to milliseconds (1 second = 1000 milliseconds)
                   const timestampMilliseconds = timestampSeconds * 1000 + Math.floor(timestampNanoseconds / 1e6);
-
                   // Create a Date object from the timestamp in milliseconds
-                  const date = moment(new Date(timestampMilliseconds)).format("DD MMM YY");            
+                  const date = moment(new Date(timestampMilliseconds)).format("DD MMM YY");
                   return (
-                  
-                  <MenuItem key={index} sx={{ borderBottom: '1px solid #e1e1e1' }} onClick={() => router.replace('/user/chat')}>
-                    <Box sx={{ display: "flex" }}>
-                      <Box sx={{
-                        background: '#ffeee5',
-                        borderRadius: "50%",
-                        textAlign: "center",
-                        padding: "3px 12px"
-                      }}>
-                        <MarkUnreadChatAltOutlinedIcon sx={{ margin: "-12px 0px" ,fill:'#6a5f5f',fontSize: "20px"}} />
+                    <MenuItem key={index} sx={{ borderBottom: '1px solid #e1e1e1' }}
+                      onClick={() => OpenChat(chat)}
+                    >
+                      <Box sx={{ display: "flex" }}>
+                        <Box sx={{
+                          background: '#ffeee5',
+                          borderRadius: "50%",
+                          textAlign: "center",
+                          padding: "3px 12px"
+                        }}>
+                          <MarkUnreadChatAltOutlinedIcon sx={{ margin: "-12px 0px", fill: '#6a5f5f', fontSize: "20px" }} />
+                        </Box>
+                        <Box sx={{ margin: "0px 20px" }}>
+                          <Box display={"flex"}><Typography variant="body1" sx={{ fontSize: "small" }}>{capitalizeFirstLetter(chat?.userInfo?.displayName)}</Typography><CircleRoundedIcon sx={{ fontSize: "3px", margin: "auto 7px" }} /><Typography component={'span'} variant="caption">{date}</Typography></Box>
+                          <Typography variant="caption" sx={{ fontWeight: 600, fontSize: "14px" }}>{chat?.lastMessage?.text?.length > 30 ? chat?.lastMessage?.text?.substring(0, 30) + "..." : chat?.lastMessage?.text}</Typography>
+                        </Box>
                       </Box>
-                      <Box sx={{ margin: "0px 20px" }}>
-                        <Box display={"flex"}><Typography variant="body1" sx={{fontSize: "small"}}>{capitalizeFirstLetter(chat?.userInfo?.displayName)}</Typography><CircleRoundedIcon sx={{fontSize: "3px", margin: "auto 7px"}}/><Typography component={'span'} variant="caption">{date}</Typography></Box>
-                        <Typography variant="caption" sx={{    fontWeight: 600,fontSize: "14px"}}>{chat?.lastMessage?.text}</Typography>
-                      </Box>
-                    </Box>
-                  </MenuItem>
-               
-                   )
-                  }
-                ):<Box sx={{ padding:"10px 40px",textAlign: "center"}}>
-                  <NotificationImportantOutlinedIcon sx={{fontSize: "30px"}}/>
-                  <Typography sx={{fontSize: "16px"}}>No Notification Yet</Typography>
-                  </Box>
-                  }
+                    </MenuItem>
+
+                  )
+                }
+                ) : <Box sx={{ padding: "10px 40px", textAlign: "center" }}>
+                  <NotificationImportantOutlinedIcon sx={{ fontSize: "30px" }} />
+                  <Typography sx={{ fontSize: "16px" }}>No Notification Yet</Typography>
+                </Box>
+                }
               </Menu>
             </Box>
             <Box className={styles.createVrLine}>

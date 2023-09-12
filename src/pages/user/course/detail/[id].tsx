@@ -96,20 +96,19 @@ export default function Couseview() {
   const hours = String(currentDate.getHours()).padStart(2, '0'); // Get the hours
   const minutes = String(currentDate.getMinutes()).padStart(2, '0'); // Get the minutes
   const seconds = String(currentDate.getSeconds()).padStart(2, '0'); // Get the seconds
-
   const formattedCurrentDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 
+  // const Completionist = () => <span>Streaming over</span>;
   const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
-
     if (completed) {
       setComplete(true)
       // return <Completionist />;
-
     } else {
       setComplete(false)
       return (
         <Box>
-          {days}d {hours}h {minutes}m {seconds}s
+          {days == 0 ? <Box>{hours}h {minutes}m {seconds}s </Box> :
+            <Box>{days}d {hours}h {minutes}m {seconds}s </Box>}
         </Box>
       );
     }
@@ -218,7 +217,8 @@ export default function Couseview() {
 
   const handleLiveSession = () => {
     const sessionIDD = sessionData?.id
-    router.push(`/user/course/liveusersession/${sessionIDD}`)
+    // router.push(`/user/course/liveusersession/${sessionIDD}`)
+    window.open(`/user/course/liveusersession/${sessionIDD}?course_id=${id}`, '_blank')
   }
 
 
@@ -554,73 +554,84 @@ export default function Couseview() {
                             <Item>
 
 
+                              <Box sx={{ display: "flex", background: '#ebebeb', width: '100%', justifyContent: "space-between", }}>
+                                <Typography
+                                  variant="body1"
+                                  className={subs.useNameFront2}
+                                >
+                                  Course -  {(sessionData && capitalizeFirstLetter(sessionData?.title))}
+                                </Typography>
+                                <Box >
+
+                                  &nbsp;
+                                  <LightTooltip title="Download Image">
+                                    <Button
+                                      className={courseStyle.hoverbtn}
+                                      onClick={() => download("image")}
+                                    >
+                                      <FileDownloadOutlinedIcon
+                                        className={courseStyle.filedownloadcss}
+                                      />
+                                    </Button>
+                                  </LightTooltip>
+                                </Box>
+                              </Box>
                               <Image
-                                className={courseStyle.imgwidth}
+                                className={courseStyle.imagecss}
                                 alt="image"
                                 src={`${BASE_URL}/${files}`}
-                                width={350}
-                                height={500}
+                                width={300}
+                                height={300}
+
                               />
-                              <Typography
-                                variant="h5"
-                                className={subs.useNameFront1}
-                              >
-                                {(
-                                  sessionData && capitalizeFirstLetter(sessionData?.title)
-                                )}
-                              </Typography>
-                              {sessionData?.is_live_session == 1 ?
+                              {sessionData?.is_live_session == 1 ? <>
                                 <Card>
                                   <CardContent>
-                                    <Typography sx={{ color: "#d32f2f", fontSize: "large", margin: '5px' }} variant="body1" >
-                                      Live Streaming
+                                    <Typography sx={{ color: "#e8661b", fontSize: "18px", }} variant="body1" >
+                                      Live Session <LiveTvIcon sx={{ margin: '0px -3px -4px 10px' }} />
                                     </Typography>
 
-                                    <Box className='hjgfyh'>
-                                      <Box sx={{ display: "flex" }}>
-                                        <Box>
-                                          <Typography>
-                                            <CalendarMonthIcon />
-                                          </Typography>
-                                          <QueryBuilderIcon />
-                                        </Box>
-                                        <Box sx={{ marginLeft: "20px" }}>
-                                          <Typography variant="body2" fontSize="large">
-                                            {moment(sessionData?.live_date).format('LLL')}
-                                          </Typography>
-                                          <Typography variant="body2" fontSize="large">
-                                            {/* {moment(sessionData?.live_date).format('hh:mm:ss A') !== '11:16:29 AM' && moment(sessionData?.live_date).format('hh:mm:ss A') !== 'Invalid date' && <Countdown date={sessionData?.live_date} renderer={renderer} />} */}
-                                            {new Date(sessionData?.live_date) > new Date() ?
-                                              <Countdown date={sessionData?.live_date} renderer={renderer} /> : 'live'}
-                                          </Typography>
-                                        </Box>
-                                      </Box>
-                                      <Box>
-                                        {/* <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button> */}
-                                        {new Date(sessionData?.live_date) > new Date() ?
-                                          <Button variant="outlined" size="large" disabled>Join</Button> :
-                                          <Button variant="outlined" size="large" onClick={handleLiveSession}>Join</Button>}
-                                      </Box>
-                                    </Box>
-                                  </CardContent>
-                                </Card> : ''}
-                              <Box className={subs.maindisplay}>
+                                    {new Date() > new Date(sessionData?.live_end_date) ?
+                                      <Box><Typography sx={{ marginLeft: "15px" }} variant="body2" fontSize="15px" >The live session over</Typography></Box>
+                                      :
+                                      <Box className='hjgfyh'>
+                                        <Box sx={{ display: "flex", justifyContent: 'space-between' }}>
+                                          <Box sx={{ display: 'flex' }}>
+                                            <Box>
+                                              <Typography>
+                                                <CalendarMonthIcon sx={{ fontSize: "22px" }} />
+                                              </Typography>
+                                              <QueryBuilderIcon sx={{ fontSize: "22px" }} />
+                                            </Box>
+                                            <Box sx={{ marginLeft: "20px" }}>
+                                              <Typography variant="body2" fontSize="15px">
+                                                {moment(sessionData?.live_date).format('LLL')}
+                                              </Typography>
+                                              <Typography variant="body2" fontSize="15px" sx={{ padding: "6px 0px" }}>
+                                                {/* {moment(sessionData?.live_date).format('hh:mm:ss A') !== '11:16:29 AM' && moment(sessionData?.live_date).format('hh:mm:ss A') !== 'Invalid date' && <Countdown date={sessionData?.live_date} renderer={renderer} />} */}
+                                                {new Date(sessionData?.live_date) > new Date() ?
+                                                  <Countdown date={sessionData?.live_date} renderer={renderer} /> : 'live'}
+                                              </Typography>
+                                            </Box>
+                                          </Box>
+                                          <Box>
 
-                                &nbsp;
-                                <LightTooltip title="Download Image">
-                                  <Button
-                                    className={courseStyle.hoverbtn}
-                                    onClick={() => download("image")}
-                                  >
-                                    <FileDownloadOutlinedIcon
-                                      className={courseStyle.filedownloadcss}
-                                    />
-                                  </Button>
-                                </LightTooltip>
-                              </Box>
+                                            {new Date(sessionData?.live_date) > new Date() ?
+                                              <Button variant="outlined" size="large" disabled>Join</Button> :
+                                              <Button size="large" variant="contained"
+                                                className={courseStyle.backbtncs12} id={styles.muibuttonBackgroundColor}
+                                                onClick={handleLiveSession}>Join</Button>}
+                                          </Box>
+                                        </Box>
+
+                                      </Box>}
+                                  </CardContent>
+                                </Card>
+                              </> : ''}
+
                               <Typography
-                                variant="subtitle2"
-                                className={courseStyle.fontCS}
+                                variant="body2"
+                                className={courseStyle.fontCSS2}
                               >
                                 {capitalizeFirstLetter(
                                   sessionData &&
@@ -749,19 +760,10 @@ export default function Couseview() {
                                       </Box>
                                     </Box>
                                   </AccordionSummary>
-                                  {/* 
-                                  {showIframe ?
-                                    <iframe
-                                      src={sessionData?.stream_url}
-                                      width="800"
-                                      height="600"
-                                      title="Meeting"
-                                    /> */}
 
 
                                   <AccordionDetails>
                                     {item?.sessions.map((itemData: any) => {
-                                      // console.log(itemData,'iiiiiiiiiiiiiii')
                                       const togglee =
                                         itemData?.id === activeToggle
                                           ? "active"
@@ -806,10 +808,10 @@ export default function Couseview() {
                                                       {capitalizeFirstLetter(itemData?.title)}
                                                     </Typography>
                                                     <Box sx={{ color: '#d32f2f', marginLeft: 'auto' }} >
-                                                      {(itemData?.is_live_session == 1 && itemData?.live_end_date > formattedCurrentDate) ? <LiveTvIcon /> : ''}
+                                                      {(itemData?.live_end_date) < new Date() ? "" : <LiveTvIcon />}
 
-                                                  {/* {itemData?.is_live_session == true ? "data" : "not"} */}
-                                                  
+                                                      {/* {itemData?.is_live_session == true ? "data" : "not"} */}
+
                                                       {/* {(itemData?.is_live_session == 1 && itemData?.live_end_date > new Date().toISOString()) ? 'live' : ''} */}
                                                     </Box>
                                                   </ListItemButton>

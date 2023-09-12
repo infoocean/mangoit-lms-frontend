@@ -493,7 +493,7 @@ export default function AddSession() {
                           <DateTimePicker
                             {...register("live_date")}
                             // defaultValue={dayjs(today).add(30, 'seconds')}
-                            value={today}
+                            value={dayjs(liveDate).add(2, 'seconds')}
                             onChange={(e) => handleDateSelect(e)}
                             disablePast
                             views={['year', 'month', 'day', 'hours', 'minutes']}

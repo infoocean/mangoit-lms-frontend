@@ -1,13 +1,14 @@
 import { capitalizeFirstLetter } from '@/common/CapitalFirstLetter/capitalizeFirstLetter';
 import { HandleSessionGetByID } from '@/services/session';
+import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
 let room: any
+let liveEndDate: any
 
 function Live() {
   const router = useRouter();
-  const { id } = router?.query;
-  const dt = router?.query?.role
+  const { id, course_id } = router?.query;
 
   useEffect(() => {
     getSessionDataById(id)
@@ -18,12 +19,13 @@ function Live() {
       try {
         const sessionDetails = await HandleSessionGetByID(id)
         room = sessionDetails?.data?.room_id
-
+        liveEndDate = sessionDetails?.data?.live_end_date
       } catch (e) {
         console.log(e)
       }
     }
   }
+  let meetingEnded = false; // Flag to track if the meeting has ended
 
   let myMeeting = async (element: HTMLDivElement) => {
     let loginUser: any
@@ -35,82 +37,73 @@ function Live() {
       loginUser = window.localStorage.getItem("userData");
     }
 
-    if (liveStreamerRole === 'Host') {
-      router.push(`/admin/courses/livesessions/${id}`)
-    } else if (loginToken) {
+    if (loginToken) {
 
-      const module = await import('@zegocloud/zego-uikit-prebuilt')
-      const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
-      const appID = 1495782046;
-      const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
-      const roomID = room;
-      const randomID = Date.now().toString();
-      const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
-      const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
-      const role = ZegoUIKitPrebuilt.Audience
+      if (liveStreamerRole === 'Host') {
+        router.push(`/admin/courses/livesessions/${id}`)
+      } else {
+        const module = await import('@zegocloud/zego-uikit-prebuilt')
+        const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
+        const appID = 1495782046;
+        const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
+        const roomID = room;
+        const randomID = Date.now().toString();
+        const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
+        const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+        const role = ZegoUIKitPrebuilt.Audience
 
-
-      if (streamTokenData) {
-        const zp = ZegoUIKitPrebuilt.create(streamTokenData)
-        const createRoomConfig: any = {
-          container: element,
-          // turnOnMicrophoneWhenJoining: false,
-          // turnOnCameraWhenJoining: false,
-          // showUserList:false,
-          // showTurnOffRemoteCameraButton: false,
-          scenario: {
-            mode: ZegoUIKitPrebuilt.LiveStreamingMode,
-            config: {
-              role,
-
-            },
-          },
+        if (!streamTokenData) {
+          return <Box>No Stream token Found </Box>
         }
-        zp.joinRoom(createRoomConfig);
-        // turnOnMicrophoneWhenJoining?: boolean;
-        // const joinedRoom =   zp.joinRoom(createRoomConfig);
-        // console.log(joinedRoom, 'jjjjjjjjjjjjjjjjjjjjjj')
-        // Join the room
+        else {
+          const currentTime: any = new Date();
+          const getEndADate: any = new Date(liveEndDate)
+          const timeRemaining = getEndADate - currentTime;
 
+          if (timeRemaining > 0) {
+            const zp = ZegoUIKitPrebuilt.create(streamTokenData)
+            const createRoomConfig: any = {
+              container: element,
+              turnOnMicrophoneWhenJoining: false,
+              turnOnCameraWhenJoining: false,
+              showMyCameraToggleButton: false,
+              showMyMicrophoneToggleButton: false,
+              showAudioVideoSettingsButton: false,
+              showScreenSharingButton: false,
+              onLeaveRoom: () => {
+                router.push('/user/course/')
+              },
+              scenario: {
+                mode: ZegoUIKitPrebuilt.LiveStreamingMode,
+                config: {
+                  role,
+                },
+              },
+            }
+            zp.joinRoom(createRoomConfig);
+            localStorage.setItem('liveSteamerRole', 'Audience');
 
-        localStorage.setItem('liveSteamerRole', 'Audience');
+            // Set a timeout to leave the room when the specific end date is reached
+            setTimeout(() => {
+              zp.destroy();
+              meetingEnded = true;
+              if (meetingEnded === true) {
+                window.location.replace(`/user/course/detail/${course_id}`)
+              }
+            }, timeRemaining);
+
+          }
+          else if (timeRemaining < 0) {
+            router.push(`/user/course/`)
+          }
+        }
       }
-      // import('@zegocloud/zego-uikit-prebuilt')
-      //   .then(module => {
-      //     const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
-      //     const appID = 1495782046;
-      //     const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
-      //     const roomID = room;
-      //     const randomID = Date.now().toString();
-      //     const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
-      //     const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
-      //     const role = ZegoUIKitPrebuilt.Audience
-
-
-      //     if (streamTokenData) {
-      //       const zp = ZegoUIKitPrebuilt.create(streamTokenData)
-      //       const createRoomConfig: any = {
-      //         container: element,
-      //         scenario: {
-      //           mode: ZegoUIKitPrebuilt.LiveStreamingMode,
-      //           config: {
-      //             role,
-
-      //           },
-      //         },
-      //       }
-
-      //       zp.joinRoom(createRoomConfig);
-
-      //       localStorage.setItem('liveSteamerRole', 'Audience');
-      //     }
-      //   })
-      //   .catch(error => {
-      //     console.error(error);
-      //   });
-    } else {
+    }
+    else {
       router.push('/login');
     }
+
+
   }
 
   return (

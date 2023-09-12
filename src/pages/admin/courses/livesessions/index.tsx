@@ -64,7 +64,7 @@ import { AlertDialog } from "@/common/DeleteListRow/deleteRow";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 
 interface Column {
-  id: "id" | "title" | "course_id" | "module_id" | "is_deleted" | "end_date" | "remaining" |"action";
+  id: "id" | "title" | "course_id" | "module_id" | "is_deleted" | "end_date" | "remaining" | "action";
   label: string;
   minWidth?: number;
   align?: "right";
@@ -78,7 +78,7 @@ const columns: Column[] = [
   { id: "module_id", label: "MODULE NAME", minWidth: 100 },
   { id: "is_deleted", label: "START DATE", minWidth: 100 },
   { id: "end_date", label: "END DATE", minWidth: 100 },
-  { id: "remaining", label: "STREAMING TIME", minWidth: 100},
+  { id: "remaining", label: "STREAMING TIME", minWidth: 100 },
   { id: "action", label: "ACTION", minWidth: 100 },
 ];
 
@@ -589,7 +589,7 @@ const AllLiveSessions = () => {
                                     row.module && row.module.title
                                   )}
                                 </TableCell>
-                                <TableCell className={statusColor}>
+                                <TableCell>
                                   {/* {getRemainingDays(row?.live_date)} */}
                                   {/* {  const currentDate = new Date();
                                   const givenDateTime = new Date(sessionData?.live_date);
@@ -604,33 +604,32 @@ const AllLiveSessions = () => {
                                   {/* {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : 'Session Started'} */}
                                   {moment(row?.live_date).format("DD-MMM-YYYY HH:mm A")}
                                 </TableCell>
-                                <TableCell className={statusColor}>
+                                <TableCell>
                                   {moment(row?.live_end_date).format("DD-MMM-YYYY HH:mm A")}
                                 </TableCell>
                                 <TableCell className={statusColor}>
-                                {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : 'Session Started'}
+                                  {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : 'Session Started'}
                                 </TableCell>
                                 <TableCell>
-                                <Button
-                                      onClick={() =>
-                                        router.push(
-                                          `/admin/courses/livesessions/${row?.id}`
-                                        )
-                                      }
-                                      variant="outlined"
-                                      color="success"
-                                      className={Sessions.editDeleteButton}
-                                    >
-                                      Live
-                                    </Button>
-                                  {/* {new Date(row?.live_date) > new Date() ?
+                                  {/* <Button
+                                    onClick={() =>
+                                      router.push(
+                                        `/admin/courses/livesessions/${row?.id}`
+                                      )
+                                    }
+                                    variant="outlined"
+                                    color="success"
+                                    className={Sessions.editDeleteButton}
+                                  >
+                                    Live
+                                  </Button> */}
+                                  {new Date(row?.live_date) > new Date() ?
                                     <Button variant="outlined" disabled>Live</Button>
                                     :
                                     <Button
                                       onClick={() =>
-                                        router.push(
-                                          `/admin/courses/livesessions/${row?.id}`
-                                        )
+                                        //  router.push(`/admin/courses/livesessions/${row?.id}`)
+                                         window.open(`/admin/courses/livesessions/${row?.id}`, '_blank')
                                       }
                                       variant="outlined"
                                       color="success"
@@ -638,7 +637,7 @@ const AllLiveSessions = () => {
                                     >
                                       Live
                                     </Button>
-                                  } */}
+                                  }
 
                                 </TableCell>
                               </TableRow>

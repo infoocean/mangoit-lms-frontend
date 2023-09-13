@@ -3,8 +3,8 @@ import { HandleSessionGetByID } from '@/services/session';
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import Countdown from 'react-countdown';
-
+import { toast } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 let room: any
 let liveEndDate: any
 
@@ -22,13 +22,21 @@ function Live() {
         const sessionDetails = await HandleSessionGetByID(id)
         room = sessionDetails?.data?.room_id
         liveEndDate = sessionDetails?.data?.live_end_date
+        const currentTime: any = new Date();
+        const getEndADate: any = new Date(liveEndDate)
+        const timeRemaining = getEndADate - currentTime;
+        if (timeRemaining > 0) {
+          //alert before end session
+          setTimeout(() => {
+            toast.warning('Your session will ended within 30 seconds')
+          }, (timeRemaining - 30000));
+        }
       } catch (e) {
         console.log(e)
       }
     }
   }
 
-  let meetingEnded = false; // Flag to track if the meeting has ended
 
   let myMeeting = async (element: HTMLDivElement) => {
     let loginUser: any
@@ -49,7 +57,6 @@ function Live() {
       const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
       const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
       const role = ZegoUIKitPrebuilt.Host
-
       if (!streamTokenData) {
         return <Box>No Stream token Found </Box>
       }
@@ -57,19 +64,17 @@ function Live() {
         const currentTime: any = new Date();
         const getEndADate: any = new Date(liveEndDate)
         const timeRemaining = getEndADate - currentTime;
-
-
         if (timeRemaining > 0) {
-          const zp = ZegoUIKitPrebuilt.create(streamTokenData)
-
+          const zp: any = ZegoUIKitPrebuilt.create(streamTokenData)
           const createRoomConfig: any = {
             container: element,
             showRoomTimer: true,
+            showRemoveUserButton: true,
             onLeaveRoom: () => {
               router.push('/admin/courses/livesessions/')
             },
             scenario: {
-              mode: ZegoUIKitPrebuilt.LiveStreamingMode,
+              mode: ZegoUIKitPrebuilt.LiveStreamingMode.RealTimeLive,
               config: {
                 role,
               },
@@ -77,22 +82,20 @@ function Live() {
           }
           zp.joinRoom(createRoomConfig);
 
-          localStorage.setItem("liveStreamerRole", 'Host')
-
           // Set a timeout to leave the room when the specific end date is reached
           setTimeout(() => {
             zp.destroy();
-            meetingEnded = true;
-            if (meetingEnded === true) {
-              window.location.replace('/admin/courses/livesessions/')
-            }
+            window.location.replace('/admin/courses/livesessions/')
           }, timeRemaining);
+
+          localStorage.setItem("liveStreamerRole", 'Host')
 
         }
         else if (timeRemaining < 0) {
           router.push('/admin/courses/livesessions')
         }
       }
+
     }
     else {
       router.push('/login');
@@ -101,11 +104,10 @@ function Live() {
 
   return (
     <>
-      {!meetingEnded ? <div ref={myMeeting} style={{ width: '100vw', height: '100vh' }} > </div>
-        : <div>End Meeting</div>}
-
+      <div ref={myMeeting} style={{ width: '100vw', height: '100vh' }} >
+      </div>
+      <ToastContainer />
     </>
   );
 }
-
 export default Live;

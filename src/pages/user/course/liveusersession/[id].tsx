@@ -3,6 +3,8 @@ import { HandleSessionGetByID } from '@/services/session';
 import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
+import { toast } from 'react-toastify';
+import { ToastContainer } from "react-toastify";
 let room: any
 let liveEndDate: any
 
@@ -20,6 +22,15 @@ function Live() {
         const sessionDetails = await HandleSessionGetByID(id)
         room = sessionDetails?.data?.room_id
         liveEndDate = sessionDetails?.data?.live_end_date
+        const currentTime: any = new Date();
+        const getEndADate: any = new Date(liveEndDate)
+        const timeRemaining = getEndADate - currentTime;
+        //alert before end session
+        if (timeRemaining > 0) {
+          setTimeout(() => {
+            toast.warning('Your session will ended within 30 seconds')
+          }, (timeRemaining - 30000));
+        }
       } catch (e) {
         console.log(e)
       }
@@ -70,18 +81,18 @@ function Live() {
               showMyMicrophoneToggleButton: false,
               showAudioVideoSettingsButton: false,
               showScreenSharingButton: false,
+              showRoomTimer: true,
               onLeaveRoom: () => {
-                router.push('/user/course/')
+                router.push(`/user/course/detail/${course_id}`)
               },
               scenario: {
-                mode: ZegoUIKitPrebuilt.LiveStreamingMode,
+                mode: ZegoUIKitPrebuilt.LiveStreamingMode.RealTimeLive,
                 config: {
                   role,
                 },
               },
             }
             zp.joinRoom(createRoomConfig);
-            localStorage.setItem('liveSteamerRole', 'Audience');
 
             // Set a timeout to leave the room when the specific end date is reached
             setTimeout(() => {
@@ -92,9 +103,10 @@ function Live() {
               }
             }, timeRemaining);
 
+            localStorage.setItem('liveSteamerRole', 'Audience');
           }
           else if (timeRemaining < 0) {
-            router.push(`/user/course/`)
+            router.push(`/user/course/detail/${course_id}`)
           }
         }
       }
@@ -108,10 +120,9 @@ function Live() {
 
   return (
     <>
-      <div
-        ref={myMeeting}
-        style={{ width: '100vw', height: '100vh' }}
-      ></div>
+      <div ref={myMeeting} style={{ width: '100vw', height: '100vh' }}>
+      </div>
+      <ToastContainer />
     </>
   );
 }

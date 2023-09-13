@@ -17,7 +17,7 @@ import {
 
 import { db } from "../../../firebase/firebase";
 import { v4 as uuid } from "uuid";
-import { Avatar, Badge, Box, Button, IconButton, Table, TableBody, TableCell, TableContainer, TableRow, TextField, Typography } from "@mui/material";
+import { Avatar, Backdrop, Badge, Box, Button, Fade, IconButton, Modal, Table, TableBody, TableCell, TableContainer, TableRow, TextField, TextareaAutosize, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { SearchOutlined } from "@mui/icons-material";
 import { createContext, useContext, useEffect, useReducer, useState } from "react";
@@ -32,6 +32,28 @@ import { BASE_URL } from "@/config/config";
 import SpinnerProgress from "@/common/CircularProgressComponent/spinnerComponent";
 import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { MyChatContext } from "@/GlobalStore/MyContext";
+import { Textarea } from "@mui/joy";
+import SendIcon from '@mui/icons-material/Send';
+import { makeStyles } from "@mui/styles";
+
+
+const useStyles: any = makeStyles((theme: any) => ({
+  gridList: {
+    flexWrap: "nowrap",
+    transform: "translateZ(0)"
+  },
+  modal: {
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    "&:hover": {
+      backgroundcolor: "red"
+    }
+  },
+  img: {
+    outline: "none"
+  }
+}));
 
 export const AuthContext: any = createContext('');
 export const ChatContext: any = createContext('');
@@ -52,6 +74,8 @@ const Chat = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [userDataFromLocalStorage, setUserDataFromLocalStorage] = useState<any>('')
   const { textuid }: any = useContext<any>(MyChatContext);
+  const classes = useStyles();
+
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (getUser: any) => {
       setCurrentUser(getUser);
@@ -80,6 +104,7 @@ const Chat = () => {
       }
     });
   };
+
 
   useEffect(() => {
     const getChats = () => {
@@ -306,7 +331,20 @@ const Chat = () => {
   const chatFinder = chatEntries?.filter((chat: any) => chat.userInfo.messageRecieverId === userDataFromLocalStorage.firebase_id && chat.userInfo.isRead === 0)
   // console.log(chatFinder, "userDataFromLocalStorage")
 
-  
+  const [open, setOpen] = useState(false);
+  const [image, setImage] = useState<any>("");
+
+  const handleClose = () => {
+    setOpen(false);
+  };
+
+  const handleImage = (value: any) => {
+    setImage(value);
+    setOpen(true);
+  };
+
+  console.log(image)
+
 
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user, chatId }}>
@@ -387,9 +425,8 @@ const Chat = () => {
                               }
                             })}
                             {/* Show all the count of unread messages */}
-                            {/* {chatFinder?.length > 0 ? */}
 
-                            {/* : ''} */}
+
                           </TableCell>
                         </TableRow>
                       )
@@ -410,8 +447,9 @@ const Chat = () => {
                         ? `${BASE_URL}/${row.profile_pic}`
                         : "/profile.png"
                     }
+                    onClick={(e) => handleImage(row)}
                     {...stringAvatar(row?.first_name, row?.last_name)}
-                    sx={{ height: "40px", width: "40px", fontSize: "medium" }}
+                    sx={{ height: "40px", width: "40px", fontSize: "medium", cursor: "pointer" }}
                   />
                   <Box>
                     <Typography sx={{ fontSize: '15px', fontWeight: ' 700', padding: '6px 10px', lineHeight: 0.5 }}>{capitalizeFirstLetter(row?.first_name + " " + row?.last_name)}</Typography>
@@ -430,22 +468,28 @@ const Chat = () => {
                   color: '#fff',
                   width: '100%',
                   display: 'flex',
+                  marginTop: "15px"
+
                 }}>
-                  <TextField
+                  <Textarea
+                    minRows={1}
+                    maxRows={3}
                     id="standard-search"
                     value={text}
                     variant="outlined"
                     onChange={(e) => setText(e.target.value)}
                     onKeyDown={handleKeyPress}
                     placeholder="Type something..."
-                    fullWidth
+                    style={{ width: "inherit", borderRadius: "20px 0px 0px 20px", fontSize: "16.5px", }}
+
                   />
                   <Button
                     id={SidebarStyles.muibuttonBackgroundColor}
-                    sx={{ color: "#fff", borderRadius: '0px 20px 20px 0px' }}
-                    onClick={handleSend}>Send
+                    sx={{ color: "#fff", borderRadius: '0px 20px 20px 0px', height: "50px" }}
+                    onClick={handleSend}><SendIcon />
                   </Button>
                 </Box>
+
               </Box>
             ) : <Box sx={{
               width: "100%",
@@ -461,6 +505,34 @@ const Chat = () => {
           )}
         </Box>
       </Box >
+      <Modal
+        className={classes.modal}
+        open={open}
+        onClose={handleClose}
+        closeAfterTransition
+      >
+        <Fade in={open} timeout={500}
+          className={classes.img}
+        >
+          {/* <Avatar
+            src={image}
+            alt="asd"
+
+          /> */}
+
+          <Avatar
+            src={
+              image?.profile_pic
+                ? `${BASE_URL}/${image.profile_pic}`
+                : "/profile.png"
+            }
+            {...stringAvatar(image?.first_name, image?.last_name)}
+            style={{ height: "300px", width: "300px", borderRadius: "50%", fontSize: "100px" }}
+          />
+
+
+        </Fade>
+      </Modal>
     </AuthContext.Provider >
   );
 }

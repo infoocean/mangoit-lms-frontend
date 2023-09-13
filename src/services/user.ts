@@ -20,7 +20,7 @@ export const HandleUserGet = async (searchData: any, filterData: any) => {
       return request;
     })
     .catch((error) => {
-      if (error.response.status === 401) {
+      if (error?.response?.status === 401) {
         HandleLogout();
       } else {
         toast.error("Something went wrong");

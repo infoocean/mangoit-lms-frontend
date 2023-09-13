@@ -74,34 +74,30 @@ const Message = ({ message }: any) => {
         <Grid container onClick={() => messageRead(message)} >
           <Grid item xs={12} sx={manageData}>
             <Box sx={manageBoxData}>
-              <Box sx={{ padding: '2px 10px', textAlign: "justify" }}>
-                <span style={{ fontSize: '14px' }} >{message?.m?.text}</span>
+              <Box sx={{ padding: '2px 10px', textAlign: "justify", }}>
+               {message?.m?.text}
               </Box>
               <Box>
                 {
                   chatId?.firebase_id === message?.m?.senderId ? (<Avatar
-                    // src={
-                    //   message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
-                    // }
+                    src={
+                      message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
+                    }
                     {
                     ...stringAvatar(message?.props?.data?.row?.first_name, message?.props?.data?.row?.last_name)}
                     sx={{ width: "25px", height: "25px", fontSize: "10px" }}
                   />) : (<Avatar
-                    // src={
-                    //   message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
-                    // }
+                    src={
+                      message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
+                    }
                     {
                     ...stringAvatar(loginUser?.first_name, loginUser?.last_name)}
                     sx={{ width: "35px", height: " 35px", fontSize: "smaller" }}
                   />)
                 }
-                {/* <span style={{ fontSize: '12px', fontWeight: ' 600' }}>{message?.m?.senderId === currentUser?.uid ? capitalizeFirstLetter(loginUser?.first_name) : capitalizeFirstLetter(message?.props?.data?.row?.first_name)} </span> */}
               </Box>
             </Box>
           </Grid>
-          {/* <Grid item xs={12}>
-            <ListItemText secondary="09:30"></ListItemText>
-          </Grid> */}
         </Grid>
       </p>
 

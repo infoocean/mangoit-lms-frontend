@@ -11,7 +11,7 @@ import { NextPageContext } from "next";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { GenerateToken } from "@/services/auth";
 import { HandleGetAllSiteGet } from "@/services/site";
-import { MyChatContext, MyChatIdContext } from "@/GlobalStore/MyContext";
+import { MyChatContext } from "@/GlobalStore/MyContext";
 interface MyAppProps {
   siteConfigData: any; // Replace with the actual type of your site config data
 }

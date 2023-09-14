@@ -72,13 +72,13 @@ interface Column {
 }
 
 const columns: Column[] = [
-  { id: "id", label: "ID" },
-  { id: "title", label: "SESSION NAME", minWidth: 170 },
-  { id: "course_id", label: "COURSE NAME", minWidth: 100 },
-  { id: "module_id", label: "MODULE NAME", minWidth: 100 },
-  { id: "is_deleted", label: "START DATE", minWidth: 100 },
-  { id: "end_date", label: "END DATE", minWidth: 100 },
-  { id: "remaining", label: "STREAMING TIME", minWidth: 100 },
+  { id: "id", label: "ID" , minWidth: 70},
+  { id: "title", label: "SESSION NAME", minWidth: 150 },
+  { id: "course_id", label: "COURSE", minWidth: 100 },
+  { id: "module_id", label: "MODULE", minWidth: 100 },
+  { id: "is_deleted", label: "START DATE / TIME", minWidth: 180 },
+  { id: "end_date", label: "END DATE / TIME", minWidth: 180 },
+  { id: "remaining", label: "SESSION TIME", minWidth: 100 },
   { id: "action", label: "ACTION", minWidth: 100 },
 ];
 
@@ -237,7 +237,6 @@ const AllLiveSessions = () => {
     });
   // render function for 
   const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
-
     if (completed) {
       setComplete(true)
       // return <Completionist />;
@@ -246,47 +245,14 @@ const AllLiveSessions = () => {
       setComplete(false)
       return (
         <>
-          {days == 0 ? `${hours}h ${minutes}m ${seconds}s` : `Session will start soon`}
-          {/* {days}d {hours}h {minutes}m {seconds}s */}
+          {days == 0 ? <Typography variant="body2" color='#e8661b' > {hours}h {minutes}m {seconds}s </Typography> : `Session will started`}
         </>
       );
     }
   };
-  // var timer: any;
-  // timer = setInterval(function () {
-  //   getRemainingDays();
-  // }, 1000);
 
 
-  // function getRemainingDays(live_date:any) {
-  //   if (live_date) {
-
-  //     const givenDateString = live_date;
-  //     const givenDate: any = new Date(givenDateString);
-  //     const currentDate: any = new Date();
-
-  //     const timeDifference = givenDate - currentDate;
-  //     // console.log('difference: ' , timeDifference)
-
-  //     if (timeDifference <= 0) {
-  //       clearInterval(timer);
-  //       setTimer(0)
-  //     } else {
-  //       const remainingDays = Math.floor(timeDifference / (1000 * 60 * 60 * 24));
-  //       const remainingHours = Math.floor((timeDifference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  //       const remainingMinutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-  //       const remainingSeconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-  //       setTimer(
-  //         (remainingDays) + 'd ' +
-  //         (remainingHours) + 'h '
-  //         + (remainingMinutes) + 'm ' + remainingSeconds + 's '
-  //       )
-  //       //  return<h5>{remainingDays} days, {remainingHours} hours, {remainingMinutes} minutes, {remainingSeconds} seconds</h5>
-  //     }
-  //   }
-  // }
-
-  console.log(rows)
+  // console.log(rows)
 
   return (
     <>
@@ -590,54 +556,28 @@ const AllLiveSessions = () => {
                                   )}
                                 </TableCell>
                                 <TableCell>
-                                  {/* {getRemainingDays(row?.live_date)} */}
-                                  {/* {  const currentDate = new Date();
-                                  const givenDateTime = new Date(sessionData?.live_date);
-
-                                    // if (givenDateTime > currentDate) {
-                                    //   console.log('You can live');
-                                    // } else {
-                                    //   console.log('Time expired');
-                                    // }
-                                  } */}
-
-                                  {/* {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : 'Session Started'} */}
                                   {moment(row?.live_date).format("DD-MMM-YYYY HH:mm A")}
                                 </TableCell>
                                 <TableCell>
                                   {moment(row?.live_end_date).format("DD-MMM-YYYY HH:mm A")}
                                 </TableCell>
-                                <TableCell className={statusColor}>
-                                  {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : 'Session Started'}
+                                <TableCell >
+                                  {new Date(row?.live_date) > new Date() ? <Countdown date={row?.live_date} renderer={renderer} /> : <Typography variant="body2" className={statusColor}> Session started </Typography>}
                                 </TableCell>
                                 <TableCell>
-                                  {/* <Button
-                                    onClick={() =>
-                                      router.push(
-                                        `/admin/courses/livesessions/${row?.id}`
-                                      )
-                                    }
-                                    variant="outlined"
-                                    color="success"
-                                    className={Sessions.editDeleteButton}
-                                  >
-                                    Live
-                                  </Button> */}
                                   {new Date(row?.live_date) > new Date() ?
-                                    <Button variant="outlined" disabled>Live</Button>
+                                    <Button className={Sessions.editDeleteButton}
+                                      variant="outlined"
+                                      disabled>Live</Button>
                                     :
                                     <Button
-                                      onClick={() =>
-                                        //  router.push(`/admin/courses/livesessions/${row?.id}`)
-                                         window.open(`/admin/courses/livesessions/${row?.id}`, '_blank')
-                                      }
+                                      className={Sessions.editDeleteButton}
                                       variant="outlined"
                                       color="success"
-                                      className={Sessions.editDeleteButton}
-                                    >
-                                      Live
-                                    </Button>
-                                  }
+                                      onClick={() =>
+                                        //  router.push(`/admin/courses/livesessions/${row?.id}`)
+                                        window.open(`/admin/courses/livesessions/${row?.id}`, '_blank')
+                                      }>Live</Button>}
 
                                 </TableCell>
                               </TableRow>

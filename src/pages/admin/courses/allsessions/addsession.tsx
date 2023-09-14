@@ -481,7 +481,7 @@ export default function AddSession() {
                         onChange={handleChangeCheckBox}
                         style={{ color: "orange" }}
                       />}
-                      label="Is this is live stream session"
+                      label="Is this live session"
                     />
                   </Grid>
 
@@ -489,7 +489,7 @@ export default function AddSession() {
                     <>
                       <Grid item xs={12} sm={12} md={6} lg={6}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <Typography>Set streaming Date</Typography>
+                          <Typography>Session start date and time</Typography>
                           <DateTimePicker
                             {...register("live_date")}
                             // defaultValue={dayjs(today).add(30, 'seconds')}
@@ -504,7 +504,7 @@ export default function AddSession() {
 
                       <Grid item xs={12} sm={12} md={6} lg={6}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
-                          <Typography>Set streaming End Date</Typography>
+                          <Typography>Session end date and time</Typography>
                           <DateTimePicker
                             {...register("live_end_date")}
 

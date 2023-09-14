@@ -592,9 +592,31 @@ export default function Couseview() {
                                     </Typography>
 
                                     {new Date() > new Date(sessionData?.live_end_date) ?
-                                      <Box><Typography sx={{ marginLeft: "15px" }} variant="body2" fontSize="15px" >The live session over</Typography></Box>
+                                      <Box className='checkOne'>
+                                        <Box sx={{ display: "flex", justifyContent: 'space-between' }}>
+                                          <Box sx={{ display: 'flex' }}>
+                                            <Box>
+                                              <Typography>
+                                                <CalendarMonthIcon sx={{ fontSize: "22px" }} />
+                                              </Typography>
+                                              <QueryBuilderIcon sx={{ fontSize: "22px" }} />
+                                            </Box>
+                                            <Box sx={{ marginLeft: "20px" }}>
+                                              <Typography variant="body2" fontSize="15px">
+                                                {moment(sessionData?.live_date).format('LLL')}
+                                              </Typography>
+                                              <Typography variant="body2" fontSize="15px" sx={{ padding: "6px 0px" }}>
+                                              Session has been ended
+                                              </Typography>
+                                            </Box>
+                                          </Box>
+
+                                        </Box>
+
+                                      </Box>
+                                      // <Box><Typography sx={{ marginLeft: "15px" }} variant="body2" fontSize="15px" >The live session over</Typography></Box>
                                       :
-                                      <Box className='hjgfyh'>
+                                      <Box className='checkTwo'>
                                         <Box sx={{ display: "flex", justifyContent: 'space-between' }}>
                                           <Box sx={{ display: 'flex' }}>
                                             <Box>
@@ -610,12 +632,11 @@ export default function Couseview() {
                                               <Typography variant="body2" fontSize="15px" sx={{ padding: "6px 0px" }}>
                                                 {/* {moment(sessionData?.live_date).format('hh:mm:ss A') !== '11:16:29 AM' && moment(sessionData?.live_date).format('hh:mm:ss A') !== 'Invalid date' && <Countdown date={sessionData?.live_date} renderer={renderer} />} */}
                                                 {new Date(sessionData?.live_date) > new Date() ?
-                                                  <Countdown date={sessionData?.live_date} renderer={renderer} /> : 'live'}
+                                                  <Countdown date={sessionData?.live_date} renderer={renderer} /> : 'Session has been started'}
                                               </Typography>
                                             </Box>
                                           </Box>
                                           <Box>
-
                                             {new Date(sessionData?.live_date) > new Date() ?
                                               <Button variant="outlined" size="large" disabled>Join</Button> :
                                               <Button size="large" variant="contained"

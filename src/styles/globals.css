@@ -59,6 +59,10 @@ a {
   --Textarea-focusedHighlight: #e8661b !important;
 }
 
+.css-9kk2us.Joy-focused {
+  --Textarea-focusedHighlight: #e8661b !important;
+}
+
 /* .css-1e6y48t-MuiButtonBase-root-MuiButton-root:hover {
   -webkit-text-decoration: none;
   text-decoration: none;
@@ -259,20 +263,4 @@ button.MuiButtonBase-root.MuiButton-root.MuiButton-text.MuiButton-textPrimary.Mu
   /* padding: 5px 9px !important; */
   min-width: 30px !important;
   /* margin: 3px !important; */
-}
-
-#textarea textarea::-webkit-scrollbar {
-  width: 4px;
-}
-
-#textarea textarea::-webkit-scrollbar-button {
-  display: none;
-}
-
-#textarea textarea::-webkit-scrollbar-track {
-  background-color: transparent;
-}
-
-#textarea textarea::-webkit-scrollbar-thumb {
-  background: #d2d2d2;
 }

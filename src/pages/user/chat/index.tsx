@@ -245,7 +245,7 @@ const Chat = () => {
   };
 
   const handleSend = async () => {
-    if (text.length > 0) {
+    if (text.length > 0 && text !== "") {
       const messages = await updateDoc(doc(db, "chats", combineIDD), {
         messages: arrayUnion({
           id: uuid(),
@@ -343,8 +343,6 @@ const Chat = () => {
     setOpen(true);
   };
 
-  console.log(image)
-
 
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user, chatId }}>
@@ -384,7 +382,14 @@ const Chat = () => {
               />
 
               {/* ---------------------------------  all  chats---------------------------------- */}
-              < TableContainer sx={{ width: '275px', height: "400px", marginTop: "4px" }} style={{ msOverflowY: "auto" }}>
+              < TableContainer sx={{ width: '275px', marginTop: "4px" }}
+                style={{
+                  msOverflowY: "auto",
+                  height: "calc(100vh - 200px)",
+                  minHeight: "91%",
+                  overflow: "auto"
+                }}
+              >
                 <Table>
                   <TableBody>
                     {reorderedUsers.map((maprow: any) => {
@@ -404,8 +409,8 @@ const Chat = () => {
                             <Avatar
                               src={
                                 maprow?.profile_pic
-                                  ? `${BASE_URL}/${maprow.profile_pic}`
-                                  : "/profile.png"
+                                && `${BASE_URL}/${maprow.profile_pic}`
+
                               }
                               {...stringAvatar(maprow?.first_name, maprow?.last_name)}
                               sx={{ fontSize: "medium" }}
@@ -426,7 +431,6 @@ const Chat = () => {
                             })}
                             {/* Show all the count of unread messages */}
 
-
                           </TableCell>
                         </TableRow>
                       )
@@ -444,8 +448,8 @@ const Chat = () => {
                   <Avatar
                     src={
                       row?.profile_pic
-                        ? `${BASE_URL}/${row.profile_pic}`
-                        : "/profile.png"
+                      && `${BASE_URL}/${row.profile_pic}`
+
                     }
                     onClick={(e) => handleImage(row)}
                     {...stringAvatar(row?.first_name, row?.last_name)}
@@ -457,7 +461,10 @@ const Chat = () => {
                   </Box>
                 </TableCell>
                 {/* ----------------- Messages component --------------------------- */}
-                <Box className="messagebox" sx={{ height: "300px", overflow: 'auto' }} >
+                <Box className="messagebox" sx={{ overflow: 'auto' }} style={{
+                  height: "calc(100vh - 300px)",
+                  minHeight: "70%",
+                }} >
                   <Messages
                     data={{ combineIDD, row }}
                   />
@@ -481,7 +488,6 @@ const Chat = () => {
                     onKeyDown={handleKeyPress}
                     placeholder="Type something..."
                     style={{ width: "inherit", borderRadius: "20px 0px 0px 20px", fontSize: "16.5px", }}
-
                   />
                   <Button
                     id={SidebarStyles.muibuttonBackgroundColor}
@@ -489,7 +495,6 @@ const Chat = () => {
                     onClick={handleSend}><SendIcon />
                   </Button>
                 </Box>
-
               </Box>
             ) : <Box sx={{
               width: "100%",
@@ -523,14 +528,11 @@ const Chat = () => {
           <Avatar
             src={
               image?.profile_pic
-                ? `${BASE_URL}/${image.profile_pic}`
-                : "/profile.png"
+              && `${BASE_URL}/${image.profile_pic}`
             }
             {...stringAvatar(image?.first_name, image?.last_name)}
             style={{ height: "300px", width: "300px", borderRadius: "50%", fontSize: "100px" }}
           />
-
-
         </Fade>
       </Modal>
     </AuthContext.Provider >

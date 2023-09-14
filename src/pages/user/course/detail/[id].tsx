@@ -1,5 +1,6 @@
 // React Import
 import React, { useState, useEffect, Fragment } from "react";
+import Countdown from 'react-countdown';
 
 // MUI Import
 import {
@@ -23,6 +24,8 @@ import ListItemButton from "@mui/material/ListItemButton";
 import Divider from "@mui/material/Divider";
 import ReactPlayer from "react-player/lazy";
 import ArrowBackOutlinedIcon from "@mui/icons-material/ArrowBackOutlined";
+import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
+import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 
 // Helper Import
 import { ToastContainer, toast } from "react-toastify";
@@ -39,12 +42,14 @@ import Paper from "@mui/material/Paper";
 import { useRouter } from "next/router";
 import { HandleCourseByCourseId } from "@/services/course";
 import { HandlePDF } from "@/services/pdfdownload";
+import moment from 'moment';
 
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import BreadcrumbsHeading from "@/common/BreadCrumbs/breadcrumbs";
 import MenuBookIcon from "@mui/icons-material/MenuBook";
 
 // CSS Import
+import LiveTvIcon from '@mui/icons-material/LiveTv';
 import styles from "../../../../styles/sidebar.module.css";
 import subs from "../../../../styles/subscription.module.css";
 import courseStyle from "../../../../styles/course.module.css";
@@ -78,10 +83,36 @@ export default function Couseview() {
   const [allData, setAllData] = useState<any>([]);
   const [userId, setUserId] = useState<any>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [iscomplete, setComplete] = useState<boolean>(false)
 
   var fileViewComplete: any = 0;
   var viewhistoryLength: any = [];
 
+  // const Completionist = () => <span>Live Now</span>;
+  const currentDate = new Date(); // Get the current date and time
+  const year = currentDate.getFullYear(); // Get the year
+  const month = String(currentDate.getMonth() + 1).padStart(2, '0'); // Get the month (zero-based)
+  const day = String(currentDate.getDate()).padStart(2, '0'); // Get the day
+  const hours = String(currentDate.getHours()).padStart(2, '0'); // Get the hours
+  const minutes = String(currentDate.getMinutes()).padStart(2, '0'); // Get the minutes
+  const seconds = String(currentDate.getSeconds()).padStart(2, '0'); // Get the seconds
+  const formattedCurrentDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+
+  // const Completionist = () => <span>Streaming over</span>;
+  const renderer = ({ days, hours, minutes, seconds, completed }: any) => {
+    if (completed) {
+      setComplete(true)
+      // return <Completionist />;
+    } else {
+      setComplete(false)
+      return (
+        <Box>
+          {days == 0 ? <Box>{hours}h {minutes}m {seconds}s </Box> :
+            <Box>{days}d {hours}h {minutes}m {seconds}s </Box>}
+        </Box>
+      );
+    }
+  };
   useEffect(() => {
     let localData: any;
     let getId: any;
@@ -97,6 +128,7 @@ export default function Couseview() {
     setProgress((prevProgress: any) =>
       prevProgress >= 100 ? 10 : prevProgress + 10
     );
+
   }, [userId]);
 
   const router = useRouter();
@@ -105,9 +137,51 @@ export default function Couseview() {
   const getCourseData = async () => {
     const idd = router?.query?.id;
     if (idd) {
-      HandleCourseByCourseId(idd).then((data) => {
+      HandleCourseByCourseId(idd).then((data: any) => {
         setCousedata(data?.data);
+        // const modules = data?.data?.modules || [];
+
+        // const sessionsWithNullEndDate = [];
+        // for (const course of modules) {
+        //   for (const session of course.sessions) {
+        //     if (session.live_end_date === null) {
+        //       sessionsWithNullEndDate.push(session);
+        //     }
+        //   }
+        // }
+
+        // const sessionsWithNonNullEndDate = [];
+        // for (const course of modules) {
+        //   for (const session of course.sessions) {
+        //     if (session.live_end_date !== null) {
+        //       sessionsWithNonNullEndDate.push(session);
+        //     }
+        //   }
+        // }
+
+        // const currentDate = new Date();
+        // const sessionsWithFutureEndDate = sessionsWithNonNullEndDate.filter(session => {
+        //   const liveEndDate = new Date(session.live_end_date);
+        //   return liveEndDate > currentDate;
+        // });
+
+        // const sessionWithGreaterDateAndOtherSessions = sessionsWithNullEndDate.concat(sessionsWithFutureEndDate)
+
+        // if (data?.data && data?.data.modules && data?.data?.modules[0]) {
+        //   setCousedata(() => ({
+        //     ...data.data,
+        //     modules: [
+        //       {
+        //         ...data?.data?.modules[0],
+        //         sessions: sessionWithGreaterDateAndOtherSessions,
+        //       },
+        //       ...data.data.modules.slice(1),
+        //     ],
+        //   }));
+        // }
+
       });
+
       if (userId && userId) {
         HandleCourseGetByUserId(userId).then((data1) => {
           setAllData(data1.data);
@@ -117,7 +191,7 @@ export default function Couseview() {
       setIsLoading(false);
     }
   };
-
+  console.log(couseData)
   //tooltip
   const LightTooltip = styled(({ className, ...props }: TooltipProps) => (
     <Tooltip {...props} classes={{ popper: className }} />
@@ -131,6 +205,8 @@ export default function Couseview() {
   }));
 
   const handlebtnClick = (rowData: any) => {
+    console.log(rowData)
+    setSessionData([]);
     setActiveToggle(rowData.id);
     setSessionData(rowData);
     if (rowData.attachment !== null) {
@@ -139,6 +215,13 @@ export default function Couseview() {
     }
   };
 
+  const handleLiveSession = () => {
+    const sessionIDD = sessionData?.id
+    // router.push(`/user/course/liveusersession/${sessionIDD}`)
+    window.open(`/user/course/liveusersession/${sessionIDD}?course_id=${id}`, '_blank')
+  }
+
+
   const download = async (identifier: any) => {
     // let imagename = files && files?.slice(8);
     if (identifier === "image") {
@@ -146,25 +229,25 @@ export default function Couseview() {
         imagename: files,
         identifier: "image",
       };
-      HandlePDF(reqData).then((itemSeached: any) => {});
+      HandlePDF(reqData).then((itemSeached: any) => { });
     } else if (identifier === "pdf") {
       let reqData = {
         imagename: files,
         identifier: "pdf",
       };
-      HandlePDF(reqData).then((itemSeached: any) => {});
+      HandlePDF(reqData).then((itemSeached: any) => { });
     } else if (identifier === "txt") {
       let reqData = {
         imagename: files,
         identifier: "txt",
       };
-      HandlePDF(reqData).then((itemSeached: any) => {});
+      HandlePDF(reqData).then((itemSeached: any) => { });
     } else if (identifier === "mp4") {
       let reqData = {
         imagename: files,
         identifier: "mp4",
       };
-      HandlePDF(reqData).then((itemSeached: any) => {});
+      HandlePDF(reqData).then((itemSeached: any) => { });
     } else {
       toast.warn("Something went wrong");
     }
@@ -253,7 +336,7 @@ export default function Couseview() {
             session_id: sessionData.id,
             status: couseData.is_chargeable,
           };
-          UpdateMarkAsComplete(reqData).then((data: any) => {});
+          UpdateMarkAsComplete(reqData).then((data: any) => { });
         }
       }
     });
@@ -309,7 +392,7 @@ export default function Couseview() {
   }
   var moduleCheckIdManage = Array.from(new Set(moduleCheckId));
   var viewhistoryLengthManage: any = Array.from(new Set(viewhistoryLength));
-
+  // console.log(sessionData?.live_date, moment(sessionData?.live_date).format('hh:mm:ss A'))
   return (
     <>
       <Navbar />
@@ -349,8 +432,8 @@ export default function Couseview() {
                     <Grid item xs={9}>
                       <Item className={subs.shadoww}>
                         {(files && files?.includes("mp4")) ||
-                        files?.includes("3gp") ||
-                        files?.includes("webm") ? (
+                          files?.includes("3gp") ||
+                          files?.includes("webm") ? (
                           <Fragment>
                             <Grid item xs={12}>
                               <Item className={subs.videodisplay}>
@@ -377,16 +460,17 @@ export default function Couseview() {
                                     )}
                                   </Typography>
                                 </Box>
+
                                 <Typography
                                   variant="subtitle2"
                                   className={courseStyle.fontCS}
                                 >
                                   {capitalizeFirstLetter(
                                     sessionData &&
-                                      sessionData?.description?.replace(
-                                        /(<([^>]+)>)/gi,
-                                        ""
-                                      )
+                                    sessionData?.description?.replace(
+                                      /(<([^>]+)>)/gi,
+                                      ""
+                                    )
                                   )}
                                 </Typography>
                               </Item>
@@ -419,10 +503,10 @@ export default function Couseview() {
                               >
                                 {capitalizeFirstLetter(
                                   sessionData &&
-                                    sessionData?.description?.replace(
-                                      /(<([^>]+)>)/gi,
-                                      ""
-                                    )
+                                  sessionData?.description?.replace(
+                                    /(<([^>]+)>)/gi,
+                                    ""
+                                  )
                                 )}
                               </Typography>
                             </Item>
@@ -454,10 +538,10 @@ export default function Couseview() {
                               >
                                 {capitalizeFirstLetter(
                                   sessionData &&
-                                    sessionData?.description?.replace(
-                                      /(<([^>]+)>)/gi,
-                                      ""
-                                    )
+                                  sessionData?.description?.replace(
+                                    /(<([^>]+)>)/gi,
+                                    ""
+                                  )
                                 )}
                               </Typography>
                             </Item>
@@ -468,44 +552,114 @@ export default function Couseview() {
                           (files && files?.includes("gif")) ? (
                           <Grid item xs={12}>
                             <Item>
+
+
+                              <Box sx={{ display: "flex", background: '#ebebeb', width: '100%', justifyContent: "space-between", }}>
+                                <Typography
+                                  variant="body1"
+                                  className={subs.useNameFront2}
+                                >
+                                  Course -  {(sessionData && capitalizeFirstLetter(sessionData?.title))}
+                                </Typography>
+                                <Box >
+
+                                  &nbsp;
+                                  <LightTooltip title="Download Image">
+                                    <Button
+                                      className={courseStyle.hoverbtn}
+                                      onClick={() => download("image")}
+                                    >
+                                      <FileDownloadOutlinedIcon
+                                        className={courseStyle.filedownloadcss}
+                                      />
+                                    </Button>
+                                  </LightTooltip>
+                                </Box>
+                              </Box>
                               <Image
-                                className={courseStyle.imgwidth}
+                                className={courseStyle.imagecss}
                                 alt="image"
                                 src={`${BASE_URL}/${files}`}
-                                width={350}
-                                height={500}
+                                width={300}
+                                height={300}
+
                               />
-                              <Box className={subs.maindisplay}>
-                                <Typography
-                                  variant="h5"
-                                  className={subs.useNameFront1}
-                                >
-                                  {capitalizeFirstLetter(
-                                    sessionData && sessionData?.title
-                                  )}
-                                </Typography>
-                                &nbsp;
-                                <LightTooltip title="Download Image">
-                                  <Button
-                                    className={courseStyle.hoverbtn}
-                                    onClick={() => download("image")}
-                                  >
-                                    <FileDownloadOutlinedIcon
-                                      className={courseStyle.filedownloadcss}
-                                    />
-                                  </Button>
-                                </LightTooltip>
-                              </Box>
+                              {sessionData?.is_live_session == 1 ? <>
+                                <Card>
+                                  <CardContent>
+                                    <Typography sx={{ color: "#e8661b", fontSize: "18px", }} variant="body1" >
+                                      Live Session <LiveTvIcon sx={{ margin: '0px -3px -4px 10px' }} />
+                                    </Typography>
+
+                                    {new Date() > new Date(sessionData?.live_end_date) ?
+                                      <Box className='checkOne'>
+                                        <Box sx={{ display: "flex", justifyContent: 'space-between' }}>
+                                          <Box sx={{ display: 'flex' }}>
+                                            <Box>
+                                              <Typography>
+                                                <CalendarMonthIcon sx={{ fontSize: "22px" }} />
+                                              </Typography>
+                                              <QueryBuilderIcon sx={{ fontSize: "22px" }} />
+                                            </Box>
+                                            <Box sx={{ marginLeft: "20px" }}>
+                                              <Typography variant="body2" fontSize="15px">
+                                                {moment(sessionData?.live_date).format('LLL')}
+                                              </Typography>
+                                              <Typography variant="body2" fontSize="15px" sx={{ padding: "6px 0px" }}>
+                                              Session has been ended
+                                              </Typography>
+                                            </Box>
+                                          </Box>
+
+                                        </Box>
+
+                                      </Box>
+                                      // <Box><Typography sx={{ marginLeft: "15px" }} variant="body2" fontSize="15px" >The live session over</Typography></Box>
+                                      :
+                                      <Box className='checkTwo'>
+                                        <Box sx={{ display: "flex", justifyContent: 'space-between' }}>
+                                          <Box sx={{ display: 'flex' }}>
+                                            <Box>
+                                              <Typography>
+                                                <CalendarMonthIcon sx={{ fontSize: "22px" }} />
+                                              </Typography>
+                                              <QueryBuilderIcon sx={{ fontSize: "22px" }} />
+                                            </Box>
+                                            <Box sx={{ marginLeft: "20px" }}>
+                                              <Typography variant="body2" fontSize="15px">
+                                                {moment(sessionData?.live_date).format('LLL')}
+                                              </Typography>
+                                              <Typography variant="body2" fontSize="15px" sx={{ padding: "6px 0px" }}>
+                                                {/* {moment(sessionData?.live_date).format('hh:mm:ss A') !== '11:16:29 AM' && moment(sessionData?.live_date).format('hh:mm:ss A') !== 'Invalid date' && <Countdown date={sessionData?.live_date} renderer={renderer} />} */}
+                                                {new Date(sessionData?.live_date) > new Date() ?
+                                                  <Countdown date={sessionData?.live_date} renderer={renderer} /> : 'Session has been started'}
+                                              </Typography>
+                                            </Box>
+                                          </Box>
+                                          <Box>
+                                            {new Date(sessionData?.live_date) > new Date() ?
+                                              <Button variant="outlined" size="large" disabled>Join</Button> :
+                                              <Button size="large" variant="contained"
+                                                className={courseStyle.backbtncs12} id={styles.muibuttonBackgroundColor}
+                                                onClick={handleLiveSession}>Join</Button>}
+                                          </Box>
+                                        </Box>
+
+                                      </Box>}
+                                  </CardContent>
+                                </Card>
+                              </> : ''}
+
                               <Typography
-                                variant="subtitle2"
-                                className={courseStyle.fontCS}
+                                variant="body2"
+                                className={courseStyle.fontCSS2}
                               >
                                 {capitalizeFirstLetter(
                                   sessionData &&
-                                    sessionData?.description?.replace(
-                                      /(<([^>]+)>)/gi,
-                                      ""
-                                    )
+                                  sessionData?.description?.replace(
+                                    /(<([^>]+)>)/gi,
+                                    ""
+                                  )
                                 )}
                               </Typography>
                             </Item>
@@ -531,11 +685,11 @@ export default function Couseview() {
                                     /(<([^>]+)>)/gi,
                                     ""
                                   )) ||
-                                  (couseData &&
-                                    couseData?.short_description?.replace(
-                                      /(<([^>]+)>)/gi,
-                                      ""
-                                    ))
+                                (couseData &&
+                                  couseData?.short_description?.replace(
+                                    /(<([^>]+)>)/gi,
+                                    ""
+                                  ))
                               )}
                             </Typography>
                           </Fragment>
@@ -588,7 +742,7 @@ export default function Couseview() {
                             (item: any, index: number) => {
                               const numberConversion: any =
                                 viewhistoryLengthManage[index]?.module_id ===
-                                item.id
+                                  item.id
                                   ? viewhistoryLengthManage[index]?.viewPercent
                                   : viewhistoryLengthManage[index]?.viewPercent;
 
@@ -615,25 +769,29 @@ export default function Couseview() {
                                         <LinearProgressWithLabel1
                                           value={
                                             moduleCheckIdManage &&
-                                            moduleCheckIdManage.includes(
-                                              item.id
-                                            )
+                                              moduleCheckIdManage.includes(
+                                                item.id
+                                              )
                                               ? (numberConversion /
-                                                  item?.sessions?.length) *
-                                                100
+                                                item?.sessions?.length) *
+                                              100
                                               : 0
                                           }
                                         />
                                       </Box>
                                     </Box>
                                   </AccordionSummary>
+
+
                                   <AccordionDetails>
                                     {item?.sessions.map((itemData: any) => {
                                       const togglee =
                                         itemData?.id === activeToggle
                                           ? "active"
                                           : "";
+
                                       return (
+
                                         <Fragment key={itemData?.id}>
                                           <Box
                                             sx={{
@@ -668,10 +826,15 @@ export default function Couseview() {
                                                       }
                                                     >
                                                       &nbsp;
-                                                      {capitalizeFirstLetter(
-                                                        itemData?.title
-                                                      )}
+                                                      {capitalizeFirstLetter(itemData?.title)}
                                                     </Typography>
+                                                    <Box sx={{ color: '#d32f2f', marginLeft: 'auto' }} >
+                                                      {(itemData?.live_end_date) < new Date() ? "" : <LiveTvIcon />}
+
+                                                      {/* {itemData?.is_live_session == true ? "data" : "not"} */}
+
+                                                      {/* {(itemData?.is_live_session == 1 && itemData?.live_end_date > new Date().toISOString()) ? 'live' : ''} */}
+                                                    </Box>
                                                   </ListItemButton>
                                                 </ListItem>
                                               </List>
@@ -695,7 +858,7 @@ export default function Couseview() {
             </Card>
           </Box>
         </Box>
-      </Box>
+      </Box >
       <ToastContainer />
       <Footer />
     </>

@@ -111,7 +111,7 @@ const Chat = () => {
       if (!currentUser?.uid) {
         return;
       }
-      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc) => {
+      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc:any) => {
         const data: any = doc.data();
         setChats(data);
         const chatEntries: any = data && Object.entries(data).map((chat) => chat[1]);
@@ -183,7 +183,7 @@ const Chat = () => {
     );
     try {
       const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc) => {
+      querySnapshot.forEach((doc:any) => {
         user = doc.data();
         setUser(doc.data())
       });
@@ -299,7 +299,7 @@ const Chat = () => {
     try {
       const chatCollection = collection(db, 'chats');
       const chatSnapshot = await getDocs(chatCollection);
-      chatSnapshot.forEach((doc) => {
+      chatSnapshot.forEach((doc:any) => {
         // Extract the data from each document and add it to the array
         const chatData = doc.data();
         allchats.push({ id: doc.id, ...chatData });

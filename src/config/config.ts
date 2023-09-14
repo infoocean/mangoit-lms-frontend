@@ -39,6 +39,7 @@ export const API = {
 
   //Sessions
   getSessions: `${BASE_URL}/getsession`,
+  getLiveSessions : `${BASE_URL}/getlivesession`,
   createSession: `${BASE_URL}/createsession`,
   updateSession: `${BASE_URL}/updatesession`,
   deleteSession: `${BASE_URL}/deletesession`,

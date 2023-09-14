@@ -1,5 +1,6 @@
 // ***** React Import
-import React, { useState, useEffect } from "react";
+import 'regenerator-runtime/runtime'
+import React, { useState, useEffect, createContext, useMemo, useContext } from "react";
 import { useRouter } from "next/router";
 // MUI Import
 import {
@@ -8,8 +9,11 @@ import {
   Button,
   Card,
   CardContent,
+  Checkbox,
   Divider,
   FormControl,
+  FormControlLabel,
+  FormGroup,
   Grid,
   IconButton,
   InputLabel,
@@ -43,9 +47,27 @@ import { ToastContainer } from "react-toastify";
 import { HandleCourseGet } from "@/services/course";
 import { HandleModuleGet } from "@/services/module";
 import { HandleSessionCreate } from "@/services/session";
+
 import AutorenewIcon from "@mui/icons-material/Autorenew";
 import { HandleAIText, aiBtnCss } from "@/services/text_AI";
 import { HandleSiteGetByID } from "@/services/site";
+
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { TimePicker } from '@mui/x-date-pickers/TimePicker';
+import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
+import dayjs from 'dayjs';
+
+import SpeechRecogize from '@/common/SpeechRecognisation/speechRecogize';
+import moment from 'moment';
+export const speechContext: any = createContext('');
+
+const today = dayjs();
+const endDateCek = dayjs(today).add(30, 'minute')
+const yesterday = dayjs().subtract(1, 'day');
+const todayStartOfTheDay = today.startOf('day');
 
 export default function AddSession() {
   const router: any = useRouter();
@@ -61,6 +83,14 @@ export default function AddSession() {
   const [aiLoader, setAiLoader] = useState<any>(false);
   const [siteKey, setSiteKey] = useState(false);
   const [secretKey, setSecretKey] = useState<any>("");
+  const [toogle, setToogle] = useState<boolean>(false)
+  const [transcript, setTranscript] = useState('');
+  // const [isChecked, setIsChecked] = useState<boolean>(false);
+  const [isLive, setIsLive] = useState<boolean>(false);
+  const [liveDate, setLiveDate] = useState(new Date());
+  const [endDate, setEndDate] = useState<any>('');
+  const [streamUrl, setStreamUrl] = useState<string | any>("");
+  // const currentDate = new Date();
 
   const {
     register,
@@ -86,7 +116,50 @@ export default function AddSession() {
   };
 
   const onSubmit = async (event: any) => {
-    if (errors.description?.message === "") {
+
+    if (errors.description?.message === "" && isLive === true) {
+      const module = await import('@zegocloud/zego-uikit-prebuilt')
+      const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
+      const appID = 1495782046;
+      const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
+      const roomID = (Math.floor(Math.random() * 10000) + "");
+      const randomID = Date.now().toString();
+      const userName = 'User';
+      const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+
+      const reqData: any = {
+        description: event.description,
+        module_id: getModuleId,
+        course_id: getCourseId,
+        title: event.title,
+        attachment: file,
+        is_live_session: isLive,
+        // live_date: liveDate && new Date(liveDate),
+        // live_end_date: endDate && new Date(endDate),
+        live_date: liveDate && moment(new Date(liveDate)).format("YYYY-MM-DD HH:mm:ss"),
+        live_end_date: endDate && moment(new Date(endDate)).format("YYYY-MM-DD HH:mm:ss"),
+        stream_url: streamUrl,
+        stream_token: streamTokenData,
+        room_id: roomID,
+      };
+      const formData = new FormData();
+      for (var key in reqData) {
+        formData.append(key, reqData[key]);
+      }
+      setLoadingButton(true);
+      try {
+        const res = await HandleSessionCreate(formData);
+        setSession(res.data);
+        setTimeout(() => {
+          router.push("/admin/courses/allsessions/");
+        }, 1000);
+        setLoadingButton(true);
+      } catch (e) {
+        console.log(e);
+        setLoadingButton(true);
+      }
+    }
+    else if (errors.description?.message === "") {
       const reqData: any = {
         description: event.description,
         module_id: getModuleId,
@@ -110,7 +183,8 @@ export default function AddSession() {
         console.log(e);
         setLoadingButton(true);
       }
-    } else {
+    }
+    else {
       setError("description", { message: "Description is a required field" });
     }
   };
@@ -178,6 +252,7 @@ export default function AddSession() {
     }
   };
 
+
   const HandleSiteGetData = async (userId: any) => {
     await HandleSiteGetByID(userId)
       .then((res) => {
@@ -196,6 +271,42 @@ export default function AddSession() {
       });
   };
 
+  const handleChangeCheckBox = () => {
+    setToogle(!toogle);
+    setIsLive(true)
+    setLiveDate(new Date())
+    setEndDate(dayjs(new Date()).add(30, 'minute'))
+
+  }
+
+  const handleDateSelect = (e: any) => {
+    setIsLive(true);
+    setLiveDate(e)
+    setEndDate(dayjs(e).add(30, 'minute'))
+
+
+    const roomID = 'ABC123';
+    const userUrlcreated = `/user/course/liveusersession/id`
+    let sharedLinks = [];
+
+    sharedLinks.push({
+      url:
+        window.location.origin +
+        userUrlcreated +
+        '?roomID=' +
+        roomID +
+        '&role=Audience',
+    });
+    setStreamUrl(sharedLinks[0]?.url)
+  }
+
+  const handleEndDateSelected = (e: any) => {
+    // moment((new Date(liveDate)).setMinutes((new Date(liveDate)).getMinutes() + 30)).format("YYYY-MM-DD HH:mm:ss")
+    setEndDate(e)
+  }
+
+
+  // console.log(endDate,"kkihjih")
   return (
     <>
       <Navbar />
@@ -211,7 +322,8 @@ export default function AddSession() {
             Link="admin/courses/allsessions"
           />
           {/* main content */}
-          <Card>
+
+          <Card >
             <CardContent>
               <Box
                 component="form"
@@ -288,6 +400,7 @@ export default function AddSession() {
                       onChange={(event, newValue) => {
                         setModuleId(newValue?.module?.id);
                       }}
+                      disabled={!getModules || getModules.length === 0}
                     />
                     {errors && errors.module_id
                       ? ErrorShowing(errors?.module_id?.message)
@@ -314,42 +427,99 @@ export default function AddSession() {
                     {file
                       ? ""
                       : errors && errors.file
-                      ? ErrorShowing(errors?.file?.message)
-                      : ""}
+                        ? ErrorShowing(errors?.file?.message)
+                        : ""}
                   </Grid>
+                  <speechContext.Provider value={{ setTranscript }}>
+                    <Grid item xs={12} sm={12} md={12} lg={12}>
+                      <Box className={styles.aiCss}>
+                        <InputLabel className={Sessions.InputLabelFont}>
+                          Description
+                        </InputLabel>
+                        {title && title !== null && siteKey === true ? (
+                          <Button
+                            variant="text"
+                            className={styles.aiButton}
+                            onClick={generateShortDescription}
+                          >
+                            {aiLoader ? (
+                              <AutorenewIcon sx={aiBtnCss} />
+                            ) : (
+                              <AutorenewIcon />
+                            )}{" "}
+                            &nbsp;Auto Generate
+                          </Button>
+
+                        ) : (
+                          ""
+                        )}
+
+                        {title && title !== null && siteKey === true ? (
+                          <SpeechRecogize />
+
+                        ) : (
+                          ""
+                        )}
+                      </Box>
+                      <RichEditor
+                        {...register("description")}
+                        value={transcript ? transcript : despcriptionContent}
+                        onChange={(e) => handleContentChange(e, "description")}
+                        className={Sessions.quillDescription}
+                      />
+                      {errors && errors.description
+                        ? ErrorShowing(errors?.description?.message)
+                        : ""}
+                      {/* {despcriptionContent ? '' : errors && errors.description ? ErrorShowing(errors?.description?.message) : ""} */}
+                    </Grid>
+                  </speechContext.Provider>
+
+
                   <Grid item xs={12} sm={12} md={12} lg={12}>
-                    <Box className={styles.aiCss}>
-                      <InputLabel className={Sessions.InputLabelFont}>
-                        Description
-                      </InputLabel>
-                      {title && title !== null && siteKey === true ? (
-                        <Button
-                          variant="text"
-                          className={styles.aiButton}
-                          onClick={generateShortDescription}
-                        >
-                          {aiLoader ? (
-                            <AutorenewIcon sx={aiBtnCss} />
-                          ) : (
-                            <AutorenewIcon />
-                          )}{" "}
-                          &nbsp;Auto Generate
-                        </Button>
-                      ) : (
-                        ""
-                      )}
-                    </Box>
-                    <RichEditor
-                      {...register("description")}
-                      value={despcriptionContent}
-                      onChange={(e) => handleContentChange(e, "description")}
-                      className={Sessions.quillDescription}
+                    <FormControlLabel
+                      control={<Checkbox
+                        onChange={handleChangeCheckBox}
+                        style={{ color: "orange" }}
+                      />}
+                      label="Is this live session"
                     />
-                    {errors && errors.description
-                      ? ErrorShowing(errors?.description?.message)
-                      : ""}
-                    {/* {despcriptionContent ? '' : errors && errors.description ? ErrorShowing(errors?.description?.message) : ""} */}
                   </Grid>
+
+                  {toogle ?
+                    <>
+                      <Grid item xs={12} sm={12} md={6} lg={6}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <Typography>Session start date and time</Typography>
+                          <DateTimePicker
+                            {...register("live_date")}
+                            // defaultValue={dayjs(today).add(30, 'seconds')}
+                            value={dayjs(liveDate).add(2, 'seconds')}
+                            onChange={(e) => handleDateSelect(e)}
+                            disablePast
+                            views={['year', 'month', 'day', 'hours', 'minutes']}
+                          />
+
+                        </LocalizationProvider>
+                      </Grid>
+
+                      <Grid item xs={12} sm={12} md={6} lg={6}>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                          <Typography>Session end date and time</Typography>
+                          <DateTimePicker
+                            {...register("live_end_date")}
+
+                            value={dayjs(liveDate).add(30, 'minute')}
+                            onChange={(e) => handleEndDateSelected(e)}
+                            disablePast
+                            views={['year', 'month', 'day', 'hours', 'minutes']}
+                          />
+                        </LocalizationProvider>
+
+
+                      </Grid>
+
+                    </>
+                    : ''}
 
                   <Grid
                     item
@@ -379,6 +549,7 @@ export default function AddSession() {
                       </Button>
                     ) : (
                       <LoadingButton
+                        sx={{ padding: '10px', width: '118px' }}
                         loading={isLoadingButton}
                         className={Sessions.updateLoadingButton}
                         size="large"
@@ -393,11 +564,13 @@ export default function AddSession() {
                 </Grid>
               </Box>
             </CardContent>
-          </Card>
-        </Box>
-      </Box>
+          </Card >
+
+        </Box >
+      </Box >
       <Footer />
       <ToastContainer />
     </>
   );
 }
+

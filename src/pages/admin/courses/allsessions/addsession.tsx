@@ -118,8 +118,8 @@ export default function AddSession() {
   const onSubmit = async (event: any) => {
 
     if (errors.description?.message === "" && isLive === true) {
-      const module = await import('@zegocloud/zego-uikit-prebuilt')
-      const ZegoUIKitPrebuilt = module.ZegoUIKitPrebuilt
+      const zegoModule = await import('@zegocloud/zego-uikit-prebuilt')
+      const ZegoUIKitPrebuilt = zegoModule.ZegoUIKitPrebuilt
       const appID = 1495782046;
       const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
       const roomID = (Math.floor(Math.random() * 10000) + "");

@@ -25,7 +25,7 @@ export default function SpeechRecogize() {
     }, [transcript]);
 
     if (!browserSupportsSpeechRecognition) {
-        return <span>Browser doesn't support speech recognition.</span>;
+        return <span>Browser doesn&apos;t support speech recognition.</span>;
     }
 
     const startSpeechRecognzer = () => {

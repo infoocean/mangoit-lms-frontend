@@ -114,8 +114,6 @@ function Live() {
     else {
       router.push('/login');
     }
-
-
   }
 
   return (

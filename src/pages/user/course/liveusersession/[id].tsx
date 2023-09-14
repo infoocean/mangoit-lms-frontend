@@ -61,7 +61,7 @@ function Live() {
           const roomID = room;
           const randomID = Date.now().toString();
           const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
-          const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+          const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForProduction(appID, serverSecret, roomID, randomID, userName)
           const role = ZegoUIKitPrebuilt.Audience
           if (!streamTokenData) {
             return <Box>No Stream token Found </Box>

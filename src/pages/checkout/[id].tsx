@@ -17,8 +17,11 @@ import CreditCardIcon from '@mui/icons-material/CreditCard';
 import { CreateUserSubsction, GetSubsctionsPlansDet, HandleSubscriptionPayment } from '@/services/subscription';
 import { useRouter } from "next/router";
 import { HandleLogin, HandleLogout, HandleRegister } from '@/services/auth';
-import { GetUserByemail } from '@/services/user';
+import { GetUserByemail, HandleUpdateFirebaseId } from '@/services/user';
 import { CreateOrder } from '@/services/order';
+import { CreateFirebase } from '@/firebase/firebaseFunctions';
+import axios from 'axios';
+import { API } from '@/config/config';
 const defaultTheme = createTheme();
 
 export default function Checkout() {
@@ -26,6 +29,7 @@ export default function Checkout() {
     const { id } = router.query;
     const [subscriptionplandet, setsubscriptionplandet] = React.useState<any>([]);
     const [spinner, setshowspinner] = React.useState(false);
+    const authToken: any = localStorage.getItem("authToken");
 
     React.useEffect(() => {
         if (router.isReady) {
@@ -99,7 +103,7 @@ export default function Checkout() {
                         //create subscription
                         CreateUserSubsction(reqData).then((subscription) => {
                             if (subscription) {
-                                //create order
+                                //create order 
                                 const orderData = {
                                     user_id: user?.id,
                                     subscription_id: subscription?.id,
@@ -134,8 +138,20 @@ export default function Checkout() {
     }
 
     const userregister = async (formvalue: any) => {
-        return await HandleRegister(formvalue).then((res) => {
+        return await HandleRegister(formvalue).then(async (res: any) => {
             if (res.status === 201) {
+                const db_id = res?.data?.id;
+                const email = res?.data?.email;
+                const getFirebaseUser = await CreateFirebase(res?.data, db_id)
+                const firebase_id = getFirebaseUser?.user?.uid
+                axios({
+                    method: "PUT",
+                    url: `${API.userUpdateById}/${db_id}`,
+                    headers: {
+                        Authorization: `Bearer ${authToken}`,
+                    },
+                    data: { email: email, firebase_id: firebase_id, identifier: 'AUTOLOGIN' },
+                }).catch(err => console.log(err));
                 return 201
             } else {
                 return 400

@@ -159,20 +159,6 @@ export default function Profile() {
     }
   };
 
-  // const userRoles = [1, 2]
-  // const filterRole = userRoles.filter(role => role !== getUserData?.role_id)
-  // let roleId = filterRole[0]
-
-  // const changeRole = (e: any) => {
-  // 	if (e.target.value === 1) {
-  // 		console.log("@@@@@@@@@Admin")
-  // 		setAdminUser("Admin")
-
-  // 	} else {
-  // 		console.log("@@@@@@@@@Lreearenerr")
-  // 		setAdminUser("Learner")
-  // 	}
-  // }
 
   return (
     <>
@@ -361,16 +347,7 @@ export default function Profile() {
                               // onChange={changeRole}
                             >
                               <MenuItem value={1}>Admin</MenuItem>
-                              {/* <MenuItem value={2}>Learner</MenuItem> */}
-                              {/* <MenuItem value={1}>Admin</MenuItem> 
-                               <MenuItem value={2}>Learner</MenuItem>  */}
-                              {/* <MenuItem value={roleId}>{roleName}</MenuItem> */}
 
-                              {/* <MenuItem value={filterRole && filterRole[0]}>{filterRole && filterRole.includes(2) ? 'Learner ' : 'Admin'}</MenuItem> */}
-                              {/* {console.log(getUserData.role_id,"first",adminUser)} */}
-                              {/* {getUserData.role_id === 1 ? < MenuItem value={getUserData.role_id}></MenuItem>:< MenuItem value={2}></MenuItem>}
-														< MenuItem value={1}>Admin</MenuItem>
-														{adminUser === "Admin" ? <MenuItem value={1}>Admin</MenuItem> : <MenuItem value={2}>Learner</MenuItem>}															// adminUser === "Admin" ? <MenuItem value={2}>Learner</MenuItem> : <MenuItem value={1}>Admin</MenuItem> :""} */}
                             </Select>
                           </FormControl>
                         </Grid>

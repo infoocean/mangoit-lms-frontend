@@ -148,3 +148,6 @@
 .tableHeadingForId {
   font-weight: bold !important;
 }
+.onHoverMessage:hover{
+  background-color:#ecebebb0 !important;
+}

@@ -24,9 +24,9 @@ import CircularProgressBar from "@/common/CircularProcess/circularProgressBar";
 import AuthSidebar from "../../common/LayoutNavigations/authSideLayout";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Link from "next/link";
-
+import { CreateFirebase } from "../../firebase/firebaseFunctions";
+import { HandleUpdateFirebaseId, HandleUpdateProfile } from "@/services/user";
 const theme = createTheme();
-
 export default function Register() {
   const {
     register,
@@ -37,25 +37,49 @@ export default function Register() {
   const [loading, setLoading] = useState<boolean>(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword((show) => !show);
-
   const onSubmit = async (event: any) => {
     setLoading(true);
-    await HandleRegister(event)
-      .then((res) => {
-        if (res.status === 201) {
-          setTimeout(() => {
-            router.push("/login");
-          }, 1000);
-        }
+    try {
+      const res = await HandleRegister(event)
+      console.log(res,"34343")
+      if (res.status === 201) {
+        const db_id = res?.data?.id;
+        const email = res?.data?.email;
+        const password = event?.password;
+        const getFirebaseUser = await CreateFirebase(event, db_id)
+
+        console.log("getFirebaseUser",getFirebaseUser);
+        
+        const firebase_id = getFirebaseUser?.user?.uid
+        const loginData = { email, password }
+        const reqData = {db_id,  firebase_id };
+
+        HandleUpdateFirebaseId(loginData, reqData)
+        setTimeout(() => {
+          router.push("/login");
+        }, 1000);
         setLoading(false);
-      })
-      .catch(() => {
-        setLoading(false);
-      });
+      }
+    }
+    catch (error) {
+      setLoading(false);
+    }
+
+    // await HandleRegister(event)
+    //   .then((res) => {
+    //     if (res.status === 201) {
+    //       setTimeout(() => {
+    //         router.push("/login");
+    //       }, 1000);
+    //     }
+    //     setLoading(false);
+    //   })
+    //   .catch(() => {
+    //     setLoading(false);
+    //   });
   };
 
   function ErrorShowing(errorMessage: any) {

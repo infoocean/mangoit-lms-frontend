@@ -16,9 +16,6 @@ import { BASE_URL } from "@/config/config";
 
 function stringAvatar(first_name: string, last_name: string) {
   return {
-    sx: {
-      bgcolor: "#e8661b",
-    },
     children: `${capitalizeFirstLetter(
       first_name?.split(" ")[0][0]
     )}${capitalizeFirstLetter(last_name?.split(" ")[0][0])}`,

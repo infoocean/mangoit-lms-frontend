@@ -26,6 +26,7 @@ import {
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import { useGoogleLogin } from "@react-oauth/google";
 import Link from "next/link";
+import { LoginFirestore } from "../../firebase/firebaseFunctions";
 
 const theme = createTheme();
 
@@ -57,6 +58,9 @@ export default function Login() {
             "userData",
             JSON.stringify(res.data.userDetails)
           );
+          LoginFirestore(event).then((loginUser:any) => {
+            localStorage.setItem('firebaseUser', loginUser)
+          })  
         }
         setLoading(false);
       })

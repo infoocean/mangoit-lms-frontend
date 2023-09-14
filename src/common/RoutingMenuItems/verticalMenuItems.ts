@@ -15,6 +15,7 @@ import PaymentOutlinedIcon from "@mui/icons-material/PaymentOutlined";
 import GradingOutlinedIcon from "@mui/icons-material/GradingOutlined";
 import PaidOutlinedIcon from "@mui/icons-material/PaidOutlined";
 import LiveTvIcon from '@mui/icons-material/LiveTv';
+import ChatOutlinedIcon from '@mui/icons-material/ChatOutlined';
 
 export const VerticalMenuItems = () => {
   const [userData, setUserData] = React.useState<any>("");
@@ -53,6 +54,12 @@ export const VerticalMenuItems = () => {
         title: "Courses",
         icon: DescriptionOutlinedIcon,
         path: "/user/course",
+        disable: false,
+      },
+      {
+        title: "Chat",
+        icon: ChatOutlinedIcon,
+        path: "/user/chat",
         disable: false,
       },
       {
@@ -152,6 +159,12 @@ export const VerticalMenuItems = () => {
             disable: false,
           },
         ],
+      },
+      {
+        title: "Chat",
+        icon: ChatOutlinedIcon,
+        path: "/user/chat",
+        disable: false,
       },
       {
         title: "Logout",

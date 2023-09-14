@@ -125,7 +125,7 @@ export default function AddSession() {
       const roomID = (Math.floor(Math.random() * 10000) + "");
       const randomID = Date.now().toString();
       const userName = 'User';
-      const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, randomID, userName)
+      const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForProduction(appID, serverSecret, roomID, randomID, userName)
 
       const reqData: any = {
         description: event.description,

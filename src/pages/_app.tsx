@@ -11,6 +11,7 @@ import { NextPageContext } from "next";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import { GenerateToken } from "@/services/auth";
 import { HandleGetAllSiteGet } from "@/services/site";
+import { HandleLogin } from "@/services/auth";
 import { MyChatContext } from "@/GlobalStore/MyContext";
 interface MyAppProps {
   siteConfigData: any; // Replace with the actual type of your site config data
@@ -22,6 +23,7 @@ export default function App({
   siteConfigData,
 }: AppProps | any) {
   const router = useRouter();
+  
   const [textuid, setTextuid] = useState<any>("");
   const [orgFavicon, setorgFavicon] = useState<any>("");
   const [orgTitle, setorgTitle] = useState<any>("");
@@ -68,33 +70,6 @@ export default function App({
 
   return (
     <>
-      {/* <Head>
-        <link
-          rel="icon"
-          href={
-            siteConfigData
-              ? BASE_URL + "/" + siteConfigData?.org_favicon
-              : orgFavicon
-              ? BASE_URL + "/" + orgFavicon
-              : "/favicon.svg"
-          }
-        />
-        <title>
-          {siteConfigData
-            ? `${siteConfigData.title} ${
-                lastSegment
-                  ? "-" + " " + capitalizeFirstLetter(lastSegment)
-                  : ""
-              }`
-            : orgTitle
-            ? `${orgTitle} ${
-                lastSegment
-                  ? "-" + " " + capitalizeFirstLetter(lastSegment)
-                  : ""
-              }`
-            : `LMS`}
-        </title>
-      </Head> */}
       <Head>
         <link
           rel="icon"

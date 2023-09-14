@@ -51,6 +51,32 @@ export const HandleSessionGet = async (searchData: any, filterData: any) => {
     });
 };
 
+export const HandleLiveSessionGet = async (searchData: any, filterData: any) => {
+  // console.log("sercDaTa",searchData)
+  const API_URL = searchData
+    ? `${API.getLiveSessions}/${searchData}`
+    : `${API.getLiveSessions}`;
+  return await axios({
+    method: "POST",
+    url: API_URL,
+    headers: LoginHeader(),
+    data: filterData,
+  })
+    .then((request) => {
+      return request;
+    })
+    .catch((error) => {
+      if (error.response.status === 401) {
+        HandleLogout();
+      } else {
+        toast.error("Something went wrong");
+      }
+      return error;
+    });
+};
+
+
+
 export const HandleSessionGetByID = async (sessionId: any) => {
   return await axios({
     method: "GET",

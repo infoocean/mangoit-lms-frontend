@@ -23,7 +23,7 @@ export const CreateFirebase = async (event: any, db_id: any) => {
   const displayName = event?.first_name + " " + event.last_name;
   const email = event?.email;
   const password = event?.password;
-  const res = await createUserWithEmailAndPassword(auth, email,password);
+  const res = await createUserWithEmailAndPassword(auth, email, password);
   //create user on firestore
   await setDoc(doc(db, "users", res.user.uid), {
     uid: res.user.uid,

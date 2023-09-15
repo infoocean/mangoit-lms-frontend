@@ -29,7 +29,6 @@ export default function Checkout() {
     const { id } = router.query;
     const [subscriptionplandet, setsubscriptionplandet] = React.useState<any>([]);
     const [spinner, setshowspinner] = React.useState(false);
-    const authToken: any = localStorage.getItem("authToken");
 
     React.useEffect(() => {
         if (router.isReady) {
@@ -148,7 +147,7 @@ export default function Checkout() {
                     method: "PUT",
                     url: `${API.userUpdateById}/${db_id}`,
                     headers: {
-                        Authorization: `Bearer ${authToken}`,
+                        Authorization: `Bearer ${localStorage.getItem("authToken")}`,
                     },
                     data: { email: email, firebase_id: firebase_id, identifier: 'AUTOLOGIN' },
                 }).catch(err => console.log(err));

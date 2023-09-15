@@ -586,7 +586,7 @@ const AllLiveSessions = () => {
                         ) : (
                           <TableRow>
                             <TableCell
-                              colSpan={7}
+                              colSpan={8}
                               className={Sessions.tableLastCell}
                               sx={{ fontWeight: 600 }}
                             >

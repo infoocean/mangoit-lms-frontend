@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext, ChatContext } from "../index";
 import { Avatar, Box, Divider, Fab, Grid, List, ListItem, ListItemText, TextField } from "@mui/material";
-import { makeStyles } from "@mui/styles";
 import { BASE_URL } from "@/config/config";
 import { HandleUserGet } from "@/services/user";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
@@ -9,25 +8,6 @@ import messageStyle from "../../../../styles/user.module.css";
 import { MyChatContext } from "@/GlobalStore/MyContext";
 import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
-// const useStyles = makeStyles({
-//   table: {
-//     minWidth: 650,
-//   },
-//   chatSection: {
-//     width: '100%',
-//     height: '50vh'
-//   },
-//   headBG: {
-//     backgroundColor: '#e0e0e0'
-//   },
-//   borderRight500: {
-//     borderRight: '1px solid #e0e0e0'
-//   },
-//   messageArea: {
-//     height: '20vh',
-//     // overflowY: 'auto'
-//   }
-// });
 
 const Message = ({ message }: any) => {
   const [rows, setRows] = useState<any>([]);
@@ -75,7 +55,7 @@ const Message = ({ message }: any) => {
           <Grid item xs={12} sx={manageData}>
             <Box sx={manageBoxData}>
               <Box sx={{ padding: '2px 10px', textAlign: "justify", }}>
-               {message?.m?.text}
+                {message?.m?.text}
               </Box>
               <Box>
                 {

@@ -34,7 +34,6 @@ import ForumOutlinedIcon from '@mui/icons-material/ForumOutlined';
 import { MyChatContext } from "@/GlobalStore/MyContext";
 import { Textarea } from "@mui/joy";
 import SendIcon from '@mui/icons-material/Send';
-import { makeStyles } from "@mui/styles";
 
 
 const classes = {

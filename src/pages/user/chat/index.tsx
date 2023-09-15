@@ -37,7 +37,7 @@ import SendIcon from '@mui/icons-material/Send';
 import { makeStyles } from "@mui/styles";
 
 
-const useStyles: any = makeStyles((theme: any) => ({
+const classes = {
   gridList: {
     flexWrap: "nowrap",
     transform: "translateZ(0)"
@@ -45,7 +45,7 @@ const useStyles: any = makeStyles((theme: any) => ({
   modal: {
     display: "flex",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center !important",
     "&:hover": {
       backgroundcolor: "red"
     }
@@ -53,7 +53,7 @@ const useStyles: any = makeStyles((theme: any) => ({
   img: {
     outline: "none"
   }
-}));
+};
 
 export const AuthContext: any = createContext('');
 export const ChatContext: any = createContext('');
@@ -74,7 +74,7 @@ const Chat = () => {
   const [isLoading, setLoading] = useState<boolean>(false);
   const [userDataFromLocalStorage, setUserDataFromLocalStorage] = useState<any>('')
   const { textuid }: any = useContext<any>(MyChatContext);
-  const classes = useStyles();
+  // const classes = useStyles();
 
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, (getUser: any) => {
@@ -111,7 +111,7 @@ const Chat = () => {
       if (!currentUser?.uid) {
         return;
       }
-      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc:any) => {
+      const unsub = onSnapshot(doc(db, "userChats", currentUser.uid), (doc: any) => {
         const data: any = doc.data();
         setChats(data);
         const chatEntries: any = data && Object.entries(data).map((chat) => chat[1]);
@@ -183,7 +183,7 @@ const Chat = () => {
     );
     try {
       const querySnapshot = await getDocs(q);
-      querySnapshot.forEach((doc:any) => {
+      querySnapshot.forEach((doc: any) => {
         user = doc.data();
         setUser(doc.data())
       });
@@ -299,7 +299,7 @@ const Chat = () => {
     try {
       const chatCollection = collection(db, 'chats');
       const chatSnapshot = await getDocs(chatCollection);
-      chatSnapshot.forEach((doc:any) => {
+      chatSnapshot.forEach((doc: any) => {
         // Extract the data from each document and add it to the array
         const chatData = doc.data();
         allchats.push({ id: doc.id, ...chatData });
@@ -511,13 +511,13 @@ const Chat = () => {
         </Box>
       </Box >
       <Modal
-        className={classes.modal}
         open={open}
         onClose={handleClose}
         closeAfterTransition
+        sx={classes.modal}
       >
         <Fade in={open} timeout={500}
-          className={classes.img}
+          style={classes.img}
         >
           {/* <Avatar
             src={image}

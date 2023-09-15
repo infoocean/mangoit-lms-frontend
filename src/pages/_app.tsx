@@ -13,6 +13,7 @@ import { GenerateToken } from "@/services/auth";
 import { HandleGetAllSiteGet } from "@/services/site";
 import { HandleLogin } from "@/services/auth";
 import { MyChatContext } from "@/GlobalStore/MyContext";
+import Notification from "@/firebase/Notification";
 interface MyAppProps {
   siteConfigData: any; // Replace with the actual type of your site config data
 }
@@ -23,11 +24,10 @@ export default function App({
   siteConfigData,
 }: AppProps | any) {
   const router = useRouter();
-  
+
   const [textuid, setTextuid] = useState<any>("");
   const [orgFavicon, setorgFavicon] = useState<any>("");
   const [orgTitle, setorgTitle] = useState<any>("");
-  const [userChatId, setuserChatId] = useState<any>("");
 
   const handleGetSiteOptionsDataById = async () => {
     await HandleGetAllSiteGet()
@@ -53,6 +53,7 @@ export default function App({
       router.push(router.asPath);
     }
   }, []);
+
   const lastSegment = router.pathname.substring(
     router.pathname.lastIndexOf("/") + 1
   );
@@ -99,15 +100,17 @@ export default function App({
               : `LMS`}
         </title>
       </Head>
-        <MyChatContext.Provider value={{ textuid, setTextuid }}>
-          <GoogleOAuthProvider
-            clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}
-          >
-            <ProSidebarProvider>
-              <Component {...pageProps} siteConfigData={siteConfigData} />
-            </ProSidebarProvider>
-          </GoogleOAuthProvider>
-        </MyChatContext.Provider>
+      <MyChatContext.Provider value={{ textuid, setTextuid }}>
+        <GoogleOAuthProvider
+          clientId={`${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}`}
+        >
+          <ProSidebarProvider>
+            <Component {...pageProps} siteConfigData={siteConfigData} />
+            <Notification />
+          </ProSidebarProvider>
+        </GoogleOAuthProvider>
+      </MyChatContext.Provider>
+
     </>
   );
 }

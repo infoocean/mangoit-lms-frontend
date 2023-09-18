@@ -37,8 +37,7 @@ function Live() {
     }
   }
 
-
-  const myMeeting = (element: any) => {
+  let myMeeting = (element: any) => {
     let loginUser: any
     let loginToken: any;
     if (typeof window !== "undefined") {
@@ -52,24 +51,26 @@ function Live() {
         const ZegoUIKitPrebuilt = zegoModule.ZegoUIKitPrebuilt
         const appID = 1495782046;
         const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
+        const apiKey = '';
         const roomID = room;
-        const randomID = Date.now().toString();
+        const userID = Date.now().toString();  // random string
         const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
-        const streamTokenData = ZegoUIKitPrebuilt.generateKitTokenForProduction(appID, serverSecret, roomID, randomID, userName)
+        const kitTokenForTest = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName)
+        const kitTokenForProduction = ZegoUIKitPrebuilt.generateKitTokenForProduction(appID, apiKey, roomID, userID, userName)
         const role = ZegoUIKitPrebuilt.Host
-        if (!streamTokenData) {
-          return <Box>No Stream token Found </Box>
-        }
-        else {
+
+        if (kitTokenForTest) {
           const currentTime: any = new Date();
           const getEndADate: any = new Date(liveEndDate)
           const timeRemaining = getEndADate - currentTime;
           if (timeRemaining > 0) {
-            const zp: any = ZegoUIKitPrebuilt.create(streamTokenData)
+            const zp: any = ZegoUIKitPrebuilt.create(kitTokenForTest)
             const createRoomConfig: any = {
               container: element,
               showRoomTimer: true,
               showRemoveUserButton: true,
+              turnOnMicrophoneWhenJoining: false,
+              // showPreJoinView: false,
               onLeaveRoom: () => {
                 router.push('/admin/courses/livesessions/')
               },

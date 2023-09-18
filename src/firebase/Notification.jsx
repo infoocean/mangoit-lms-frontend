@@ -3,10 +3,7 @@ import { Toaster, toast } from "react-hot-toast";
 import { requestPermission, onMessageListener } from "./firebase";
 
 function Notification() {
-  const [notification, setNotification] = useState({
-    title: "Push Notification",
-    body: "Message",
-  });
+  const [notification, setNotification] = useState({});
   useEffect(() => {
     requestPermission();
     const unsubscribe = onMessageListener().then((payload) => {
@@ -17,8 +14,8 @@ function Notification() {
       toast.success(
         `${payload?.notification?.title}: ${payload?.notification?.body}`,
         {
-          duration: 60000,
-          position: "top-right", //section of the browser page
+          duration: 5000,
+          position: "top-center", //section of the browser page
         }
       );
     });

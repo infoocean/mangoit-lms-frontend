@@ -1,35 +1,39 @@
 import React, { useState, useEffect } from "react";
-import { Toaster, toast } from "react-hot-toast";
-import { requestPermission, onMessageListener } from "./firebase";
+import toast, { Toaster } from "react-hot-toast";
+import { onMessageListener } from "./firebase";
 import Link from "next/link";
 
-function Notification() {
-  const [notification, setNotification] = useState({});
+const Notification = () => {
+  const [notification, setNotification] = useState({ title: "", body: "" });
+  const notify = () => toast(<ToastDisplay />);
+  function ToastDisplay() {
+    return (
+      <Link href={"/user/chat/"}>
+        <div>
+          <p>
+            <b>{notification?.title}</b>
+          </p>
+          <p>{notification?.body}</p>
+        </div>
+      </Link>
+    );
+  }
   useEffect(() => {
-    requestPermission();
-    const unsubscribe = onMessageListener().then((payload) => {
+    if (notification?.title) {
+      notify();
+    }
+  }, [notification]);
+
+  onMessageListener()
+    .then((payload) => {
       setNotification({
         title: payload?.notification?.title,
         body: payload?.notification?.body,
       });
-      // toast.success(
-      //   `${payload?.notification?.title}: ${payload?.notification?.body}`,
-      //   {
-      //     duration: 5000,
-      //     position: "top-center", //section of the browser page
-      //   }
-      // );
-    });
-    return () => {
-      unsubscribe.catch((err) => console.log("failed: ", err));
-    };
-  }, []);
-  return (
-    <div>
-      {/* <Link href="/user/chat/">
-        <Toaster />
-      </Link> */}
-    </div>
-  );
-}
+    })
+    .catch((err) => console.log("failed: ", err));
+
+  return <Toaster />;
+};
+
 export default Notification;

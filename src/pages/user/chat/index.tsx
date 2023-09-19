@@ -309,7 +309,13 @@ const Chat = () => {
       return [];
     }
   };
-  const keys = Object.keys(allchats);
+  const filteredObject: any = {};
+  for (const key in allchats) {
+    if (allchats.hasOwnProperty(key) && allchats[key]?.userInfo?.isRead === 0) {
+      filteredObject[key] = allchats[key];
+    }
+  }
+  const keys = Object.keys(filteredObject);
   function stringAvatar(first_name: string, last_name: string) {
     return {
       children: `${capitalizeFirstLetter(
@@ -341,6 +347,7 @@ const Chat = () => {
     setImage(value);
     setOpen(true);
   };
+
 
 
   return (
@@ -419,7 +426,9 @@ const Chat = () => {
                               <Typography sx={{ fontSize: '11px', paddingLeft: '5px' }}>{maprow?.role_id === 2 ? "User" : "Admin"}</Typography>
                             </Box>
                             {keys.map((key) => {
-                              if (allchats[key]?.userInfo?.uid === maprow?.firebase_id && allchats[key]?.userInfo?.isRead === 0) {
+                              if (filteredObject[key]?.userInfo?.uid === maprow?.firebase_id && filteredObject[key]?.userInfo?.isRead === 0) {
+                                //console.log("comming", filteredObject[key]?.userInfo)
+                                //console.log("comdfgdf@@@@@@@@@@", maprow)
                                 if (chatFinder?.length > 0)
                                   return (
                                     <Box sx={{ float: 'right' }}>

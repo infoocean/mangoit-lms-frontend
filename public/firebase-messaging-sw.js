@@ -17,9 +17,9 @@ messaging.onBackgroundMessage(function (payload) {
   const notificationTitle = payload.notification.title;
   const notificationOptions = {
     body: payload.notification.body,
+    data: {
+      click_action: "https://example.com", // Specify the URL to open on notification click
+    },
   };
-  return self.registration.showNotification(
-    notificationTitle,
-    notificationOptions
-  );
+  self.registration.showNotification(notificationTitle, notificationOptions);
 });

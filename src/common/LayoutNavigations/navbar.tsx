@@ -260,7 +260,6 @@ export default function Navbar({
 
   const pushNotification = (allchats: any) => {
     if (localStorage.getItem("clientToken") !== '' && chatFinder.length > 0) {
-      console.log(chatFinder[0])
       var axios = require('axios');
       var data = JSON.stringify({
         "to": `${localStorage.getItem("clientToken")}`,

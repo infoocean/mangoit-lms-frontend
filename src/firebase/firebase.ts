@@ -3,7 +3,6 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import {
-  Messaging,
   getMessaging,
   getToken,
   onMessage,
@@ -37,7 +36,6 @@ export const requestPermission = () => {
         })
           .then((currentToken) => {
             if (currentToken) {
-              //console.log("Client Token: ", currentToken);
               localStorage.setItem("clientToken", currentToken);
             } else {
               console.log("Failed to generate the app registration token.");

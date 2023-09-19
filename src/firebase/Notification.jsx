@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Toaster, toast } from "react-hot-toast";
 import { requestPermission, onMessageListener } from "./firebase";
+import Link from "next/link";
 
 function Notification() {
   const [notification, setNotification] = useState({});
@@ -11,13 +12,13 @@ function Notification() {
         title: payload?.notification?.title,
         body: payload?.notification?.body,
       });
-      toast.success(
-        `${payload?.notification?.title}: ${payload?.notification?.body}`,
-        {
-          duration: 5000,
-          position: "top-center", //section of the browser page
-        }
-      );
+      // toast.success(
+      //   `${payload?.notification?.title}: ${payload?.notification?.body}`,
+      //   {
+      //     duration: 5000,
+      //     position: "top-center", //section of the browser page
+      //   }
+      // );
     });
     return () => {
       unsubscribe.catch((err) => console.log("failed: ", err));
@@ -25,7 +26,9 @@ function Notification() {
   }, []);
   return (
     <div>
-      <Toaster />
+      {/* <Link href="/user/chat/">
+        <Toaster />
+      </Link> */}
     </div>
   );
 }

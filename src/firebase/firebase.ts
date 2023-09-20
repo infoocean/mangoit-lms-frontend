@@ -3,7 +3,6 @@ import { getAuth } from "firebase/auth";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
 import {
-  Messaging,
   getMessaging,
   getToken,
   onMessage,
@@ -24,24 +23,20 @@ export const auth = getAuth();
 export const storage = getStorage();
 export const db = getFirestore();
 
-let messaging: Messaging;
+let messaging: any;
 if (typeof window !== "undefined") {
   messaging = getMessaging(app);
 }
-
-//....
 export const requestPermission = () => {
-  console.log("Requesting User Permission......");
   if (typeof Notification !== "undefined") {
     Notification.requestPermission().then((permission) => {
       if (permission === "granted") {
-        console.log("Notification User Permission Granted.");
         return getToken(messaging, {
           vapidKey: `BIuxFRFCXnNyKaOkHQ8HcOrzeEH3k3ue9XN0HSFadv6tZw30m-ZV84mnjuKjUA9OFZa_f_yp755I6P2cW4qkrIQ`,
         })
           .then((currentToken) => {
             if (currentToken) {
-              console.log("Client Token: ", currentToken);
+              localStorage.setItem("clientToken", currentToken);
             } else {
               console.log("Failed to generate the app registration token.");
             }
@@ -54,11 +49,11 @@ export const requestPermission = () => {
           });
       } else {
         console.log("User Permission Denied.");
+        localStorage.setItem("clientToken", "");
       }
     });
   }
 };
-requestPermission();
 
 export const onMessageListener = () =>
   new Promise((resolve) => {

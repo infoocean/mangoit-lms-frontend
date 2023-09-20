@@ -26,6 +26,9 @@ import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
 import CircleNotificationsOutlinedIcon from '@mui/icons-material/CircleNotificationsOutlined';
 import NotificationImportantOutlinedIcon from '@mui/icons-material/NotificationImportantOutlined';
 import { MyChatContext } from "@/GlobalStore/MyContext";
+import { toast } from "react-hot-toast";
+import axios from "axios";
+import { pushNotification } from "@/firebase/Notification";
 interface appbar {
   portalData?: any;
   profilePic?: any;
@@ -58,7 +61,7 @@ export default function Navbar({
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [allchats, setChats] = React.useState<any>([]);
   const [liveChatDetail, setLiveChatDetail] = React.useState<any>([]);
-  const [notifications, setNotifications] = React.useState(false);
+  const [notifications, setNotifications] = React.useState({});
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [open, setOpen] = React.useState(false);
@@ -116,7 +119,6 @@ export default function Navbar({
     getChats();
   }, [userData?.firebase_id]);
 
-
   const handleGetSiteOptionsDataById = async (userId: any) => {
     await HandleSiteGetByID(userId)
       .then((res) => {
@@ -143,25 +145,20 @@ export default function Navbar({
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
   };
-
   const handleMenuClose = () => {
     setAnchorEl(null);
     handleMobileMenuClose();
   };
-
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
-
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
-
   const OpenChat = (chat: any) => {
     setTextuid(chat);
     router.replace(`/user/chat/`);
   }
-
   const menuId = "primary-search-account-menu";
   const renderMenu = (
     <Menu
@@ -254,9 +251,16 @@ export default function Navbar({
       </MenuItem>
     </Menu>
   );
-
   const chatEntries: any = allchats && Object.entries(allchats).map((chat) => chat[1]);
   const chatFinder = chatEntries?.filter((chat: any) => chat.userInfo.messageRecieverId === userData.firebase_id && chat.userInfo.isRead === 0)
+
+  React.useEffect(() => {
+    //setNotifications(chatFinder);
+    //if (notifications) {
+    pushNotification(chatFinder);
+    //}
+    //setNotifications("");
+  }, [allchats])
 
   return (
     <Box sx={{ flexGrow: 1 }}>

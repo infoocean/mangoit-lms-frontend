@@ -1,6 +1,6 @@
 import { capitalizeFirstLetter } from '@/common/CapitalFirstLetter/capitalizeFirstLetter';
+import SpinnerProgress from '@/common/CircularProgressComponent/spinnerComponent';
 import { HandleSessionGetByID } from '@/services/session';
-import { Box } from '@mui/material';
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
@@ -9,6 +9,7 @@ let room: any
 let liveEndDate: any
 
 function Live() {
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
   const { id, course_id } = router?.query;
 
@@ -36,81 +37,80 @@ function Live() {
       }
     }
   }
-  let meetingEnded = false; // Flag to track if the meeting has ended
 
-  let myMeeting = (element: any) => {
+  let myMeeting = async (element: any) => {
     let loginUser: any
     let liveStreamerRole: any;
+    let liveUserId: any
     let loginToken: any;
     if (typeof window !== "undefined") {
       liveStreamerRole = window.localStorage.getItem("liveStreamerRole");
       loginToken = window.localStorage.getItem("loginToken");
+      liveUserId = window.localStorage.getItem("liveUserId");
       loginUser = window.localStorage.getItem("userData");
     }
 
     if (loginToken) {
-
       if (liveStreamerRole === 'Host') {
         router.push(`/admin/courses/livesessions/${id}`)
       } else {
-        import('@zegocloud/zego-uikit-prebuilt').then((zegoModule) => {
-          // const zegoModule = await import('@zegocloud/zego-uikit-prebuilt')
-          const ZegoUIKitPrebuilt = zegoModule.ZegoUIKitPrebuilt
-          const appID = 1495782046;
-          const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
-          const token = '';
-          const roomID = room;
-          const userID = Date.now().toString();
-          const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
-          const kitTokenForTest = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName)
-          const kitTokenForProduction = ZegoUIKitPrebuilt.generateKitTokenForProduction(appID, token, roomID, userID, userName)
-          const role = ZegoUIKitPrebuilt.Audience
-       
-          if(kitTokenForTest){
-            const currentTime: any = new Date();
-            const getEndADate: any = new Date(liveEndDate)
-            const timeRemaining = getEndADate - currentTime;
+        const zegoModule = await import('@zegocloud/zego-uikit-prebuilt')
+        const ZegoUIKitPrebuilt = zegoModule.ZegoUIKitPrebuilt
+        const appID = 1495782046;
+        const serverSecret = 'dd03bddcb9341b6339960764c75ae393';
+        const roomID = room;
+        const userID = Date.now().toString();
+        const userName = capitalizeFirstLetter(JSON.parse(loginUser).first_name);
+        const kitTokenForTest = ZegoUIKitPrebuilt.generateKitTokenForTest(appID, serverSecret, roomID, userID, userName)
+        const role = ZegoUIKitPrebuilt.Audience
 
-            if (timeRemaining > 0) {
-              const zp = ZegoUIKitPrebuilt.create(kitTokenForTest)
-              const createRoomConfig: any = {
-                container: element,
-                turnOnMicrophoneWhenJoining: false,
-                turnOnCameraWhenJoining: false,
-                showMyCameraToggleButton: false,
-                showMyMicrophoneToggleButton: false,
-                showAudioVideoSettingsButton: false,
-                showScreenSharingButton: false,
-                showRoomTimer: true,
-                onLeaveRoom: () => {
-                  router.push(`/user/course/detail/${course_id}`)
+        if (kitTokenForTest) {
+          const currentTime: any = new Date();
+          const getEndADate: any = new Date(liveEndDate)
+          const timeRemaining = getEndADate - currentTime;
+
+          if (timeRemaining > 0) {
+            const zp: any = ZegoUIKitPrebuilt.create(kitTokenForTest)
+            const createRoomConfig: any = {
+              container: element,
+              turnOnMicrophoneWhenJoining: false,
+              turnOnCameraWhenJoining: false,
+              showMyCameraToggleButton: false,
+              showMyMicrophoneToggleButton: false,
+              showAudioVideoSettingsButton: false,
+              showScreenSharingButton: false,
+              // screenSharingEnded:false,
+              // screenSharing: false,
+              showRoomTimer: true,
+              onLeaveRoom: () => {
+                router.push(`/user/course/detail/${course_id}`)
+                localStorage.removeItem('liveSteamerRole')
+                localStorage.removeItem('liveUserId')
+              },
+              scenario: {
+                mode: ZegoUIKitPrebuilt.LiveStreamingMode.RealTimeLive,
+                config: {
+                  role,
                 },
-                scenario: {
-                  mode: ZegoUIKitPrebuilt.LiveStreamingMode.RealTimeLive,
-                  config: {
-                    role,
-                  },
-                },
-              }
-              zp.joinRoom(createRoomConfig);
-
-              // Set a timeout to leave the room when the specific end date is reached
-              setTimeout(() => {
-                zp.destroy();
-                meetingEnded = true;
-                if (meetingEnded === true) {
-                  window.location.replace(`/user/course/detail/${course_id}`)
-                }
-              }, timeRemaining);
-
-              localStorage.setItem('liveSteamerRole', 'Audience');
+              },
             }
-            else if (timeRemaining < 0) {
-              router.push(`/user/course/detail/${course_id}`)
-            }
+            zp.joinRoom(createRoomConfig);
+            if (zp.hasJoinedRoom === false) { setLoading(true) }
+            // Set a timeout to leave the room when the specific end date is reached
+            setTimeout(() => {
+              zp.destroy();
+              window.location.replace(`/user/course/detail/${course_id}`)
+              localStorage.removeItem('liveSteamerRole')
+              localStorage.removeItem('liveUserId')
+            }, timeRemaining);
+
+            localStorage.setItem('liveSteamerRole', 'Audience');
+            localStorage.setItem("liveUserId", JSON.parse(loginUser)?.id)
           }
-
-        }).catch((error) => { console.log(error); });
+          else if (timeRemaining < 0) {
+            router.push(`/user/course/detail/${course_id}`)
+          }
+        } else { setLoading(true) }
       }
     }
     else {
@@ -118,10 +118,12 @@ function Live() {
     }
   }
 
+  // console.log(myMeeting)
+
   return (
     <>
-      <div ref={myMeeting} style={{ width: '100vw', height: '100vh' }}>
-      </div>
+      {!loading ? <div ref={myMeeting} style={{ width: '100vw', height: '100vh' }}>
+      </div> : <SpinnerProgress />}
       <ToastContainer />
     </>
   );

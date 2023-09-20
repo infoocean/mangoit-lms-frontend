@@ -172,6 +172,7 @@ export default function Couseview() {
 	}));
 
 	const handlebtnClick = (rowData: any) => {
+		setMobileMoreAnchorEl(null);
 		console.log(rowData)
 		setSessionData([]);
 		setActiveToggle(rowData.id);
@@ -395,7 +396,7 @@ export default function Couseview() {
 			onClose={handleMobileMenuClose}
 		>
 			<MenuItem >
-				<Grid item xs={3}>
+				<Grid item sm={12} xs={12} md={3} lg={3} xl={3} sx={{ height: '300px', overflow: 'auto' }}>
 					<Box className={subs.maindiv}>
 						<Typography variant="h5" className={subs.useNameFront2}>
 							Course Curriculum
@@ -563,7 +564,7 @@ export default function Couseview() {
 							<CardContent>
 								<Box sx={{ flexGrow: 1 }}>
 									<Grid container spacing={2}>
-										<Grid item xs={9}>
+										<Grid item sm={12} xs={12} md={9} lg={9} xl={9}>
 											<Item className={subs.shadoww}>
 												{(files && files?.includes("mp4")) ||
 													files?.includes("3gp") ||

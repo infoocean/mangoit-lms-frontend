@@ -233,11 +233,6 @@ const Chat = () => {
     setLiveChatDetail([])
   }
 
-  const handleKeyPress = (event: any) => {
-    if (event.key === 'Enter') {
-      handleSend();
-    }
-  };
   const handleSend = async () => {
     if (text.length > 0 && text !== "") {
       await updateDoc(doc(db, "chats", combineIDD), {
@@ -324,7 +319,16 @@ const Chat = () => {
     }
   }
   const keys = Object.keys(filteredObject);
-
+  const handleKeyPress = (e: any) => {
+    if (e.key === 'Enter' && e.shiftKey) {
+      setText(text + '\n');
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (text.trim() !== '') {
+        handleSend();
+      }
+    }
+  };
 
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user, chatId }}>
@@ -460,7 +464,6 @@ const Chat = () => {
                   width: '100%',
                   display: 'flex',
                   marginTop: "15px"
-
                 }}>
                   <Textarea
                     minRows={1}
@@ -469,9 +472,9 @@ const Chat = () => {
                     value={text}
                     variant="outlined"
                     onChange={(e) => setText(e.target.value)}
-                    onKeyDown={handleKeyPress}
+                    onKeyPress={handleKeyPress} // Attach the event handler
                     placeholder="Type something..."
-                    style={{ width: "inherit", borderRadius: "20px 0px 0px 20px", fontSize: "16.5px", }}
+                    style={{ width: "inherit", borderRadius: "20px 0px 0px 20px", fontSize: "16.5px" }}
                   />
                   <Button
                     id={SidebarStyles.muibuttonBackgroundColor}

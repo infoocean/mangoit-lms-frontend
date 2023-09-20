@@ -28,6 +28,7 @@ import NotificationImportantOutlinedIcon from '@mui/icons-material/NotificationI
 import { MyChatContext } from "@/GlobalStore/MyContext";
 import { toast } from "react-hot-toast";
 import axios from "axios";
+import { pushNotification } from "@/firebase/Notification";
 interface appbar {
   portalData?: any;
   profilePic?: any;
@@ -60,7 +61,7 @@ export default function Navbar({
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
   const [allchats, setChats] = React.useState<any>([]);
   const [liveChatDetail, setLiveChatDetail] = React.useState<any>([]);
-  const [notifications, setNotifications] = React.useState(false);
+  const [notifications, setNotifications] = React.useState({});
   const router = useRouter();
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
   const [open, setOpen] = React.useState(false);
@@ -250,47 +251,16 @@ export default function Navbar({
       </MenuItem>
     </Menu>
   );
-
   const chatEntries: any = allchats && Object.entries(allchats).map((chat) => chat[1]);
   const chatFinder = chatEntries?.filter((chat: any) => chat.userInfo.messageRecieverId === userData.firebase_id && chat.userInfo.isRead === 0)
 
   React.useEffect(() => {
+    //setNotifications(chatFinder);
+    //if (notifications) {
     pushNotification(chatFinder);
+    //}
+    //setNotifications("");
   }, [allchats])
-
-  const pushNotification = (allchats: any) => {
-    if (localStorage.getItem("clientToken") !== '' && chatFinder.length > 0) {
-      var axios = require('axios');
-      var data = JSON.stringify({
-        "to": `${localStorage.getItem("clientToken")}`,
-        "notification": {
-          "title": "Message From mangoit solutions",
-          "body": `${chatFinder[0]?.lastMessage?.text}`
-        },
-        "data": {
-          "customKey1": "customValue1",
-          "customKey2": "customValue2"
-        }
-      });
-      var config = {
-        method: 'post',
-        url: 'https://fcm.googleapis.com/fcm/send',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `key=AAAASPDf2Uw:APA91bFBWNqtNDCKvv-vrSf3xz05frkvGZWSLNMJ8zHJRoNczYWR4qXedVTJlRFgketthgWZBzL_n5uWS6hI0jLRxdAxv7Ip8JsQer2LJGWOMopo9ZCTtejgjQ7i6Hqnx81Jqo2mU0Ce`,
-        },
-        data: data
-      };
-      axios(config)
-        .then(function (response: any) {
-          //console.log(JSON.stringify(response.data));
-        })
-        .catch(function (error: any) {
-          // console.log(error);
-        });
-    }
-  }
-
 
   return (
     <Box sx={{ flexGrow: 1 }}>

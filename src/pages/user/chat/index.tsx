@@ -68,18 +68,19 @@ const Chat = () => {
   const [err, setErr] = useState<any>(false);
   const [combineIDD, setCombineIDD] = useState<any>(null);
   const [allchats, setChats] = useState<any>([]);
-  const [theChats, setAllTheChats] = useState<any>([]);
   const [liveChatDetail, setLiveChatDetail] = useState<any>([]);
   const [isLoading, setLoading] = useState<boolean>(false);
   const [userDataFromLocalStorage, setUserDataFromLocalStorage] = useState<any>('')
   const { textuid }: any = useContext<any>(MyChatContext);
-  // const classes = useStyles();
+  const [dt, setdt] = useState<any>("");
 
+  // const classes = useStyles();
   useEffect(() => {
+    const dtt: any = localStorage.getItem("userData")
+    setdt(JSON.parse(dtt));
     const unsub = onAuthStateChanged(auth, (getUser: any) => {
       setCurrentUser(getUser);
       getUsereData();
-      getAllChats();
     });
     return () => {
       unsub();
@@ -193,7 +194,6 @@ const Chat = () => {
       currentUser?.uid > user?.uid
         ? currentUser?.uid + user?.uid
         : user?.uid + currentUser?.uid
-
     setCombineIDD(combinedId);
     try {
       //check whether the group(chats in firestore) exists, if not create
@@ -220,18 +220,14 @@ const Chat = () => {
           },
           [combinedId + ".date"]: serverTimestamp(),
         });
-
-
       } else {
         // Update the messages to mark them as read when the chat is opened
         await updateDoc(doc(db, "userChats", user.uid), {
           [combinedId + ".userInfo.isRead"]: 1,
         });
-
         await updateDoc(doc(db, "userChats", currentUser.uid), {
           [combinedId + ".userInfo.isRead"]: 1,
         });
-
       }
     } catch (err) { }
     setLiveChatDetail([])
@@ -242,20 +238,19 @@ const Chat = () => {
       handleSend();
     }
   };
-
   const handleSend = async () => {
     if (text.length > 0 && text !== "") {
-      const messages = await updateDoc(doc(db, "chats", combineIDD), {
+      await updateDoc(doc(db, "chats", combineIDD), {
         messages: arrayUnion({
           id: uuid(),
+
           text,
           senderId: currentUser.uid,
           date: Timestamp.now(),
         }),
       });
-
       // sender message 
-      const chats = await updateDoc(doc(db, "userChats", currentUser?.uid), {
+      await updateDoc(doc(db, "userChats", currentUser?.uid), {
         [combineIDD + ".lastMessage"]: {
           text,
         },
@@ -288,34 +283,9 @@ const Chat = () => {
       });
 
       setText("");
-      // setImg(null);
-
     }
   };
 
-  // get all the chat for unread message count
-  const getAllChats = async () => {
-    try {
-      const chatCollection = collection(db, 'chats');
-      const chatSnapshot = await getDocs(chatCollection);
-      chatSnapshot.forEach((doc: any) => {
-        // Extract the data from each document and add it to the array
-        const chatData = doc.data();
-        allchats.push({ id: doc.id, ...chatData });
-      });
-
-    } catch (error) {
-      console.error('Error fetching chats:', error);
-      return [];
-    }
-  };
-  const filteredObject: any = {};
-  for (const key in allchats) {
-    if (allchats.hasOwnProperty(key) && allchats[key]?.userInfo?.isRead === 0) {
-      filteredObject[key] = allchats[key];
-    }
-  }
-  const keys = Object.keys(filteredObject);
   function stringAvatar(first_name: string, last_name: string) {
     return {
       children: `${capitalizeFirstLetter(
@@ -334,7 +304,6 @@ const Chat = () => {
   }, [textuid]);
   const chatEntries: any = allchats && Object.entries(allchats).map((chat) => chat[1]);
   const chatFinder = chatEntries?.filter((chat: any) => chat.userInfo.messageRecieverId === userDataFromLocalStorage.firebase_id && chat.userInfo.isRead === 0)
-  // console.log(chatFinder, "userDataFromLocalStorage")
 
   const [open, setOpen] = useState(false);
   const [image, setImage] = useState<any>("");
@@ -348,6 +317,13 @@ const Chat = () => {
     setOpen(true);
   };
 
+  const filteredObject: any = {};
+  for (const key in allchats) {
+    if (allchats.hasOwnProperty(key) && allchats[key]?.userInfo?.isRead === 0) {
+      filteredObject[key] = allchats[key];
+    }
+  }
+  const keys = Object.keys(filteredObject);
 
 
   return (
@@ -426,9 +402,9 @@ const Chat = () => {
                               <Typography sx={{ fontSize: '11px', paddingLeft: '5px' }}>{maprow?.role_id === 2 ? "User" : "Admin"}</Typography>
                             </Box>
                             {keys.map((key) => {
-                              if (filteredObject[key]?.userInfo?.uid === maprow?.firebase_id && filteredObject[key]?.userInfo?.isRead === 0) {
-                                //console.log("comming", filteredObject[key]?.userInfo)
-                                //console.log("comdfgdf@@@@@@@@@@", maprow)
+                              if (filteredObject[key]?.userInfo?.uid === maprow?.firebase_id && filteredObject[key]?.userInfo?.isRead === 0 && filteredObject[key]?.userInfo?.messageRecieverId === dt?.firebase_id
+                              ) {
+                                console.log("hiii")
                                 if (chatFinder?.length > 0)
                                   return (
                                     <Box sx={{ float: 'right' }}>

@@ -3,6 +3,7 @@ import toast, { Toaster } from "react-hot-toast";
 import { onMessageListener } from "./firebase";
 import Link from "next/link";
 import { FRONTEND_BASE_URL } from "@/config/config";
+import { requestPermission } from "./firebase";
 
 const Notification = () => {
   const [notification, setNotification] = useState({ title: "", body: "" });
@@ -24,6 +25,8 @@ const Notification = () => {
       notify();
     }
   }, [notification]);
+
+  requestPermission();
 
   onMessageListener()
     .then((payload) => {

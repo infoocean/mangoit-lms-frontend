@@ -18,16 +18,13 @@ import { capitalizeFirstLetter } from "../CapitalFirstLetter/capitalizeFirstLett
 import { BASE_URL } from "@/config/config";
 import Link from "next/link";
 import { HandleSiteGetByID } from "@/services/site";
-import { doc, onSnapshot } from "firebase/firestore";
+import { arrayUnion, doc, onSnapshot, setDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import MarkUnreadChatAltOutlinedIcon from '@mui/icons-material/MarkUnreadChatAltOutlined';
 import moment from "moment";
 import CircleRoundedIcon from '@mui/icons-material/CircleRounded';
-import CircleNotificationsOutlinedIcon from '@mui/icons-material/CircleNotificationsOutlined';
 import NotificationImportantOutlinedIcon from '@mui/icons-material/NotificationImportantOutlined';
 import { MyChatContext } from "@/GlobalStore/MyContext";
-import { toast } from "react-hot-toast";
-import axios from "axios";
 import { pushNotification } from "@/firebase/Notification";
 interface appbar {
   portalData?: any;
@@ -252,14 +249,21 @@ export default function Navbar({
     </Menu>
   );
   const chatEntries: any = allchats && Object.entries(allchats).map((chat) => chat[1]);
-  const chatFinder = chatEntries?.filter((chat: any) => chat.userInfo.messageRecieverId === userData.firebase_id && chat.userInfo.isRead === 0)
+  const chatFinder = chatEntries?.filter((chat: any) => chat?.userInfo?.messageRecieverId === userData.firebase_id && chat.userInfo.isRead === 0)
+
+  console.log(chatFinder)
+
 
   React.useEffect(() => {
-    //setNotifications(chatFinder);
-    //if (notifications) {
-    pushNotification(chatFinder);
-    //}
-    //setNotifications("");
+    if (chatFinder.length > 0 && chatFinder[0]?.userInfo?.isPushNotification === false) {
+      pushNotification(chatFinder);
+      updateDoc(doc(db, "userChats", chatFinder[0]?.userInfo?.uid), {
+        [chatFinder[0]?.userInfo?.combineID + ".userInfo.isPushNotification"]: true,
+      })
+      updateDoc(doc(db, "userChats", chatFinder[0]?.userInfo?.messageRecieverId), {
+        [chatFinder[0]?.userInfo?.combineID + ".userInfo.isPushNotification"]: true,
+      })
+    }
   }, [allchats])
 
   return (

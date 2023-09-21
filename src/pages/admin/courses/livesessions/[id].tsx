@@ -29,8 +29,8 @@ function Live() {
         if (timeRemaining > 0) {
           //alert before end session
           setTimeout(() => {
-            toast.warning('Your session will ended within 30 seconds')
-          }, (timeRemaining - 30000));
+            toast.warning('Your session will ended within 5 minutes')
+          }, (timeRemaining - 300000));
         }
       } catch (e) {
         console.log(e)

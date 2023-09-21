@@ -255,7 +255,7 @@ export default function Navbar({
 
 
   React.useEffect(() => {
-    if (chatFinder.length > 0 && chatFinder[0]?.userInfo?.isPushNotification === false) {
+    if (chatFinder?.length > 0 && chatFinder[0]?.userInfo?.isPushNotification === false) {
       pushNotification(chatFinder);
       updateDoc(doc(db, "userChats", chatFinder[0]?.userInfo?.uid), {
         [chatFinder[0]?.userInfo?.combineID + ".userInfo.isPushNotification"]: true,

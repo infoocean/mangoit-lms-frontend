@@ -410,7 +410,6 @@ const Chat = () => {
                             {keys.map((key) => {
                               if (filteredObject[key]?.userInfo?.uid === maprow?.firebase_id && filteredObject[key]?.userInfo?.isRead === 0 && filteredObject[key]?.userInfo?.messageRecieverId === dt?.firebase_id
                               ) {
-                                console.log("hiii")
                                 if (chatFinder?.length > 0)
                                   return (
                                     <Box sx={{ float: 'right' }}>

@@ -23,6 +23,8 @@ import {
   ListItemIcon,
   ListItemText,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@mui/material";
 import WebViewNavbar from "@/common/LayoutNavigations/webviewnavbar";
 import WebViewFooter from "@/common/LayoutNavigations/webviewfooter";
@@ -137,6 +139,8 @@ function BootstrapDialogTitle(props: DialogTitleProps) {
 }
 
 export default function CoursesDetailsPage() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const router = useRouter();
   const { id } = router.query;
   const [coursedet, setcoursedet] = useState<any>([]);
@@ -317,7 +321,6 @@ export default function CoursesDetailsPage() {
       rotalsession += element?.sessions?.length;
     });
 
-  console.log("!!!!!!!!!!!!!!!!!",coursedet, "modulesdet", modulesdet?.length);
 
   return (
     <>
@@ -335,162 +338,162 @@ export default function CoursesDetailsPage() {
             </Breadcrumbs>
           </Box>
           {/*main card content*/}
+
           <Grid container spacing={2} className={styles.crsgrid}>
-            <Grid item xs={12} md={8} lg={9}>
-              <Box sx={{ display: "flex" }}>
-                <CardMedia
-                  component="img"
-                  sx={{
-                    width: 300,
-                    display: { xs: "none", sm: "block", borderRadius: "10px" },
-                  }}
-                  image={
-                    coursedet?.image !== null
-                      ? `${BASE_URL}/${coursedet?.image}`
-                      : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
-                  }
-                  alt={"image"}
-                />
-                <CardContent
-                  sx={{ flex: 1, paddingTop: "0px", paddingBottom: "0px" }}
-                >
-                  <Typography
-                    component="h2"
-                    variant="h5"
-                    sx={{ fontSize: "2.5rem", fontWeight: "bold" }}
-                  >
-                    {coursedet?.title
-                      ? capitalizeFirstLetter(coursedet?.title)
-                      : ""}
-                  </Typography>
-                  <Typography variant="subtitle1" color="text.secondary">
-                    Type :{" "}
-                    {coursedet?.is_chargeable
-                      ? capitalizeFirstLetter(coursedet?.is_chargeable)
-                      : ""}
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    paragraph
-                    sx={{ fontFamily: "sans - serif" }}
-                  >
-                    {coursedet?.short_description
-                      ? capitalizeFirstLetter(
-                          coursedet?.short_description
-                            ? coursedet?.short_description?.replace(
-                                /(<([^>]+)>)/gi,
-                                ""
-                              )
-                            : ""
-                        )
-                      : ""}
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    color="text.secondary"
-                    paragraph
-                    sx={{ fontFamily: "sans - serif" }}
-                  >
-                    {totalLearner === 0 ? 10 : totalLearner * 2} <sup>+</sup>{" "}
-                    Enrolled Students
-                  </Typography>
-                  {userData && coursedet && modulesdet ? (
-                    <>
-                      {enrolled === true ? (
-                        <Button
-                          variant="contained"
-                          className="authPageButton"
-                          id={styles.muibuttonBackgroundColor}
-                          onClick={Enrolled}
-                        >
-                          Start Course
-                        </Button>
-                      ) : checkuserSubscStatus.length <= 0 &&
-                        coursedet?.is_chargeable === "free" ? (
-                        <Button
-                          variant="contained"
-                          className="authPageButton"
-                          id={styles.muibuttonBackgroundColor}
-                          onClick={enrolledCourse}
-                        >
-                          Enroll Now
-                        </Button>
-                      ) : checkuserSubscStatus.length > 0 &&
-                        coursedet?.is_chargeable === "paid" &&
-                        checkuserSubscStatus[0]?.status === "active" ? (
-                        <Button
-                          variant="contained"
-                          className="authPageButton"
-                          id={styles.muibuttonBackgroundColor}
-                          onClick={enrolledCourse}
-                        >
-                          Enroll Now
-                        </Button>
-                      ) : checkuserSubscStatus.length > 0 &&
-                        coursedet?.is_chargeable === "free" &&
-                        (checkuserSubscStatus[0]?.status === "active" ||
-                          checkuserSubscStatus[0]?.status === "canceled" ||
-                          checkuserSubscStatus[0]?.status === "expired" ||
-                          checkuserSubscStatus[0]?.status === "inactive") ? (
-                        <Button
-                          variant="contained"
-                          className="authPageButton"
-                          id={styles.muibuttonBackgroundColor}
-                          onClick={enrolledCourse}
-                        >
-                          Enroll Now
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="contained"
-                          className="authPageButton"
-                          id={styles.muibuttonBackgroundColor}
-                          onClick={handleClickOpenCheckSubsc}
-                        >
-                          Enroll Now
-                        </Button>
-                      )}
-                    </>
-                  ) : coursedet && modulesdet ? (
-                    <Button
-                      variant="contained"
-                      className="authPageButton"
-                      id={styles.muibuttonBackgroundColor}
-                      onClick={handleClickOpen}
-                    >
-                      Enroll Now
-                    </Button>
-                  ) : (
-                    <Button
-                      variant="contained"
-                      sx={{
-                        "&:hover": { backgroundColor: "red" },
-                        backgroundColor: "red",
-                        fontWeight: "bold",
-                        borderRadius: "20px",
-                        cursor: "default",
-                      }}
-                    >
-                      Coming Soon
-                    </Button>
-                  )}
-                </CardContent>
-              </Box>
+            <Grid item xs={12} md={3} >
+              <CardMedia
+                component="img"
+                sx={{
+
+                  display: { xs: 'block', sm: "block", md: "block", lg: "block", borderRadius: "10px" },
+                }}
+                image={
+                  coursedet?.image !== null
+                    ? `${BASE_URL}/${coursedet?.image}`
+                    : "https://leverageedu.com/blog/wp-content/uploads/2020/06/Short-term-Professional-Courses-after-Graduation.jpg"
+                }
+                alt={"image"}
+              />
+              {/* </Box> */}
             </Grid>
-            <Grid item xs={12} md={3} lg={3}>
+            <Grid item xs={12} md={6} >
+              <CardContent sx={{ flex: 1, paddingTop: "0px", paddingBottom: "0px" }}>
+                <Typography
+                  component="h2"
+                  variant="h5"
+                  sx={{ fontSize: "2.5rem", fontWeight: "bold" }}
+                >
+                  {coursedet?.title
+                    ? capitalizeFirstLetter(coursedet?.title)
+                    : ""}
+                </Typography>
+                <Typography variant="subtitle1" color="text.secondary">
+                  Type :{" "}
+                  {coursedet?.is_chargeable
+                    ? capitalizeFirstLetter(coursedet?.is_chargeable)
+                    : ""}
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  paragraph
+                  sx={{ fontFamily: "sans - serif" }}
+                >
+                  {coursedet?.short_description
+                    ? capitalizeFirstLetter(
+                      coursedet?.short_description
+                        ? coursedet?.short_description?.replace(
+                          /(<([^>]+)>)/gi,
+                          ""
+                        )
+                        : ""
+                    )
+                    : ""}
+                </Typography>
+                <Typography
+                  variant="subtitle1"
+                  color="text.secondary"
+                  paragraph
+                  sx={{ fontFamily: "sans - serif" }}
+                >
+                  {totalLearner === 0 ? 10 : totalLearner * 2} <sup>+</sup>{" "}
+                  Enrolled Students
+                </Typography>
+                {userData && coursedet && modulesdet ? (
+                  <>
+                    {enrolled === true ? (
+                      <Button
+                        variant="contained"
+                        className="authPageButton"
+                        id={styles.muibuttonBackgroundColor}
+                        onClick={Enrolled}
+                      >
+                        Start Course
+                      </Button>
+                    ) : checkuserSubscStatus.length <= 0 &&
+                      coursedet?.is_chargeable === "free" ? (
+                      <Button
+                        variant="contained"
+                        className="authPageButton"
+                        id={styles.muibuttonBackgroundColor}
+                        onClick={enrolledCourse}
+                      >
+                        Enroll Now
+                      </Button>
+                    ) : checkuserSubscStatus.length > 0 &&
+                      coursedet?.is_chargeable === "paid" &&
+                      checkuserSubscStatus[0]?.status === "active" ? (
+                      <Button
+                        variant="contained"
+                        className="authPageButton"
+                        id={styles.muibuttonBackgroundColor}
+                        onClick={enrolledCourse}
+                      >
+                        Enroll Now
+                      </Button>
+                    ) : checkuserSubscStatus.length > 0 &&
+                      coursedet?.is_chargeable === "free" &&
+                      (checkuserSubscStatus[0]?.status === "active" ||
+                        checkuserSubscStatus[0]?.status === "canceled" ||
+                        checkuserSubscStatus[0]?.status === "expired" ||
+                        checkuserSubscStatus[0]?.status === "inactive") ? (
+                      <Button
+                        variant="contained"
+                        className="authPageButton"
+                        id={styles.muibuttonBackgroundColor}
+                        onClick={enrolledCourse}
+                      >
+                        Enroll Now
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="contained"
+                        className="authPageButton"
+                        id={styles.muibuttonBackgroundColor}
+                        onClick={handleClickOpenCheckSubsc}
+                      >
+                        Enroll Now
+                      </Button>
+                    )}
+                  </>
+                ) : coursedet && modulesdet ? (
+                  <Button
+                    variant="contained"
+                    className="authPageButton"
+                    id={styles.muibuttonBackgroundColor}
+                    onClick={handleClickOpen}
+                  >
+                    Enroll Now
+                  </Button>
+                ) : (
+                  <Button
+                    variant="contained"
+                    sx={{
+                      "&:hover": { backgroundColor: "red" },
+                      backgroundColor: "red",
+                      fontWeight: "bold",
+                      borderRadius: "20px",
+                      cursor: "default",
+                    }}
+                  >
+                    Coming Soon
+                  </Button>
+                )}
+              </CardContent>
+            </Grid>
+            <Grid item xs={12} md={3} >
               <center>
-                <Box sx={{ maxWidth: 345, display: "flex" }}>
+                <Box sx={{ display: "flex", }}>
                   <Box
                     sx={{
                       background: "white",
                       border: "border: 1px solid #80808024",
                       borderRadius: "6px",
+                      width: "auto"
                     }}
                   >
                     <ReactPlayer
                       url={`${BASE_URL}/${coursedet?.video}`}
-                      // url="https://www.youtube.com/watch?v=ZsqSucH58D4"
-                      width={250}
+                      width={'300'}
                       height={"auto"}
                       playing={true}
                       muted={true}
@@ -501,6 +504,7 @@ export default function CoursesDetailsPage() {
               </center>
             </Grid>
           </Grid>
+
           {/*main card details*/}
           <Grid container spacing={2} className={styles.crsgrid} mt={5}>
             <Grid item xs={12} md={8} lg={9}>
@@ -522,15 +526,15 @@ export default function CoursesDetailsPage() {
                   >
                     {coursedet?.long_description
                       ? capitalizeFirstLetter(
-                          coursedet?.long_description?.replace(
-                            /(<([^>]+)>)/gi,
-                            ""
-                          )
+                        coursedet?.long_description?.replace(
+                          /(<([^>]+)>)/gi,
+                          ""
                         )
+                      )
                       : ""}
                   </Typography>
                   {(coursetopic && coursetopic?.length === 0) ||
-                  coursetopic === null ? (
+                    coursetopic === null ? (
                     ""
                   ) : (
                     <Box
@@ -569,7 +573,7 @@ export default function CoursesDetailsPage() {
                     </Box>
                   )}
                   {(coursematerial && coursematerial?.length === 0) ||
-                  coursematerial === null ? (
+                    coursematerial === null ? (
                     ""
                   ) : (
                     <Fragment>
@@ -632,8 +636,8 @@ export default function CoursesDetailsPage() {
                               coursedet?.duration === "three_months"
                                 ? "3 Months"
                                 : coursedet?.duration === "six_months"
-                                ? "6 Months"
-                                : "12 Months"
+                                  ? "6 Months"
+                                  : "12 Months"
                             }
                           />
                         </ListItem>

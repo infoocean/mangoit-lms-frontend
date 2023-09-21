@@ -238,7 +238,6 @@ const Chat = () => {
       await updateDoc(doc(db, "chats", combineIDD), {
         messages: arrayUnion({
           id: uuid(),
-
           text,
           senderId: currentUser.uid,
           date: Timestamp.now(),
@@ -255,8 +254,9 @@ const Chat = () => {
           email: user?.email,
           messageSenderId: currentUser?.uid,
           messageRecieverId: user?.uid,
-          combineId: combineIDD,
+          combineID: combineIDD,
           isRead: 0,
+          isPushNotification: false
         },
         [combineIDD + ".date"]: serverTimestamp(),
       });
@@ -273,6 +273,8 @@ const Chat = () => {
           messageSenderId: currentUser?.uid,
           messageRecieverId: user?.uid,
           isRead: 0,
+          combineID: combineIDD,
+          isPushNotification: false
         },
         [combineIDD + ".date"]: serverTimestamp(),
       });

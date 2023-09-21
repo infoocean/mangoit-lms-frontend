@@ -9,7 +9,7 @@ const Messages = (props: any) => {
   // const { data }:any = useContext(ChatContext);
   // const { currentUser }:any = useContext(AuthContext);
 
- 
+
 
   useEffect(() => {
     const unSub = onSnapshot(doc(db, "chats", props?.data?.combineIDD), (doc) => {
@@ -23,7 +23,7 @@ const Messages = (props: any) => {
   // console.log('messages', messages);
   return (
     <>
-      {messages.map((m: any) => (
+      {messages && messages?.map((m: any) => (
         <Message message={{ m, props }} key={m.id} />
       ))}
     </>

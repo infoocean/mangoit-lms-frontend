@@ -89,7 +89,6 @@ export default function AddSession() {
   const [isLive, setIsLive] = useState<boolean>(false);
   const [liveDate, setLiveDate] = useState(new Date());
   const [endDate, setEndDate] = useState<any>('');
-  const [streamUrl, setStreamUrl] = useState<string | any>("");
   // const currentDate = new Date();
 
   const {
@@ -138,7 +137,6 @@ export default function AddSession() {
         // live_end_date: endDate && new Date(endDate),
         live_date: liveDate && moment(new Date(liveDate)).format("YYYY-MM-DD HH:mm:ss"),
         live_end_date: endDate && moment(new Date(endDate)).format("YYYY-MM-DD HH:mm:ss"),
-        stream_url: streamUrl,
         stream_token: streamTokenData,
         room_id: roomID,
       };
@@ -284,20 +282,6 @@ export default function AddSession() {
     setLiveDate(e)
     setEndDate(dayjs(e).add(30, 'minute'))
 
-
-    const roomID = 'ABC123';
-    const userUrlcreated = `/user/course/liveusersession/id`
-    let sharedLinks = [];
-
-    sharedLinks.push({
-      url:
-        window.location.origin +
-        userUrlcreated +
-        '?roomID=' +
-        roomID +
-        '&role=Audience',
-    });
-    setStreamUrl(sharedLinks[0]?.url)
   }
 
   const handleEndDateSelected = (e: any) => {

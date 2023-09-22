@@ -693,6 +693,21 @@ export default function Couseview() {
                                 >
                                   Course -  {(sessionData && capitalizeFirstLetter(sessionData?.title))}
                                 </Typography>
+
+                                <Box >
+                                  &nbsp;
+                                  <LightTooltip title="Download Image">
+                                    <Button
+                                      className={courseStyle.hoverbtn}
+                                      onClick={() => download("image")}
+                                    >
+                                      <FileDownloadOutlinedIcon
+                                        className={courseStyle.filedownloadcss}
+                                      />
+                                    </Button>
+                                  </LightTooltip>
+                                </Box>
+
                                 <Box className='test1' sx={{ display: { xs: "flex", md: "none" } }}>
                                   <IconButton
                                     size="large"
@@ -709,20 +724,7 @@ export default function Couseview() {
                                     />
                                   </IconButton>
                                 </Box>
-                                <Box >
 
-                                  &nbsp;
-                                  <LightTooltip title="Download Image">
-                                    <Button
-                                      className={courseStyle.hoverbtn}
-                                      onClick={() => download("image")}
-                                    >
-                                      <FileDownloadOutlinedIcon
-                                        className={courseStyle.filedownloadcss}
-                                      />
-                                    </Button>
-                                  </LightTooltip>
-                                </Box>
                               </Box>
                               <Image
                                 className={courseStyle.imagecss}
@@ -738,62 +740,61 @@ export default function Couseview() {
                                     <Typography sx={{ color: "#e8661b", fontSize: "18px", }} variant="body1" >
                                       Live Session <LiveTvIcon sx={{ margin: '0px -3px -4px 10px' }} />
                                     </Typography>
-
                                     {new Date() > new Date(sessionData?.live_end_date) ?
-                                      <Box className='checkOne'>
-                                        <Box sx={{ display: "flex", justifyContent: 'space-between' }}>
-                                          <Box sx={{ display: 'flex' }}>
-                                            <Box>
-                                              <Typography>
-                                                <CalendarMonthIcon sx={{ fontSize: "22px" }} />
-                                              </Typography>
-                                              <QueryBuilderIcon sx={{ fontSize: "22px" }} />
-                                            </Box>
-                                            <Box sx={{ marginLeft: "20px" }}>
-                                              <Typography variant="body2" fontSize="15px">
-                                                {moment(sessionData?.live_date).format('LLL')}
-                                              </Typography>
-                                              <Typography variant="body2" fontSize="15px" sx={{ padding: "6px 0px" }}>
-                                                Session has been ended
-                                              </Typography>
-                                            </Box>
-                                          </Box>
-
-                                        </Box>
-
-                                      </Box>
-                                      // <Box><Typography sx={{ marginLeft: "15px" }} variant="body2" fontSize="15px" >The live session over</Typography></Box>
+                                      <Grid item xs={12}>
+                                        <Grid item xs={12} sx={{ display: 'flex' }}>
+                                          <CalendarMonthIcon sx={{ fontSize: '22px' }} />
+                                          <Typography variant="body2" fontSize="15px" sx={{ marginLeft: "20px" }}>
+                                            {moment(sessionData?.live_date).format('LLL')}
+                                          </Typography>
+                                        </Grid>
+                                        <Grid item xs={12} sx={{ display: 'flex' }}>
+                                          <QueryBuilderIcon sx={{ fontSize: "22px", marginTop: '5px' }} />
+                                          <Typography variant="body2" fontSize="15px" sx={{ padding: "6px 0px", marginLeft: "20px" }}>
+                                            Session has been ended
+                                          </Typography>
+                                        </Grid>
+                                      </Grid>
                                       :
-                                      <Box className='checkTwo'>
-                                        <Box sx={{ display: "flex", justifyContent: 'space-between' }}>
-                                          <Box sx={{ display: 'flex' }}>
-                                            <Box>
-                                              <Typography>
-                                                <CalendarMonthIcon sx={{ fontSize: "22px" }} />
-                                              </Typography>
-                                              <QueryBuilderIcon sx={{ fontSize: "22px" }} />
-                                            </Box>
-                                            <Box sx={{ marginLeft: "20px" }}>
-                                              <Typography variant="body2" fontSize="15px">
+                                      <Grid container spacing={2}>
+                                        <Grid item xs={8} >
+                                          <Grid >
+                                            <Grid item xs={12} sx={{ display: 'flex' }}>
+                                              <CalendarMonthIcon sx={{ fontSize: '22px' }} />
+                                              <Typography variant="body2" fontSize="15px" sx={{ marginLeft: "20px" }}>
                                                 {moment(sessionData?.live_date).format('LLL')}
                                               </Typography>
-                                              <Typography variant="body2" fontSize="15px" sx={{ padding: "6px 0px" }}>
-                                                {/* {moment(sessionData?.live_date).format('hh:mm:ss A') !== '11:16:29 AM' && moment(sessionData?.live_date).format('hh:mm:ss A') !== 'Invalid date' && <Countdown date={sessionData?.live_date} renderer={renderer} />} */}
-                                                {new Date(sessionData?.live_date) > new Date() ?
-                                                  <Countdown date={sessionData?.live_date} renderer={renderer} /> : 'Session has been started'}
+                                            </Grid>
+                                            <Grid item xs={12} sx={{ display: 'flex' }}>
+                                              <QueryBuilderIcon sx={{ fontSize: '22px', marginTop: '5px' }} />
+                                              <Typography variant="body2" fontSize="15px" sx={{ padding: '6px 0px', marginLeft: "20px" }}>
+                                                {new Date(sessionData?.live_date) > new Date() ? (
+                                                  <Countdown date={sessionData?.live_date} renderer={renderer} />
+                                                ) : (
+                                                  'Session has been started'
+                                                )}
                                               </Typography>
-                                            </Box>
-                                          </Box>
-                                          <Box>
-                                            {new Date(sessionData?.live_date) > new Date() ?
-                                              <Button variant="outlined" size="large" disabled>Join</Button> :
-                                              <Button size="large" variant="contained"
-                                                className={courseStyle.backbtncs12} id={styles.muibuttonBackgroundColor}
-                                                onClick={handleLiveSession}>Join</Button>}
-                                          </Box>
-                                        </Box>
-
-                                      </Box>}
+                                            </Grid>
+                                          </Grid>
+                                        </Grid>
+                                        <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                                          {new Date(sessionData?.live_date) > new Date() ? (
+                                            <Button variant="outlined" size="large" className={courseStyle.backbtncs12} disabled>
+                                              Join
+                                            </Button>
+                                          ) : (
+                                            <Button
+                                              size="large"
+                                              variant="contained"
+                                              className={courseStyle.backbtncs12}
+                                              id={styles.muibuttonBackgroundColor}
+                                              onClick={handleLiveSession}
+                                            >
+                                              Join
+                                            </Button>
+                                          )}
+                                        </Grid>
+                                      </Grid>}
                                   </CardContent>
                                 </Card>
                               </> : ''}
@@ -814,10 +815,10 @@ export default function Couseview() {
                           </Grid>
                         ) : !files ? (
                           <Fragment>
-                            <Box sx={{ display: "flex", width: '100%', justifyContent: "space-between", }}>
+                            <Box sx={{ display: "flex", background: '#ebebeb', justifyContent: "space-between", }}>
                               <Typography
-                                variant="h4"
-                                className={subs.useNameFront1}
+                                variant="body1"
+                                className={subs.useNameFront2}
                               >
                                 {capitalizeFirstLetter(
                                   couseData && couseData?.title
@@ -1021,8 +1022,8 @@ export default function Couseview() {
                 </Box>
               </CardContent>
             </Card>
-          </Box>
-        </Box>
+          </Box >
+        </Box >
       </Box >
       <ToastContainer />
       <Footer />

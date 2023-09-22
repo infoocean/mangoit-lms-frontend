@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { AuthContext, ChatContext } from "../index";
-import { Alert, Avatar, Box, Button, Divider, Fab, Grid, IconButton, List, ListItem, ListItemText, Stack, TableCell, TextField, Tooltip, Typography } from "@mui/material";
+import { AuthContext } from "../index";
+import { Avatar, Box, Grid, IconButton, Stack, Tooltip } from "@mui/material";
 import { BASE_URL } from "@/config/config";
 import { HandleUserGet } from "@/services/user";
 import { capitalizeFirstLetter } from "@/common/CapitalFirstLetter/capitalizeFirstLetter";
 import messageStyle from "../../../../styles/user.module.css";
-import { MyChatContext } from "@/GlobalStore/MyContext";
-import { doc, serverTimestamp, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/firebase/firebase";
 import { styled } from '@mui/material/styles';
 import { TooltipProps, tooltipClasses } from '@mui/material/Tooltip';
@@ -14,7 +13,6 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import { Toaster, toast } from "react-hot-toast";
-
 const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
@@ -27,12 +25,86 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
     padding: 5
   },
 }));
-
 const Message = ({ message }: any) => {
   const [value, setValue] = React.useState("");
+  const [editmsginfo, seteditmsginfo] = React.useState<any>("");
   const [edit, setedit] = useState<boolean>(false);
   const [loginUser, setLoginUser] = useState<any>(null);
   const [dt, setdt] = useState<any>("");
+  const InlineEdit = ({ value, setValue }: any) => {
+    const [editingValue, setEditingValue] = React.useState(value);
+    const onChange = (event: any) => setEditingValue(event.target.value);
+    const onKeyDown = async (event: any) => {
+      if (event.key === "Enter" || event.key === "Escape") {
+        event.target.blur();
+        if (editingValue) {
+          //console.log(editmsginfo)
+          try {
+            updateDoc(doc(db, "userChats", editmsginfo?.props?.data?.row?.firebase_id), {
+              [editmsginfo?.props?.data?.combineIDD + ".lastMessage.text"]: editingValue,
+            });
+            updateDoc(doc(db, "userChats", editmsginfo?.m?.senderId), {
+              [editmsginfo?.props?.data?.combineIDD + ".lastMessage.text"]: editingValue,
+            });
+            try {
+              // Retrieve the Firestore document using getDoc
+              const chatDocumentRef = doc(db, "chats", message?.props?.data?.combineIDD);
+              const chatDocumentSnapshot = await getDoc(chatDocumentRef);
+
+              if (chatDocumentSnapshot.exists()) {
+                // Retrieve and modify the messages array
+                const chatData = chatDocumentSnapshot.data();
+                const messages = chatData?.messages || [];
+
+                // Find the index of the message to edit
+                const messageIdToEdit = message?.m?.id;
+                const editedMessageContent = editingValue; // Replace with the edited message content
+
+                // Find the message to edit in the array and update it
+                const updatedMessages = messages.map((message: any) => {
+                  if (message.id === messageIdToEdit) {
+                    // If the message matches the ID to edit, update its content
+                    return { ...message, text: editedMessageContent };
+                  }
+                  return message; // For other messages, keep them unchanged
+                });
+
+                // Update the Firestore document using updateDoc
+                await updateDoc(chatDocumentRef, { messages: updatedMessages });
+              } else {
+                toast.error('Chat document does not exist!');
+              }
+            } catch (error) {
+              toast.error('Error occurred while editing message!');
+            }
+            toast.success('message updated successfully!')
+          } catch (error) {
+            toast.error('some error ocurred!')
+          }
+        }
+      }
+    };
+    const onBlur = (event: any) => {
+      if (event.target.value.trim() === "") {
+        setEditingValue(value);
+        setedit(false);
+      } else {
+        setValue(event.target.value);
+        setedit(false)
+      }
+    };
+    return (
+      <input
+        type="text"
+        aria-label="Field name"
+        value={editingValue}
+        onChange={onChange}
+        onKeyDown={onKeyDown}
+        onBlur={onBlur}
+        autoFocus
+      />
+    );
+  };
   // console.log('message', message);
   const { currentUser, chatId }: any = useContext(AuthContext);
   const ref: any = useRef();
@@ -79,41 +151,32 @@ const Message = ({ message }: any) => {
   //edit text message
   const EditTextMessage = (message: any) => {
     setValue(message?.m?.text);
+    seteditmsginfo(message);
     setedit(true)
   }
-  //edit text message
-  const DeleteTextMessage = (message: any) => {
-
-    console.log(message)
-  }
-
-  const InlineEdit = ({ value, setValue }: any) => {
-    const [editingValue, setEditingValue] = React.useState(value);
-    const onChange = (event: any) => setEditingValue(event.target.value);
-    const onKeyDown = (event: any) => {
-      if (event.key === "Enter" || event.key === "Escape") {
-        event.target.blur();
-        
-      }
-    };
-    const onBlur = (event: any) => {
-      if (event.target.value.trim() === "") {
-        setEditingValue(value);
+  //delete text message
+  const DeleteTextMessage = async (message: any) => {
+    try {
+      // Retrieve the Firestore document using getDoc
+      const chatDocumentRef = doc(db, "chats", message?.props?.data?.combineIDD);
+      const chatDocumentSnapshot = await getDoc(chatDocumentRef);
+      if (chatDocumentSnapshot.exists()) {
+        // Retrieve and modify the messages array
+        const chatData = chatDocumentSnapshot.data();
+        const messages = chatData?.messages || [];
+        // Find the index of the message to delete
+        const messageIdToDelete = message?.m?.id;
+        const updatedMessages = messages.filter((message: any) => message.id !== messageIdToDelete);
+        // Update the Firestore document using updateDoc
+        await updateDoc(chatDocumentRef, { messages: updatedMessages });
+        toast.success('Message deleted successfully!');
       } else {
-        setValue(event.target.value);
+        toast.error('Chat document does not exist!');
       }
-    };
-    return (
-      <input
-        type="text"
-        aria-label="Field name"
-        value={editingValue}
-        onChange={onChange}
-        onKeyDown={onKeyDown}
-        onBlur={onBlur}
-      />
-    );
-  };
+    } catch (error) {
+      toast.error('Error ocoured on deleting message!');
+    }
+  }
 
   return (
     <>

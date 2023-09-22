@@ -251,9 +251,6 @@ export default function Navbar({
   const chatEntries: any = allchats && Object.entries(allchats).map((chat) => chat[1]);
   const chatFinder = chatEntries?.filter((chat: any) => chat?.userInfo?.messageRecieverId === userData.firebase_id && chat.userInfo.isRead === 0)
 
-  console.log(chatFinder)
-
-
   React.useEffect(() => {
     if (chatFinder?.length > 0 && chatFinder[0]?.userInfo?.isPushNotification === false) {
       pushNotification(chatFinder);

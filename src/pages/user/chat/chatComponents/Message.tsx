@@ -145,8 +145,10 @@ const Message = ({ message }: any) => {
 
   //copy text message
   const CopyTextMessage = (message: any) => {
-    navigator.clipboard.writeText(message?.m?.text)
+    if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
+    window.navigator.clipboard.writeText(message?.m?.text)
     toast.success('Message copied!')
+    }
   }
   //edit text message
   const EditTextMessage = (message: any) => {

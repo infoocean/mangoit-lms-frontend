@@ -40,6 +40,8 @@ export default function Register() {
   const handleClickShowPassword = () => setShowPassword((show) => !show);
   const handleClickShowConfirmPassword = () =>
     setShowConfirmPassword((show) => !show);
+
+  //user registratin
   const onSubmit = async (event: any) => {
     setLoading(true);
     try {

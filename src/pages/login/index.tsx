@@ -58,9 +58,9 @@ export default function Login() {
             "userData",
             JSON.stringify(res.data.userDetails)
           );
-          LoginFirestore(event).then((loginUser:any) => {
+          LoginFirestore(event).then((loginUser: any) => {
             localStorage.setItem('firebaseUser', loginUser)
-          })  
+          })
         }
         setLoading(false);
       })
@@ -135,7 +135,7 @@ export default function Login() {
       <Grid container component="main">
         <AuthSidebar />
         <Grid item xs={12} sm={12} md={6} lg={6}>
-          <Box className={styles.mainBoxContent}>
+          <Box className={styles.loginmainBoxContent}>
             <Typography
               component="h1"
               variant="h4"

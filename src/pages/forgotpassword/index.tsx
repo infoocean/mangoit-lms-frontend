@@ -21,9 +21,7 @@ import { HandleForgotPassword } from "@/services/auth";
 import { LoadingButton } from "@mui/lab";
 import CircularProgressBar from "@/common/CircularProcess/circularProgressBar";
 import Link from "next/link";
-
 const theme = createTheme();
-
 export default function ForgotPassword() {
   const {
     register,
@@ -47,8 +45,6 @@ export default function ForgotPassword() {
     setLoading(true);
     await HandleForgotPassword(formData)
       .then((res) => {
-        console.log(res,"sas")
-        // localStorage.setItem("forgotPasswordToken",res.data)
         setLoading(false);
       })
       .catch(() => {
@@ -70,7 +66,7 @@ export default function ForgotPassword() {
       <Grid container component="main">
         <AuthSidebar />
         <Grid item xs={12} sm={12} md={6} lg={6}>
-          <Box className={styles.mainBoxContent}>
+          <Box className={styles.loginmainBoxContent}>
             <Typography
               component="h1"
               variant="h4"
@@ -80,10 +76,9 @@ export default function ForgotPassword() {
             </Typography>
             <Grid container>
               <Grid item className="GlobalTextColor" sx={{ fontFamily: '"Roboto","Helvetica","Arial",sans-serif !important' }}>
-                Enter Email Address
+                Forgot your password
               </Grid>
             </Grid>
-
             <Box
               component="form"
               noValidate
@@ -101,7 +96,6 @@ export default function ForgotPassword() {
               {errors && errors.email
                 ? ErrorShowing(errors?.email?.message)
                 : ""}
-
               {!loading ? (
                 <Button
                   type="submit"
@@ -125,14 +119,12 @@ export default function ForgotPassword() {
                   <CircularProgressBar />
                 </LoadingButton>
               )}
-
               <Link
                 href="/login"
                 className="GlobalTextColor"
               >
                 <Grid item sx={{ fontFamily: '"Roboto","Helvetica","Arial",sans-serif !important' }}>Back to sign in</Grid>
               </Link>
-
               <Box className={styles.mainBoxDividerBox}>
                 <Divider className={styles.mainBoxDivider}> Or </Divider>
               </Box>

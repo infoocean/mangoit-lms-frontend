@@ -24,6 +24,14 @@
 .mainBoxContent {
   display: flex !important;
   flex-direction: column !important;
+  margin: 20px 80px !important;
+  justify-content: center !important;
+  /* height: 100vh !important; */
+}
+
+.loginmainBoxContent {
+  display: flex !important;
+  flex-direction: column !important;
   margin: 0px 80px !important;
   justify-content: center !important;
   height: 100vh !important;

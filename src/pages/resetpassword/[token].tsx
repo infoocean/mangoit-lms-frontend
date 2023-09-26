@@ -5,7 +5,6 @@ import {
   Box,
   Grid,
   Typography,
-  InputAdornment,
   IconButton,
 } from "@mui/material";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -23,7 +22,6 @@ import { HandleResetPassword } from "@/services/auth";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
-
 const theme = createTheme();
 
 export default function ResetPassword() {
@@ -63,16 +61,6 @@ export default function ResetPassword() {
     catch (err) {
       setLoading(false)
     }
-
-    // await HandleResetPassword(reqData).then((res) => {
-    //   if (res.status === 202) {
-    //     router.push('/login')
-    //     localStorage.removeItem('forgotPasswordToken')
-    //   }
-    //   setLoading(false)
-    // }).catch(() => {
-    //   setLoading(false)
-    // })
   };
 
   function ErrorShowing(errorMessage: any) {
@@ -89,7 +77,7 @@ export default function ResetPassword() {
       <Grid container component="main">
         <AuthSidebar />
         <Grid item xs={12} sm={12} md={6} lg={6}>
-          <Box className={styles.mainBoxContent}>
+          <Box className={styles.loginmainBoxContent}>
             <Typography
               component="h1"
               variant="h4"
@@ -97,7 +85,11 @@ export default function ResetPassword() {
             >
               Reset Password
             </Typography>
-
+            <Grid container>
+              <Grid item className="GlobalTextColor" sx={{ fontFamily: '"Roboto","Helvetica","Arial",sans-serif !important' }}>
+                Reset your password
+              </Grid>
+            </Grid>
             <Box
               component="form"
               noValidate
@@ -129,7 +121,7 @@ export default function ResetPassword() {
                 : ""}
 
               <TextField
-                margin="none"
+                margin="normal"
                 fullWidth
                 {...register("confirm_password")}
                 label="Confirm Password"

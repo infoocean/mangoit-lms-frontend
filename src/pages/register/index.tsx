@@ -25,7 +25,7 @@ import AuthSidebar from "../../common/LayoutNavigations/authSideLayout";
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import Link from "next/link";
 import { CreateFirebase } from "../../firebase/firebaseFunctions";
-import { HandleUpdateFirebaseId, HandleUpdateProfile } from "@/services/user";
+import { HandleUpdateFirebaseId } from "@/services/user";
 const theme = createTheme();
 export default function Register() {
   const {
@@ -44,19 +44,14 @@ export default function Register() {
     setLoading(true);
     try {
       const res = await HandleRegister(event)
-      console.log(res,"34343")
       if (res.status === 201) {
         const db_id = res?.data?.id;
         const email = res?.data?.email;
         const password = event?.password;
         const getFirebaseUser = await CreateFirebase(event, db_id)
-
-        console.log("getFirebaseUser",getFirebaseUser);
-        
         const firebase_id = getFirebaseUser?.user?.uid
         const loginData = { email, password }
-        const reqData = {db_id,  firebase_id };
-
+        const reqData = { db_id, firebase_id };
         HandleUpdateFirebaseId(loginData, reqData)
         setTimeout(() => {
           router.push("/login");
@@ -67,19 +62,6 @@ export default function Register() {
     catch (error) {
       setLoading(false);
     }
-
-    // await HandleRegister(event)
-    //   .then((res) => {
-    //     if (res.status === 201) {
-    //       setTimeout(() => {
-    //         router.push("/login");
-    //       }, 1000);
-    //     }
-    //     setLoading(false);
-    //   })
-    //   .catch(() => {
-    //     setLoading(false);
-    //   });
   };
 
   function ErrorShowing(errorMessage: any) {
@@ -92,7 +74,6 @@ export default function Register() {
 
   return (
     <ThemeProvider theme={theme}>
-      <ToastContainer />
       <Grid container component="main">
         <AuthSidebar />
         <Grid item xs={12} sm={12} md={6} lg={6}>
@@ -113,7 +94,6 @@ export default function Register() {
                 </Link>
               </Grid>
             </Grid>
-
             <Box
               component="form"
               method="POST"
@@ -175,7 +155,6 @@ export default function Register() {
               {errors && errors.password
                 ? ErrorShowing(errors?.password?.message)
                 : ""}
-
               <TextField
                 margin="normal"
                 fullWidth
@@ -221,7 +200,6 @@ export default function Register() {
                   <CircularProgressBar />
                 </LoadingButton>
               )}
-
               <Box className={styles.mainBoxDividerBox}>
                 <Divider className={styles.mainBoxDivider}> Or </Divider>
               </Box>
@@ -247,6 +225,7 @@ export default function Register() {
           </Box>
         </Grid>
       </Grid>
+      <ToastContainer />
     </ThemeProvider>
   );
 }

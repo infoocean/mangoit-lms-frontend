@@ -332,6 +332,8 @@ const Chat = () => {
     }
   };
 
+  console.log(rows)
+
   return (
     <AuthContext.Provider value={{ currentUser, combineIDD, user, chatId }}>
       <Navbar />
@@ -424,6 +426,7 @@ const Chat = () => {
                         </TableRow>
                       )
                     })}
+                    {rows.length > 0 ? "" : <Typography style={{ textAlign: "center", marginTop: "20px" }}>User Not Found</Typography>}
                   </TableBody>
                 </Table>
               </TableContainer>

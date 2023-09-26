@@ -13,6 +13,7 @@ import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import ModeEditOutlineIcon from "@mui/icons-material/ModeEditOutline";
 import ContentCopyOutlinedIcon from '@mui/icons-material/ContentCopyOutlined';
 import { Toaster, toast } from "react-hot-toast";
+import { AlertDialog } from "@/common/DeleteListRow/deleteRow";
 const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
   <Tooltip {...props} classes={{ popper: className }} />
 ))(({ theme }) => ({
@@ -27,10 +28,12 @@ const HtmlTooltip = styled(({ className, ...props }: TooltipProps) => (
 }));
 const Message = ({ message }: any) => {
   const [value, setValue] = React.useState("");
+  const [open, setOpen] = React.useState(false);
   const [editmsginfo, seteditmsginfo] = React.useState<any>("");
   const [edit, setedit] = useState<boolean>(false);
   const [loginUser, setLoginUser] = useState<any>(null);
   const [dt, setdt] = useState<any>("");
+  const [messagedata, setmessagedata] = React.useState<any>([]);
   const InlineEdit = ({ value, setValue }: any) => {
     const [editingValue, setEditingValue] = React.useState(value);
     const onChange = (event: any) => setEditingValue(event.target.value);
@@ -146,8 +149,8 @@ const Message = ({ message }: any) => {
   //copy text message
   const CopyTextMessage = (message: any) => {
     if (typeof window !== 'undefined' && typeof window.navigator !== 'undefined') {
-    window.navigator.clipboard.writeText(message?.m?.text)
-    toast.success('Message copied!')
+      window.navigator.clipboard.writeText(message?.m?.text)
+      toast.success('Message copied!')
     }
   }
   //edit text message
@@ -158,16 +161,22 @@ const Message = ({ message }: any) => {
   }
   //delete text message
   const DeleteTextMessage = async (message: any) => {
+    setmessagedata(message);
+    setOpen(!open);
+  }
+
+  // to delete a row
+  const handleDeletesMessage = async () => {
     try {
       // Retrieve the Firestore document using getDoc
-      const chatDocumentRef = doc(db, "chats", message?.props?.data?.combineIDD);
+      const chatDocumentRef = doc(db, "chats", messagedata?.props?.data?.combineIDD);
       const chatDocumentSnapshot = await getDoc(chatDocumentRef);
       if (chatDocumentSnapshot.exists()) {
         // Retrieve and modify the messages array
         const chatData = chatDocumentSnapshot.data();
         const messages = chatData?.messages || [];
         // Find the index of the message to delete
-        const messageIdToDelete = message?.m?.id;
+        const messageIdToDelete = messagedata?.m?.id;
         const updatedMessages = messages.filter((message: any) => message.id !== messageIdToDelete);
         // Update the Firestore document using updateDoc
         await updateDoc(chatDocumentRef, { messages: updatedMessages });
@@ -178,7 +187,8 @@ const Message = ({ message }: any) => {
     } catch (error) {
       toast.error('Error ocoured on deleting message!');
     }
-  }
+    setOpen(!open);
+  };
 
   return (
     <>
@@ -229,30 +239,43 @@ const Message = ({ message }: any) => {
                   </Box>
                 </Box>
               </HtmlTooltip>) :
-              <Box sx={manageBoxData}>
-                <Box sx={{ padding: '2px 10px', textAlign: "justify", }}>
-                  {message?.m?.text}
+              <HtmlTooltip
+                placement="right-start"
+                title={
+                  <React.Fragment>
+                    <Stack direction="row" alignItems="center" spacing={1}>
+                      <IconButton aria-label="copy" size="small" onClick={() => CopyTextMessage(message)}>
+                        <ContentCopyOutlinedIcon fontSize="small" style={{ color: "black" }} />
+                      </IconButton>
+                    </Stack>
+                  </React.Fragment>
+                }
+              >
+                <Box sx={manageBoxData}>
+                  <Box sx={{ padding: '2px 10px', textAlign: "justify", }}>
+                    {message?.m?.text}
+                  </Box>
+                  <Box>
+                    {
+                      chatId?.firebase_id === message?.m?.senderId ? (<Avatar
+                        src={
+                          message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
+                        }
+                        {
+                        ...stringAvatar(message?.props?.data?.row?.first_name, message?.props?.data?.row?.last_name)}
+                        sx={{ width: "25px", height: "25px", fontSize: "10px" }}
+                      />) : (<Avatar
+                        src={
+                          message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
+                        }
+                        {
+                        ...stringAvatar(loginUser?.first_name, loginUser?.last_name)}
+                        sx={{ width: "35px", height: " 35px", fontSize: "smaller" }}
+                      />)
+                    }
+                  </Box>
                 </Box>
-                <Box>
-                  {
-                    chatId?.firebase_id === message?.m?.senderId ? (<Avatar
-                      src={
-                        message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
-                      }
-                      {
-                      ...stringAvatar(message?.props?.data?.row?.first_name, message?.props?.data?.row?.last_name)}
-                      sx={{ width: "25px", height: "25px", fontSize: "10px" }}
-                    />) : (<Avatar
-                      src={
-                        message?.m?.senderId === currentUser?.uid ? `${BASE_URL}/${loginUser?.profile_pic}` : `${BASE_URL}/${message?.props?.data?.row?.profile_pic}`
-                      }
-                      {
-                      ...stringAvatar(loginUser?.first_name, loginUser?.last_name)}
-                      sx={{ width: "35px", height: " 35px", fontSize: "smaller" }}
-                    />)
-                  }
-                </Box>
-              </Box>
+              </HtmlTooltip >
             }
           </Grid>
         </Grid>
@@ -260,6 +283,13 @@ const Message = ({ message }: any) => {
       <Toaster
         position="top-center"
         reverseOrder={false}
+      />
+      <AlertDialog
+        open={open}
+        onClose={DeleteTextMessage}
+        onSubmit={handleDeletesMessage}
+        title={"Message"}
+        whatYouDelete="Message"
       />
     </>
   );

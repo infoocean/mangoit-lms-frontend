@@ -49,7 +49,7 @@ export default function HomePage() {
           <Box className={styles.aboutsiteBodyContainer}>
             <Card>
               <CardContent>
-                <Typography variant="body1">
+                <Typography variant="body1" style={{ textAlign: "justify" }}>
                   Lorem ipsum dolor sit amet consectetur adipisicing elit. In
                   incidunt rerum tempora, neque harum, consectetur at deserunt,
                   reprehenderit expedita repudiandae provident voluptatibus
